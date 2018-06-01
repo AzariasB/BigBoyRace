@@ -1,5 +1,6 @@
 # IntelliJ
 .idea
+package-lock.json
 
 # Node.js
 node_modules
