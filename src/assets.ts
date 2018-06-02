@@ -1,10 +1,25 @@
 /* AUTO GENERATED FILE. DO NOT MODIFY. YOU WILL LOSE YOUR CHANGES ON BUILD. */
 
 export namespace Images {
+    export class ImagesBackgroundTemplate {
+        static getName(): string { return 'background_template'; }
+
+        static getPNG(): string { return require('assets/images/background_template.png'); }
+    }
+    export class ImagesClouds {
+        static getName(): string { return 'clouds'; }
+
+        static getPNG(): string { return require('assets/images/clouds.png'); }
+    }
     export class ImagesDust {
         static getName(): string { return 'dust'; }
 
         static getPNG(): string { return require('assets/images/dust.png'); }
+    }
+    export class ImagesFarGrounds {
+        static getName(): string { return 'far-grounds'; }
+
+        static getPNG(): string { return require('assets/images/far-grounds.png'); }
     }
     export class ImagesPlx1 {
         static getName(): string { return 'plx-1'; }
@@ -31,10 +46,20 @@ export namespace Images {
 
         static getPNG(): string { return require('assets/images/plx-5.png'); }
     }
+    export class ImagesSea {
+        static getName(): string { return 'sea'; }
+
+        static getPNG(): string { return require('assets/images/sea.png'); }
+    }
     export class ImagesShield {
         static getName(): string { return 'shield'; }
 
         static getPNG(): string { return require('assets/images/shield.png'); }
+    }
+    export class ImagesSky {
+        static getName(): string { return 'sky'; }
+
+        static getPNG(): string { return require('assets/images/sky.png'); }
     }
     export class TilesetsJungleTileset {
         static getName(): string { return 'jungle tileset'; }
@@ -44,6 +69,16 @@ export namespace Images {
 }
 
 export namespace Spritesheets {
+    export class Adventurer {
+        static getName(): string { return 'adventurer'; }
+
+        static getPNG(): string { return require('assets/spritesheets/adventurer.[50,37,96,0,0].png'); }
+        static getFrameWidth(): number { return 50; }
+        static getFrameHeight(): number { return 37; }
+        static getFrameMax(): number { return 96; }
+        static getMargin(): number { return 0; }
+        static getSpacing(): number { return 0; }
+    }
     export class HeroBlue {
         static getName(): string { return 'hero_blue'; }
 

@@ -1,5 +1,5 @@
 import * as Assets from '../assets';
-import Player from '../objects/Player';
+import { Player, PlayerDirection } from '../objects/Player';
 import Shield from '../objects/Shield';
 import BackgroundScroller from '../widgets/backgroundScroller';
 import { Network } from '../network';
@@ -20,11 +20,11 @@ export default class Game extends Phaser.State {
         for (let name of BackgroundScroller.BG_NAMES) {
             let img = this.game.cache.getImage(name);
             let bg = this.game.add.tileSprite(0, 0, this.game.world.width, this.game.height, name);
-            bg.scale = new Phaser.Point(this.game.height / img.height, this.game.height / img.height);
+            bg.scale.set(this.game.height / img.height, this.game.height / img.height);
             this.backgrounds.push(bg);
         }
 
-        Network.onReceive('update', (_, data) => this.ennemy.deserialize(data) );
+        // Network.onReceive('update', (_, data) => this.ennemy.deserialize(data) );
 
         this.particlesGenerator = this.game.add.emitter(0, 0, 100);
         this.particlesGenerator.setAlpha(1, 0, 900);
@@ -39,6 +39,7 @@ export default class Game extends Phaser.State {
             if (o.name === 'shield') {
                 let nwShield;
                 this.shields.push(nwShield = new Shield(this.game, o.x, o.y, Assets.Images.ImagesShield.getName()));
+                nwShield.body.gravity = 0;
                 this.game.add.existing(nwShield);
             }
         });
@@ -51,11 +52,11 @@ export default class Game extends Phaser.State {
 
         for (let bg of this.backgrounds) bg.width = this.game.world.width;
 
-        this.player = new Player(this.game, 32, 32, Assets.Spritesheets.HeroBlue.getName(), this.collisionLayer);
-        this.ennemy = new Player(this.game, 32, 32, Assets.Spritesheets.HeroBlue.getName(), this.collisionLayer);
+        this.player = new Player(this.game, 32, 32, Assets.Spritesheets.Adventurer.getName(), this.collisionLayer);
+        // this.ennemy = new Player(this.game, 32, 32, Assets.Spritesheets.HeroBlue.getName(), this.collisionLayer);
 
         this.game.add.existing(this.player);
-        this.game.add.existing(this.ennemy);
+        // this.game.add.existing(this.ennemy);
 
         this.game.input.keyboard.createCursorKeys();
 
@@ -81,13 +82,17 @@ export default class Game extends Phaser.State {
         this.cursors = this.game.input.keyboard.createCursorKeys();
 
         setInterval(() => {
-            Network.send('update', this.player.serialize());
+            // Network.send('update', this.player.serialize());
         }, 100);
+    }
+
+    public render(): void {
+        // this.game.debug.body(this.player);
     }
 
     public update(): void {
         this.game.physics.arcade.collide(this.player, this.collisionLayer);
-        this.game.physics.arcade.collide(this.ennemy, this.collisionLayer);
+        // this.game.physics.arcade.collide(this.ennemy, this.collisionLayer);
         // send player data to server
 
         let divisor = 4;
@@ -103,13 +108,14 @@ export default class Game extends Phaser.State {
                 this.particlesGenerator.start(true, 1000, null, 10);
                 s.collect(this.player);
             });
-            let ennemyOverlap = this.game.physics.arcade.overlap(s, this.ennemy ,(s) => {
+            /* let ennemyOverlap = this.game.physics.arcade.overlap(s, this.ennemy ,(s) => {
                 this.particlesGenerator.x = s.x;
                 this.particlesGenerator.y = s.y;
                 this.particlesGenerator.start(true, 1000, null, 10);
                 s.collect(this.ennemy);
             });
-            return !playerOverlap && !ennemyOverlap;
+            return !playerOverlap && !ennemyOverlap;*/
+            return !playerOverlap;
         });
 
         if (this.cursors.up.justDown) {
@@ -121,14 +127,14 @@ export default class Game extends Phaser.State {
         }
 
         if (this.cursors.left.isDown) {
-            this.player.goLeft();
+            this.player.goDirection(PlayerDirection.Left);
         } else if (this.cursors.right.isDown) {
-            this.player.goRight();
+            this.player.goDirection(PlayerDirection.Right);
         } else {
             this.player.stop();
         }
 
         this.player.update();
-        this.ennemy.update();
+        // this.ennemy.update();
     }
 }
