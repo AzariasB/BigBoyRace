@@ -86,9 +86,10 @@ export default class Game extends Phaser.State {
         }, 100);
     }
 
-    public render(): void {
-        // this.game.debug.body(this.player);
-    }
+    public render(): void{
+        this.game.debug.bodyInfo(this.player, 32, 32);   
+        this.game.debug.text(this.player.fsm.currentState + "", 32, 32);  
+      }
 
     public update(): void {
         this.game.physics.arcade.collide(this.player, this.collisionLayer);
