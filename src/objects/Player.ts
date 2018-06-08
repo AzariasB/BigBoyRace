@@ -1,6 +1,6 @@
 import * as Assets from '../assets';
 import { TypeState } from 'typestate';
-import { PLAYER_ACCELERATION, PLAYER_JUMP, PLAYER_MAX_SPEED } from '../constant';
+import { PLAYER_ACCELERATION, PLAYER_JUMP, PLAYER_MAX_SPEED, PLAYER_DESCELERATION } from '../constant';
 
 enum PlayerStates {
     Running,
@@ -34,7 +34,7 @@ export class Player extends Phaser.Sprite {
 
     arcadeBody: Phaser.Physics.Arcade.Body;
     private dustParticles: Phaser.Particles.Arcade.Emitter;
-    private fsm: TypeState.FiniteStateMachine<PlayerStates> = new TypeState.FiniteStateMachine<PlayerStates>(PlayerStates.Landing);
+    public fsm: TypeState.FiniteStateMachine<PlayerStates> = new TypeState.FiniteStateMachine<PlayerStates>(PlayerStates.Landing);
     private isHalfWidth: boolean = false;
 
     constructor (game: Phaser.Game, x: number, y: number,
@@ -143,7 +143,7 @@ export class Player extends Phaser.Sprite {
 
     public goDirection(dir: PlayerDirection): void {
         let mult = dir === PlayerDirection.Left ? -1 : 1;
-        if (! (this.fsm.is(PlayerStates.Crouched) || this.fsm.is(PlayerStates.SlideCrouched) )) {
+        if (! (this.fsm.is(PlayerStates.Crouched) || this.fsm.is(PlayerStates.SlideCrouched )|| this.arcadeBody.velocity.x != 0) ) {
             this.arcadeBody.velocity.x = PLAYER_MAX_SPEED * mult;
         }
         this.scale.x = Math.abs(this.scale.x) * mult;
@@ -184,6 +184,13 @@ export class Player extends Phaser.Sprite {
         this.dustParticles.x = this.x;
         this.dustParticles.y = this.y + this.height / 2;
         this.dustParticles.on = onFloor && this.arcadeBody.velocity.x !== 0;
+
+        if(this.fsm.is(PlayerStates.SlideCrouched))
+            this.arcadeBody.velocity.x /= PLAYER_ACCELERATION;
+
+        if(this.fsm.is(PlayerStates.Running)){
+            this.arcadeBody.velocity.x *= PLAYER_DESCELERATION;
+        }
 
         if ((this.arcadeBody.velocity.y > 0) && this.fsm.canGo(PlayerStates.Landing)) {
             this.fsm.go(PlayerStates.Landing);

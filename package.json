@@ -20,6 +20,7 @@
     "@types/node": "latest",
     "@types/socket.io": "^1.4.34",
     "@types/webfontloader": "1.6.29",
+    "ajv": "^6.5.0",
     "clean-webpack-plugin": "0.1.17",
     "commander": "2.13.0",
     "copy-webpack-plugin": "4.3.1",
