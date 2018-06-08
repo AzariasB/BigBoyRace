@@ -16,6 +16,12 @@ export default class Game extends Phaser.State {
     private particlesGenerator: Phaser.Particles.Arcade.Emitter = null;
     private ennemy: Player = null;
 
+    private isMantleColor(color: {r: number, g: number, b: number, a: number}): boolean {
+        let possibles = ['143,50,50', '171,67,67', '217,87,99'];
+        let joined = [color.r, color.g, color.b].join(',');
+        return possibles.filter(x => joined === x).length > 0;
+    }
+
     public create(): void {
         for (let name of BackgroundScroller.BG_NAMES) {
             let img = this.game.cache.getImage(name);
@@ -44,6 +50,18 @@ export default class Game extends Phaser.State {
             }
         });
 
+        let img = this.game.cache.getImage(Assets.Spritesheets.Adventurer.getName());
+        let bitmap = this.game.make.bitmapData(img.width, img.height);
+        bitmap.load(img);
+        bitmap.processPixelRGB(color => {
+            if (color.a !== 0 && this.isMantleColor(color)) {
+                color.r = 0;
+                color.g = 255;
+            }
+            return color;
+        });
+
+
         this.tilemap.addTilesetImage(Assets.Images.TilesetsJungleTileset.getName());
         this.tilemap.setCollisionByExclusion([], true, 'Collision');
         // let bgLayer = this.tilemap.createLayer("Background1");
@@ -52,11 +70,15 @@ export default class Game extends Phaser.State {
 
         for (let bg of this.backgrounds) bg.width = this.game.world.width;
 
-        this.player = new Player(this.game, 32, 32, Assets.Spritesheets.Adventurer.getName(), this.collisionLayer);
+        this.player = new Player(this.game, 32, 32, Assets.Spritesheets.Adventurer.getName(), this.tilemap, this.collisionLayer);
         // this.ennemy = new Player(this.game, 32, 32, Assets.Spritesheets.HeroBlue.getName(), this.collisionLayer);
 
         this.game.add.existing(this.player);
+        // this.player.setTexture(bitmap.texture);
+        // this.player.jump();
         // this.game.add.existing(this.ennemy);
+
+
 
         this.game.input.keyboard.createCursorKeys();
 
