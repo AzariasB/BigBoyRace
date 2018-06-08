@@ -1,6 +1,6 @@
 import * as Assets from '../assets';
 import { TypeState } from 'typestate';
-import { PLAYER_ACCELERATION, PLAYER_JUMP, PLAYER_MAX_SPEED, PLAYER_DESCELERATION } from '../constant';
+import { PLAYER_ACCELERATION, PLAYER_JUMP, PLAYER_SPEED, PLAYER_DESCELERATION } from '../constant';
 
 enum PlayerStates {
     Running,
@@ -144,7 +144,7 @@ export class Player extends Phaser.Sprite {
     public goDirection(dir: PlayerDirection): void {
         let mult = dir === PlayerDirection.Left ? -1 : 1;
         if (! (this.fsm.is(PlayerStates.Crouched) || this.fsm.is(PlayerStates.SlideCrouched ) || this.arcadeBody.velocity.x !== 0) ) {
-            this.arcadeBody.velocity.x = PLAYER_MAX_SPEED * mult;
+            this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
         }
         this.scale.x = Math.abs(this.scale.x) * mult;
         if (this.arcadeBody.onFloor() && this.fsm.canGo(PlayerStates.Running)) {
