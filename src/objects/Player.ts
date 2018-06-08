@@ -37,8 +37,12 @@ export class Player extends Phaser.Sprite {
     public fsm: TypeState.FiniteStateMachine<PlayerStates> = new TypeState.FiniteStateMachine<PlayerStates>(PlayerStates.Landing);
     private isHalfWidth: boolean = false;
 
-    constructor (game: Phaser.Game, x: number, y: number, group: string, private collisionLayer: Phaser.TilemapLayer) {
+    constructor (game: Phaser.Game, x: number, y: number,
+                    group: string,
+                    private  map: Phaser.Tilemap,
+                    private collisionLayer: Phaser.TilemapLayer) {
         super(game, x, y, group);
+
         this.game.physics.arcade.enable(this);
         this.dustParticles = this.game.add.emitter(x, y, 10);
         this.dustParticles.makeParticles(Assets.Images.ImagesDust.getName());
@@ -46,6 +50,7 @@ export class Player extends Phaser.Sprite {
         this.dustParticles.minParticleScale = this.dustParticles.maxParticleScale = 0.5;
         this.dustParticles.start(false, 100, 10);
         this.dustParticles.on = false;
+
 
         this.arcadeBody = this.body;
         this.arcadeBody.collideWorldBounds = true;
@@ -89,25 +94,28 @@ export class Player extends Phaser.Sprite {
         this.fsm.from(PlayerStates.EndCrouched).to(PlayerStates.Crouched, PlayerStates.Iddle, PlayerStates.Running, PlayerStates.StuckCrouched);
 
         this.stateToAnim(PlayerStates.Iddle, PlayerAnimation.Iddle, 5)
-            .stateToAnim(PlayerStates.Crouched, PlayerAnimation.Crouch)
+            .stateToAnim(PlayerStates.Crouched, PlayerAnimation.Crouch, 5)
             .stateToAnim(PlayerStates.Running, PlayerAnimation.Run)
             .stateToAnim(PlayerStates.Jumping, PlayerAnimation.Jump)
             .stateToAnim(PlayerStates.Landing, PlayerAnimation.Land)
             .stateToAnim(PlayerStates.JumpCrouched, PlayerAnimation.JumpCrouch, 10, false)
             .stateToAnim(PlayerStates.SlideCrouched, PlayerAnimation.SlideCrouch)
-            .stateToAnim(PlayerStates.StuckCrouched, PlayerAnimation.Crouch);
+            .stateToAnim(PlayerStates.StuckCrouched, PlayerAnimation.Crouch, 5);
 
         this.fsm.on(PlayerStates.SlideCrouched, () => this.goHalfWidth());
         this.fsm.on(PlayerStates.Crouched, () => this.goHalfWidth());
 
         this.fsm.onExit(PlayerStates.EndCrouched, () => {
-            this.exitHalfWidth();
-            /* if (this.game.physics.arcade.collide(this.arcadeBody, this.collisionLayer)) {// crouch
-                console.log(this.arcadeBody.touching);
-                // this.fsm.go(PlayerStates.StuckCrouched);
-                this.goHalfWidth();
+            let ltPos = this.collisionLayer.getTileXY(this.left, this.top, new Phaser.Point());
+            let rtPos = this.collisionLayer.getTileXY(this.right, this.top, new Phaser.Point());
+            let topLeft = this.map.getTile(ltPos.x, ltPos.y, this.collisionLayer);
+            let topRight = this.map.getTile(rtPos.x, rtPos.y, this.collisionLayer);
+            if (topLeft === null && topRight === null) {
+                this.exitHalfWidth();
+                return true;
+            } else {
                 return false;
-            } */
+            }
             return true;
         });
     }
