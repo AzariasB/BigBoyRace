@@ -14,10 +14,10 @@ npm install
 Execution
 =========
 
-Pour éxecuter le programme :
+Pour executer le programme :
 ```
 node server/index.js
-``
+```
 lance le serveur (qui permet à deux joueurs de se connecter en même temps)
 
 ```
