@@ -41,15 +41,6 @@ export default class Game extends Phaser.State {
         let shields = this.game.add.group();
         shields.enableBody = true;
 
-        this.tilemap.objects['Powerups'].map(o => {
-            if (o.name === 'shield') {
-                let nwShield;
-                this.shields.push(nwShield = new Shield(this.game, o.x, o.y, Assets.Images.ImagesShield.getName()));
-                nwShield.body.gravity = 0;
-                this.game.add.existing(nwShield);
-            }
-        });
-
         let img = this.game.cache.getImage(Assets.Spritesheets.Adventurer.getName());
         let bitmap = this.game.make.bitmapData(img.width, img.height);
         bitmap.load(img);
@@ -79,6 +70,17 @@ export default class Game extends Phaser.State {
         // this.game.add.existing(this.ennemy);
 
 
+        this.tilemap.objects['Powerups'].map(o => {
+            if (o.name === 'shield') {
+                let nwShield;
+                this.shields.push(nwShield = new Shield(this.game, o.x, o.y, Assets.Images.ImagesShield.getName()));
+                nwShield.body.gravity = 0;
+                this.game.add.existing(nwShield);
+            } else if (o.name === 'start') {
+                this.player.x = o.x;
+                this.player.y = o.y;
+            }
+        });
 
         this.game.input.keyboard.createCursorKeys();
 
@@ -109,7 +111,7 @@ export default class Game extends Phaser.State {
     }
 
     public render(): void {
-        // this.game.debug.body(this.player);
+        this.game.debug.bodyInfo(this.player, 32, 32);
     }
 
     public update(): void {

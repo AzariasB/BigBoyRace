@@ -43,6 +43,8 @@ export class Player extends Phaser.Sprite {
                     private collisionLayer: Phaser.TilemapLayer) {
         super(game, x, y, group);
 
+        this.height = this.map.tileHeight * 2;
+        this.width = this.map.tileWidth * 2;
         this.game.physics.arcade.enable(this);
         this.dustParticles = this.game.add.emitter(x, y, 10);
         this.dustParticles.makeParticles(Assets.Images.ImagesDust.getName());

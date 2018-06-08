@@ -421,6 +421,10 @@ export namespace Tilemaps {
         static getName(): string { return 'defaultMap'; }
         static getJSON(): string { return require('assets/tilemaps/defaultMap.json'); }
     }
+    export class JungleMap {
+        static getName(): string { return 'JungleMap'; }
+        static getJSON(): string { return require('assets/tilemaps/JungleMap.json'); }
+    }
 }
 
 export namespace JSON {
