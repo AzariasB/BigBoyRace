@@ -143,7 +143,7 @@ export class Player extends Phaser.Sprite {
 
     public goDirection(dir: PlayerDirection): void {
         let mult = dir === PlayerDirection.Left ? -1 : 1;
-        if (! (this.fsm.is(PlayerStates.Crouched) || this.fsm.is(PlayerStates.SlideCrouched )|| this.arcadeBody.velocity.x != 0) ) {
+        if (! (this.fsm.is(PlayerStates.Crouched) || this.fsm.is(PlayerStates.SlideCrouched ) || this.arcadeBody.velocity.x !== 0) ) {
             this.arcadeBody.velocity.x = PLAYER_MAX_SPEED * mult;
         }
         this.scale.x = Math.abs(this.scale.x) * mult;
@@ -185,10 +185,10 @@ export class Player extends Phaser.Sprite {
         this.dustParticles.y = this.y + this.height / 2;
         this.dustParticles.on = onFloor && this.arcadeBody.velocity.x !== 0;
 
-        if(this.fsm.is(PlayerStates.SlideCrouched))
+        if (this.fsm.is(PlayerStates.SlideCrouched))
             this.arcadeBody.velocity.x /= PLAYER_ACCELERATION;
 
-        if(this.fsm.is(PlayerStates.Running)){
+        if (this.fsm.is(PlayerStates.Running)) {
             this.arcadeBody.velocity.x *= PLAYER_DESCELERATION;
         }
 

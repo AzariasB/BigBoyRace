@@ -3,7 +3,7 @@
 // Player related constants
 export const PLAYER_MAX_SPEED = 250;
 export const PLAYER_ACCELERATION = 1.004;
-export const PLAYER_DESCELERATION = 1.007
+export const PLAYER_DESCELERATION = 1.007;
 export const PLAYER_JUMP = 350;
 
 // World related constants
