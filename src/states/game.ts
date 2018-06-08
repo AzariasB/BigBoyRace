@@ -37,7 +37,7 @@ export default class Game extends Phaser.State {
         this.particlesGenerator.setAlpha(1, 0, 900);
         this.particlesGenerator.makeParticles(Assets.Images.ImagesShield.getName());
 
-        this.tilemap = this.game.add.tilemap(Assets.Tilemaps.DefaultMap.getName(), 16, 16);
+        this.tilemap = this.game.add.tilemap(Assets.Tilemaps.JungleMap.getName(), 16, 16);
 
         let shields = this.game.add.group();
         shields.enableBody = true;
