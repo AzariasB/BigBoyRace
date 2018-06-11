@@ -17,14 +17,19 @@ Boutin
 
 Kaindoh
 -------
+- Suite de la création des sprites (Wall Jump, Wall Slide, Iddle)
 
 Mockels
 -------
+- Installation et prise en main (avec Lucas) de Tiled logiciel de mapping (3h)
+- Création d'une première map afin de tester la physique du jeu (2h)
+- En cours : modification du tileset principal : ajout de différents éléments du décort (buisson, arbre, fleur..)
+
 
 Raffi
 -----
 
 Segrais
 -------
-- Fin de création de la première map (JungleMap.json)
-- Début de la création de la map 2 (JungleMap2.json)
+- Fin de création de la première map (JungleMap.json) : 4h
+- Début de la création de la map 2 (JungleMap2.json) : 3h

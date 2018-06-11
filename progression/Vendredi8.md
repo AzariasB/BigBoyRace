@@ -21,15 +21,18 @@ Boutin
 
 Kaindoh
 -------
+- Suite de la création des sprites (Run, Jump) : 7h
 
 Mockels
 -------
+- Prise en main de phaser (3h)
+- Tests création de la mécanique wallslide/walljump (3h)
 
 Raffi
 -----
 
 Segrais
 -------
-- Affinage des éléments du gameplay en fonction des avis de chacun
-- Création de la première map
-- Adaptation de la map pour s'adapter aux caracteritques du personnage
+- Affinage des éléments du gameplay en fonction des avis de chacun : 2h
+- Création de la première map : 3h
+- Adaptation de la map pour s'adapter aux caracteritques du personnage : 2h
