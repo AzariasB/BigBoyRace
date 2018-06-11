@@ -12,3 +12,5 @@
 - Integration d'une map de test réalisé par Lucas
 - Mise à l'échelle des différentes parties du jeu
 - Correction du saut du joueur
+- Dessin de la machine à état sur tableau avec Jean-Baptiste
+- Traduction de la machine à Etat sur draw.io

@@ -3,6 +3,7 @@ import { Player, PlayerDirection } from '../objects/Player';
 import Shield from '../objects/Shield';
 import BackgroundScroller from '../widgets/backgroundScroller';
 import { Network } from '../network';
+import ItemHolder from '../objects/ItemHolder';
 
 export default class Game extends Phaser.State {
     private sfxAudiosprite: Phaser.AudioSprite = null;
@@ -108,10 +109,14 @@ export default class Game extends Phaser.State {
         setInterval(() => {
             // Network.send('update', this.player.serialize());
         }, 100);
+
+        let itemholder = new ItemHolder(this.game, 50, 50, Assets.Atlases.AtlasesBlueSheet.getName(), Assets.Atlases.AtlasesBlueSheet.Frames.BlueButton09);
+        this.game.add.existing(itemholder);
     }
 
     public render(): void {
         this.game.debug.bodyInfo(this.player, 32, 32);
+        this.game.debug.text(this.player.sm.currentStateName, 32, 256);
     }
 
     public update(): void {
@@ -142,13 +147,8 @@ export default class Game extends Phaser.State {
             return !playerOverlap;
         });
 
-        if (this.cursors.up.justDown) {
-            this.player.jump();
-        } else if (this.cursors.down.justDown) {
-            this.player.crouch();
-        } else if (this.cursors.down.justUp) {
-            this.player.stopCrouch();
-        }
+        this.player.setJumping(this.cursors.up.isDown);
+        this.player.setCrouching(this.cursors.down.isDown);
 
         if (this.cursors.left.isDown) {
             this.player.goDirection(PlayerDirection.Left);
