@@ -75,11 +75,12 @@ export default class Game extends Phaser.State {
         this.tilemap.objects['Powerups'].map(o => {
             if (o.name === 'item') {
                 let nwBox;
-                this.box.push(nwBox = new Box(this.game, o.x, o.y, Assets.Images.ImagesBox.getName()));
+                this.box.push(nwBox = new Box(this.game, o.x + this.tilemap.tileWidth / 2, o.y + this.tilemap.tileHeight / 2, Assets.Images.ImagesBox.getName()));
                 nwBox.body.gravity = 0;
-                this.game.add.existing(nwBox);
                 nwBox.height = this.tilemap.tileHeight;
                 nwBox.width = this.tilemap.tileWidth;
+                this.game.add.existing(nwBox);
+
             } else if (o.name === 'start') {
                 this.player.x = o.x;
                 this.player.y = o.y;
