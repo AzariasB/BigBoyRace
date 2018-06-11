@@ -2,10 +2,12 @@
 
 Abet
 ----
-- Ajout d'une acceleration dans les deplacements du joueur (anciennement vitesse fixe)
-- Modification du ralentissement lors des glissades
-- Conception de la machine d'etat du joueur
-- Ajout de l'itemholder sur l'interface joueur
+- Ajout d'une acceleration dans les deplacements du joueur (anciennement vitesse fixe) : 2h
+- Modification du ralentissement lors des glissades : 2h
+- Conception de la machine d'etat du joueur : 2h
+- Ajout de l'itemholder sur l'interface joueur : 1h
+
+Temps total : 7h
 
 Boutin
 ------
@@ -19,15 +21,22 @@ Boutin
 
 Kaindoh
 -------
+- Suite de la création des sprites (Run, Jump) : 7h
 
 Mockels
 -------
+- Prise en main de phaser (3h)
+<<<<<<< HEAD
+- Tests création de la mécanique wallslide/walljump (3h)
+=======
+- tests création de la mécanique wallslide/walljump (3h)
+>>>>>>> develop
 
 Raffi
 -----
 
 Segrais
 -------
-- Affinage des éléments du gameplay en fonction des avis de chacun
-- Création de la première map
-- Adaptation de la map pour s'adapter aux caracteritques du personnage
+- Affinage des éléments du gameplay en fonction des avis de chacun : 2h
+- Création de la première map : 3h
+- Adaptation de la map pour s'adapter aux caracteritques du personnage : 2h

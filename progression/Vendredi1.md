@@ -2,6 +2,7 @@
 
 Abet
 ----
+- prise en main de phaser et installation de l'environnement : 5h
 
 Boutin
 ------
@@ -12,14 +13,18 @@ Boutin
 
 Kaindoh
 -------
+- Création des sprites (Run) : 7h
 
 Mockels
 -------
+- Installation, prise en main de phaser npm webpack (4h)
+- Reflexion sur le document Question qu'on se pose (2h)
+
 
 Raffi
 -----
 
 Segrais
 -------
-- Spécification des differents aspects du gameplay
-- Prise en main du logiciel de création des cartes
+- Spécification des differents aspects du gameplay : 2h
+- Prise en main du logiciel de création des cartes : 5h
