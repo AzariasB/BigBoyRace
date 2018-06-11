@@ -8,7 +8,6 @@ export default class ItemHolder extends Phaser.Sprite {
         this.scale = new Phaser.Point(1.5, 1.5);
         this.anchor.set(0.5, 0.5);
         this.fixedToCamera = true ;
-        console.log(group);
     }
 
 }
