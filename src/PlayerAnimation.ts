@@ -26,11 +26,7 @@ export enum PlayerAnimation {
 export class AnimationConfiguration {
     public states: {[key: string]:
         {
-            animation: {
-                name: PlayerAnimation,
-                frameRate: number,
-                loop: boolean
-            },
+            animation: PlayerAnimation,
             transitions: {[key: string]: (o: any) => boolean}
         }
     };
@@ -43,11 +39,7 @@ export class AnimationConfiguration {
 const Config: AnimationConfiguration = new AnimationConfiguration({
     states: {
         [PlayerStates.Idle]: {
-            animation: {
-                name: PlayerAnimation.Idle,
-                loop: true,
-                frameRate: 5
-            },
+            animation: PlayerAnimation.Idle,
             transitions: {
                 [PlayerStates.Crouched]: opts => opts.isCrouchPressed,
                 [PlayerStates.Jumping]: opts => opts.velocityY !== 0,
@@ -55,11 +47,7 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             }
         },
         [PlayerStates.Running]: {
-            animation: {
-                name: PlayerAnimation.Run,
-                loop: true,
-                frameRate: 20
-            },
+            animation: PlayerAnimation.Run,
             transitions: {
                 [PlayerStates.SlideCrouched]: opts => opts.isCrouchPressed,
                 [PlayerStates.Jumping]: opts => opts.velocityY !== 0 ,
@@ -67,11 +55,7 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             }
         },
         [PlayerStates.SlideCrouched]: {
-            animation: {
-                name: PlayerAnimation.JumpCrouch,
-                loop: false,
-                frameRate: 5
-            },
+            animation: PlayerAnimation.JumpCrouch,
             transitions: {
                 [PlayerStates.Crouched]: opts => opts.velocityX === 0,
                 [PlayerStates.Running]: opts => opts.velocityX !== 0 && !opts.isStuck && !opts.isCrouchPressed
@@ -79,22 +63,14 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             }
         },
         [PlayerStates.Crouched]: {
-            animation: {
-                name: PlayerAnimation.Crouch,
-                loop: true,
-                frameRate: 5
-            },
+            animation: PlayerAnimation.Crouch,
             transitions: {
                 [PlayerStates.CrouchWalking]: opts => opts.velocityX !== 0,
                 [PlayerStates.Idle]: opts => !opts.isStuck && !opts.isCrouchPressed,
             }
         },
         [PlayerStates.CrouchWalking]: {
-            animation: {
-                name: PlayerAnimation.WalkCrouch,
-                loop: true,
-                frameRate: 5
-            },
+            animation: PlayerAnimation.WalkCrouch,
             transitions: {
                 [PlayerStates.Running]: opts => !opts.isCrouchPressed && !opts.isStuck,
                 [PlayerStates.Jumping]: opts => !opts.isOnFloor,
@@ -102,11 +78,7 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             }
         },
         [PlayerStates.Jumping]: {
-            animation: {
-                name: PlayerAnimation.Jump,
-                loop: true,
-                frameRate: 5
-            },
+            animation: PlayerAnimation.Jump,
             transitions: {
                 [PlayerStates.Running]: opts => opts.isOnFloor && opts.velocityX !== 0,
                 [PlayerStates.Idle]: opts => opts.isOnFloor && opts.velocityX === 0,
@@ -114,11 +86,7 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             }
         },
         [PlayerStates.WallSliding]: {
-            animation: {
-                name: PlayerAnimation.WallSliding,
-                loop: true,
-                frameRate: 10
-            },
+            animation:  PlayerAnimation.WallSliding,
             transitions: {
                 [PlayerStates.Jumping]: opts => opts.isJumpPressed || ( !opts.isOnWall && !opts.isOnFloor),
                 [PlayerStates.Idle]: opts => opts.isOnFloor // && opts.velocityX === 0
