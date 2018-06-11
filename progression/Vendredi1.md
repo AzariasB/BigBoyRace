@@ -2,6 +2,7 @@
 
 Abet
 ----
+- prise en main de phaser et installation de l'environnement : 5h
 
 Boutin
 ------

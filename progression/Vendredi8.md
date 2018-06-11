@@ -2,10 +2,12 @@
 
 Abet
 ----
-- Ajout d'une acceleration dans les deplacements du joueur (anciennement vitesse fixe)
-- Modification du ralentissement lors des glissades
-- Conception de la machine d'etat du joueur
-- Ajout de l'itemholder sur l'interface joueur
+- Ajout d'une acceleration dans les deplacements du joueur (anciennement vitesse fixe) : 2h
+- Modification du ralentissement lors des glissades : 2h
+- Conception de la machine d'etat du joueur : 2h
+- Ajout de l'itemholder sur l'interface joueur : 1h
+
+Temps total : 7h
 
 Boutin
 ------
