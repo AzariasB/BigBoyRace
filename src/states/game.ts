@@ -38,7 +38,7 @@ export default class Game extends Phaser.State {
         this.particlesGenerator.minParticleScale = 0.3;
         this.particlesGenerator.maxParticleScale = 0.3;
 
-        this.tilemap = this.game.add.tilemap(Assets.Tilemaps.JungleMap.getName(), 16, 16);
+        this.tilemap = this.game.add.tilemap(Assets.Tilemaps.JungleMap2.getName(), 16, 16);
 
 
         let img = this.game.cache.getImage(Assets.Spritesheets.Adventurer.getName());
@@ -121,6 +121,7 @@ export default class Game extends Phaser.State {
     public render(): void {
         this.game.debug.bodyInfo(this.player, 32, 32);
         this.game.debug.text(this.player.sm.currentStateName, 32, 256);
+        this.game.debug.text(this.player.direction, 32, 280);
     }
 
     public update(): void {
@@ -154,11 +155,14 @@ export default class Game extends Phaser.State {
         this.player.setJumping(this.cursors.up.isDown);
         this.player.setCrouching(this.cursors.down.isDown);
 
-        if (this.cursors.left.isDown) {
+
+        if (this.cursors.left.justDown) {
             this.player.goDirection(PlayerDirection.Left);
-        } else if (this.cursors.right.isDown) {
+        } else if (this.cursors.right.justDown) {
             this.player.goDirection(PlayerDirection.Right);
-        } else {
+        }
+
+        if (this.cursors.left.isUp && this.cursors.right.isUp) {
             this.player.stop();
         }
 
