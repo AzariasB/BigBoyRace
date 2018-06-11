@@ -82,20 +82,6 @@ export class Player extends Phaser.Sprite {
             }
         }
         this.sm.setCurrentState(PlayerStates.Idle);
-
-        // this.fsm.onExit(PlayerStates.EndCrouched, () => {
-        //     let ltPos = this.collisionLayer.getTileXY(this.left, this.top, new Phaser.Point());
-        //     let rtPos = this.collisionLayer.getTileXY(this.right, this.top, new Phaser.Point());
-        //     let topLeft = this.map.getTile(ltPos.x, ltPos.y, this.collisionLayer);
-        //     let topRight = this.map.getTile(rtPos.x, rtPos.y, this.collisionLayer);
-        //     if (topLeft === null && topRight === null) {
-        //         this.exitHalfWidth();
-        //         return true;
-        //     } else {
-        //         return false;
-        //     }
-        //     return true;
-        // });
     }
 
     private goHalfWidth() {
@@ -160,11 +146,14 @@ export class Player extends Phaser.Sprite {
         if (!this.wallJumped)
             this.updateVelocity();
 
+        let ltPos = this.collisionLayer.getTileXY(this.centerX, this.top, new Phaser.Point());
+        let topLeft = this.map.getTile(ltPos.x, ltPos.y, this.collisionLayer);
+
         this.sm.setProperties({
             'isOnFloor' : onFloor,
             'velocityX': this.arcadeBody.velocity.x,
             'velocityY': this.arcadeBody.velocity.y,
-            'isStuck': false,
+            'isStuck': topLeft !== null,
             'isOnWall': this.arcadeBody.onWall()
         });
     }
