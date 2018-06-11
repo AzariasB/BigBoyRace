@@ -74,7 +74,7 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             },
             transitions: {
                 [PlayerStates.Crouched]: opts => opts.velocityX === 0,
-                [PlayerStates.Running]: opts => opts.velocityX !== 0 && !opts.isStuck
+                [PlayerStates.Running]: opts => opts.velocityX !== 0 && !opts.isStuck && !opts.isCrouchPressed
                 // could add a state to go from sliding to iddle ?
             }
         },

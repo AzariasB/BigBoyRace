@@ -43,9 +43,8 @@ export class Player extends Phaser.Sprite {
         this.animations.add(PlayerAnimation.Crouch, [4, 5, 6, 7]);
         this.animations.add(PlayerAnimation.JumpCrouch, [28]).onComplete.add(() => {
             this.animations.play(PlayerAnimation.SlideCrouch);
-            console.log('Sliding !');
         });
-        this.animations.add(PlayerAnimation.SlideCrouch, [24, 25, 26]);
+        this.animations.add(PlayerAnimation.SlideCrouch, [24, 25, 26], 10, true);
         this.animations.add(PlayerAnimation.Jump, [16]);
         this.animations.add(PlayerAnimation.Land, [22, 23]);
         this.animations.add(PlayerAnimation.WallSliding, [93]);
@@ -147,6 +146,11 @@ export class Player extends Phaser.Sprite {
 
     public setCrouching(crouching: boolean): void {
         this.sm.setProperty('isCrouchPressed', crouching);
+        if (crouching && this.sm.isOneOf(PlayerStates.Crouched, PlayerStates.CrouchWalking, PlayerStates.SlideCrouched)) {
+            this.goHalfWidth();
+        } else {
+            this.exitHalfWidth();
+        }
     }
 
     public stop(): void {
