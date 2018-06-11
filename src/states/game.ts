@@ -142,13 +142,8 @@ export default class Game extends Phaser.State {
             return !playerOverlap;
         });
 
-        if (this.cursors.up.justDown) {
-            this.player.jump();
-        } else if (this.cursors.down.justDown) {
-            this.player.crouch();
-        } else if (this.cursors.down.justUp) {
-            this.player.stopCrouch();
-        }
+        this.player.setJumping(this.cursors.up.isDown);
+        this.player.setCrouching(this.cursors.down.isDown);
 
         if (this.cursors.left.isDown) {
             this.player.goDirection(PlayerDirection.Left);
