@@ -1,6 +1,6 @@
 import * as Assets from '../assets';
 import { FiniteStateMachine } from '../StateMachine';
-import { PLAYER_ACCELERATION, PLAYER_JUMP, PLAYER_DESCELERATION, PLAYER_MAX_SPEED } from '../constant';
+import { PLAYER_ACCELERATION, PLAYER_JUMP, PLAYER_DESCELERATION, PLAYER_SPEED } from '../constant';
 import {PlayerAnimation, PlayerStates, Config} from '../PlayerAnimation';
 
 export enum PlayerDirection {
@@ -115,7 +115,7 @@ export class Player extends Phaser.Sprite {
     public goDirection(dir: PlayerDirection): void {
         let mult = dir === PlayerDirection.Left ? -1 : 1;
         if (! (this.sm.isOneOf(PlayerStates.Crouched, PlayerStates.SlideCrouched) || this.arcadeBody.velocity.x !== 0) ) {
-            this.arcadeBody.velocity.x = PLAYER_MAX_SPEED * mult;
+            this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
         }
         this.scale.x = Math.abs(this.scale.x) * mult;
     }
