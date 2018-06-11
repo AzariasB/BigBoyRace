@@ -56,7 +56,7 @@ export default class Game extends Phaser.State {
 
         this.tilemap.addTilesetImage(Assets.Images.TilesetsJungleTileset.getName());
         this.tilemap.setCollisionByExclusion([], true, 'Collision');
-        // let bgLayer = this.tilemap.createLayer("Background1");
+        this.tilemap.createLayer('Background');
         this.collisionLayer = this.tilemap.createLayer('Collision');
         this.collisionLayer.resizeWorld();
 

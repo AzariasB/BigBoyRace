@@ -39,16 +39,16 @@ export class Player extends Phaser.Sprite {
         this.arcadeBody.offset.x += this.arcadeBody.width / 2;
         this.anchor.set(0.5, 0.5);
 
-        this.animations.add(PlayerAnimation.Run, [8, 9, 10, 11, 12, 13]);
-        this.animations.add(PlayerAnimation.Idle, [0, 1, 2, 3]);
-        this.animations.add(PlayerAnimation.Crouch, [4, 5, 6, 7]);
-        this.animations.add(PlayerAnimation.JumpCrouch, [28]).onComplete.add(() => {
+        this.animations.add(PlayerAnimation.Run, [8, 9, 10, 11, 12, 13], 10, true);
+        this.animations.add(PlayerAnimation.Idle, [0, 1, 2, 3], 5, true);
+        this.animations.add(PlayerAnimation.Crouch, [4, 5, 6, 7], 5, true);
+        this.animations.add(PlayerAnimation.JumpCrouch, [28], 5, false).onComplete.add(() => {
             this.animations.play(PlayerAnimation.SlideCrouch);
         });
-        this.animations.add(PlayerAnimation.SlideCrouch, [24, 25, 26]);
-        this.animations.add(PlayerAnimation.Jump, [16]);
-        this.animations.add(PlayerAnimation.Land, [22, 23]);
-        this.animations.add(PlayerAnimation.WallSliding, [93]);
+        this.animations.add(PlayerAnimation.SlideCrouch, [24, 25, 26], 10, true);
+        this.animations.add(PlayerAnimation.Jump, [16], 5, true);
+        this.animations.add(PlayerAnimation.Land, [22, 23], 5, true);
+        this.animations.add(PlayerAnimation.WallSliding, [93], 5, true);
 
         this.sm = new FiniteStateMachine(this.animations);
         this.initStatemachine();
@@ -160,6 +160,11 @@ export class Player extends Phaser.Sprite {
 
     public setCrouching(crouching: boolean): void {
         this.sm.setProperty('isCrouchPressed', crouching);
+        if (crouching && this.sm.isOneOf(PlayerStates.Crouched, PlayerStates.CrouchWalking, PlayerStates.SlideCrouched)) {
+            this.goHalfWidth();
+        } else {
+            this.exitHalfWidth();
+        }
     }
 
     public stop(): void {
