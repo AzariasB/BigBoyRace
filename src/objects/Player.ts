@@ -1,8 +1,7 @@
 import * as Assets from '../assets';
 import { FiniteStateMachine } from '../StateMachine';
-import { PLAYER_ACCELERATION, PLAYER_JUMP, PLAYER_DESCELERATION, PLAYER_SPEED } from '../constant';
+import { PLAYER_ACCELERATION, PLAYER_JUMP, PLAYER_DESCELERATION, PLAYER_SPEED, PLAYER_WALLJUMP } from '../constant';
 import {PlayerAnimation, PlayerStates, Config} from '../PlayerAnimation';
-import { RIGHT } from 'phaser-ce';
 
 export enum PlayerDirection {
     Left = 'left',
@@ -17,6 +16,7 @@ export class Player extends Phaser.Sprite {
     private isHalfWidth: boolean = false;
     public sm: FiniteStateMachine;
     public direction: PlayerDirection = PlayerDirection.Right;
+    private wallJumped: boolean = false;
 
     constructor (game: Phaser.Game, x: number, y: number,
                     group: string,
@@ -83,9 +83,6 @@ export class Player extends Phaser.Sprite {
         }
         this.sm.setCurrentState(PlayerStates.Idle);
 
-        // this.fsm.on(PlayerStates.SlideCrouched, () => this.goHalfWidth());
-        // this.fsm.on(PlayerStates.Crouched, () => this.goHalfWidth());
-
         // this.fsm.onExit(PlayerStates.EndCrouched, () => {
         //     let ltPos = this.collisionLayer.getTileXY(this.left, this.top, new Phaser.Point());
         //     let rtPos = this.collisionLayer.getTileXY(this.right, this.top, new Phaser.Point());
@@ -126,10 +123,14 @@ export class Player extends Phaser.Sprite {
     }
 
     public setJumping(jumping: boolean): void {
-        if (jumping) {
+        if (jumping && !this.wallJumped) {
             if (this.arcadeBody.onFloor() && this.sm.isOneOf(PlayerStates.Idle, PlayerStates.Running)) {
                 this.arcadeBody.velocity.y = -PLAYER_JUMP;
-            } else if (this.sm.is(PlayerStates.WallSliding)) {
+            } else if (this.sm.is(PlayerStates.WallSliding) && this.arcadeBody.onWall()) {
+                let mult = this.arcadeBody.blocked.left ? 1 : -1;
+                this.arcadeBody.velocity.set(PLAYER_SPEED.RUNNING * mult, -PLAYER_WALLJUMP);
+                this.wallJumped = true;
+                this.game.time.events.add(50, () => this.wallJumped = false);
             }
         }
     }
@@ -144,6 +145,7 @@ export class Player extends Phaser.Sprite {
     }
 
     public stop(): void {
+        if (this.wallJumped)return;
         this.arcadeBody.velocity.x = 0;
         this.arcadeBody.acceleration.x = 0;
         this.direction = PlayerDirection.None;
@@ -155,9 +157,11 @@ export class Player extends Phaser.Sprite {
         this.dustParticles.y = this.y + this.height / 2;
         this.dustParticles.on = onFloor && this.arcadeBody.velocity.x !== 0;
 
-        this.updateVelocity();
+        if (!this.wallJumped)
+            this.updateVelocity();
+
         this.sm.setProperties({
-            'isOnFloor' : this.arcadeBody.onFloor(),
+            'isOnFloor' : onFloor,
             'velocityX': this.arcadeBody.velocity.x,
             'velocityY': this.arcadeBody.velocity.y,
             'isStuck': false,

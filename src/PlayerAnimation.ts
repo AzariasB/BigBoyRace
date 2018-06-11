@@ -82,7 +82,7 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             transitions: {
                 [PlayerStates.Running]: opts => opts.isOnFloor && opts.velocityX !== 0,
                 [PlayerStates.Idle]: opts => opts.isOnFloor && opts.velocityX === 0,
-                [PlayerStates.WallSliding]: opts => !opts.isOnFloor && opts.isOnWall
+                [PlayerStates.WallSliding]: opts => !opts.isOnFloor && opts.isOnWall && opts.velocityY > 0
             }
         },
         [PlayerStates.WallSliding]: {
