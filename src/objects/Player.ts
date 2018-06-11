@@ -14,6 +14,7 @@ export class Player extends Phaser.Sprite {
     private dustParticles: Phaser.Particles.Arcade.Emitter;
     private isHalfWidth: boolean = false;
     public sm: FiniteStateMachine;
+    private direction: PlayerDirection = PlayerDirection.Right;
 
     constructor (game: Phaser.Game, x: number, y: number,
                     group: string,
@@ -114,24 +115,37 @@ export class Player extends Phaser.Sprite {
 
     public goDirection(dir: PlayerDirection): void {
         let mult = dir === PlayerDirection.Left ? -1 : 1;
+        if (this.direction !== dir) {
+            this.arcadeBody.velocity.x = 0;
+            this.direction = dir;
+        }
      /*   if (! (this.sm.isOneOf(PlayerStates.Crouched, PlayerStates.SlideCrouched) || this.arcadeBody.velocity.x !== 0)  ) {
             this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
         }*/
+        console.log(this.sm.currentStateName);
         switch (this.sm.currentStateName) {
             case PlayerStates.Idle:
-                this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
+                this.arcadeBody.velocity.x = PLAYER_SPEED.RUNNING * mult;
                 break;
             case PlayerStates.Running:
+                if (Math.abs(this.arcadeBody.velocity.x) < PLAYER_SPEED.RUNNING)
+                    this.arcadeBody.velocity.x = PLAYER_SPEED.RUNNING * mult;
                 this.arcadeBody.velocity.x *= PLAYER_ACCELERATION;
                 break;
             case PlayerStates.Crouched:
-                this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
+                this.arcadeBody.velocity.x = PLAYER_SPEED.CROUCH * mult;
+                break;
+            case PlayerStates.SlideCrouched:
+                this.arcadeBody.velocity.x /= PLAYER_DESCELERATION;
                 break;
             case PlayerStates.Jumping:
-                this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
+                if (this.arcadeBody.velocity.x === 0)
+                    this.arcadeBody.velocity.x = PLAYER_SPEED.JUMP * mult;
+                else
+                    this.arcadeBody.velocity.x /= PLAYER_DESCELERATION;
                 break;
             case PlayerStates.WallSliding:
-                this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
+                this.arcadeBody.velocity.x = PLAYER_SPEED.RUNNING * mult;
                 break;
         }
         this.scale.x = Math.abs(this.scale.x) * mult;
@@ -139,7 +153,7 @@ export class Player extends Phaser.Sprite {
 
     public setJumping(jumping: boolean): void {
         if (jumping && this.arcadeBody.onFloor() && this.sm.isOneOf(PlayerStates.Idle, PlayerStates.Running)) {
-            this.arcadeBody.velocity.y = -PLAYER_JUMP;
+            this.arcadeBody.velocity.y = - PLAYER_JUMP;
         }
         this.sm.setProperty('isJumpPressed', jumping);
     }
@@ -158,13 +172,6 @@ export class Player extends Phaser.Sprite {
         this.dustParticles.x = this.x;
         this.dustParticles.y = this.y + this.height / 2;
         this.dustParticles.on = onFloor && this.arcadeBody.velocity.x !== 0;
-
-        if (this.sm.is(PlayerStates.SlideCrouched))
-            this.arcadeBody.velocity.x /= PLAYER_DESCELERATION;
-
-        if (this.sm.is(PlayerStates.Running)) {
-           // this.arcadeBody.velocity.x *= PLAYER_ACCELERATION;
-        }
 
         this.sm.setProperties({
             'isOnFloor' : this.arcadeBody.onFloor(),

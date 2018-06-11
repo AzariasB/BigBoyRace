@@ -72,7 +72,7 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
         [PlayerStates.CrouchWalking]: {
             animation: PlayerAnimation.WalkCrouch,
             transitions: {
-                [PlayerStates.Running]: opts => !opts.isCrouchPressed && !opts.isStuck,
+                [PlayerStates.Idle]: opts => !opts.isCrouchPressed && !opts.isStuck,
                 [PlayerStates.Jumping]: opts => !opts.isOnFloor,
                 [PlayerStates.Crouched]: opts => opts.velocityX === 0
             }
