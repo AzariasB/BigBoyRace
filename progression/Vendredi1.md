@@ -18,6 +18,11 @@ Mockels
 
 Raffi
 -----
+- Prise en main de Phaser : 1h
+- Spécifications du back-end: 3h
+- Création d'un serveur débian (vm) avec serveur ssh : 1h
+
+Total : 5h
 
 Segrais
 -------

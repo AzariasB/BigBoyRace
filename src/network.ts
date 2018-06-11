@@ -36,7 +36,7 @@ export namespace Network {
     }
 
     export function initialize() {
-        m_socket = io({ path : '/infrace/socket' });
+        m_socket = io({ path : '/grace/socket' });
     }
 
     export function send(key: string, data: Float32Array) {

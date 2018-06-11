@@ -25,6 +25,11 @@ Mockels
 
 Raffi
 -----
+- Etude des solutions concernant la latence réseau entre le réseau et les différents clients : 3h
+- Recherche d'un moyen pour executer une simulation du jeu coté serveur : 2h
+- Mise en place d'un navigateur sans tête avec nodejs (zombiejs) : 1h
+
+Total : 6h
 
 Segrais
 -------

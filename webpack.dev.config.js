@@ -65,7 +65,7 @@ module.exports = {
             ignored: /node_modules/
         },
         proxy : {
-            '/infrace/socket/*' : {
+            '/grace/socket/*' : {
                 target : 'http://localhost:4334',
                 ws : true,
             },
