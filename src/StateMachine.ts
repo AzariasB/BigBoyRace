@@ -74,7 +74,7 @@ export class FiniteStateMachine {
 
     public setCurrentState(stateName: string): FiniteStateMachine {
         this.currentState = this.getState(stateName);
-        this.animationManager.play(this.currentState.animation, 5, true);
+        this.animationManager.play(this.currentState.animation);
         return this;
     }
 

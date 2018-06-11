@@ -1,6 +1,6 @@
 import * as Assets from '../assets';
 import { FiniteStateMachine } from '../StateMachine';
-import { PLAYER_ACCELERATION, PLAYER_JUMP, PLAYER_DESCELERATION, PLAYER_MAX_SPEED } from '../constant';
+import { PLAYER_ACCELERATION, PLAYER_JUMP, PLAYER_DESCELERATION, PLAYER_SPEED } from '../constant';
 import {PlayerAnimation, PlayerStates, Config} from '../PlayerAnimation';
 
 export enum PlayerDirection {
@@ -13,7 +13,7 @@ export class Player extends Phaser.Sprite {
     arcadeBody: Phaser.Physics.Arcade.Body;
     private dustParticles: Phaser.Particles.Arcade.Emitter;
     private isHalfWidth: boolean = false;
-    private sm: FiniteStateMachine;
+    public sm: FiniteStateMachine;
 
     constructor (game: Phaser.Game, x: number, y: number,
                     group: string,
@@ -38,16 +38,16 @@ export class Player extends Phaser.Sprite {
         this.arcadeBody.offset.x += this.arcadeBody.width / 2;
         this.anchor.set(0.5, 0.5);
 
-        this.animations.add(PlayerAnimation.Run, [8, 9, 10, 11, 12, 13]);
-        this.animations.add(PlayerAnimation.Idle, [0, 1, 2, 3]);
-        this.animations.add(PlayerAnimation.Crouch, [4, 5, 6, 7]);
-        this.animations.add(PlayerAnimation.JumpCrouch, [28]).onComplete.add(() => {
+        this.animations.add(PlayerAnimation.Run, [8, 9, 10, 11, 12, 13], 10, true);
+        this.animations.add(PlayerAnimation.Idle, [0, 1, 2, 3], 5, true);
+        this.animations.add(PlayerAnimation.Crouch, [4, 5, 6, 7], 5, true);
+        this.animations.add(PlayerAnimation.JumpCrouch, [28], 5, false).onComplete.add(() => {
             this.animations.play(PlayerAnimation.SlideCrouch);
         });
-        this.animations.add(PlayerAnimation.SlideCrouch, [24, 25, 26]);
-        this.animations.add(PlayerAnimation.Jump, [16]);
-        this.animations.add(PlayerAnimation.Land, [22, 23]);
-        this.animations.add(PlayerAnimation.WallSliding, [93]);
+        this.animations.add(PlayerAnimation.SlideCrouch, [24, 25, 26], 10, true);
+        this.animations.add(PlayerAnimation.Jump, [16], 5, true);
+        this.animations.add(PlayerAnimation.Land, [22, 23], 5, true);
+        this.animations.add(PlayerAnimation.WallSliding, [93], 5, true);
 
         this.sm = new FiniteStateMachine(this.animations);
         this.initStatemachine();
@@ -114,21 +114,43 @@ export class Player extends Phaser.Sprite {
 
     public goDirection(dir: PlayerDirection): void {
         let mult = dir === PlayerDirection.Left ? -1 : 1;
-        if (! (this.sm.isOneOf(PlayerStates.Crouched, PlayerStates.SlideCrouched) || this.arcadeBody.velocity.x !== 0) ) {
-            this.arcadeBody.velocity.x = PLAYER_MAX_SPEED * mult;
+     /*   if (! (this.sm.isOneOf(PlayerStates.Crouched, PlayerStates.SlideCrouched) || this.arcadeBody.velocity.x !== 0)  ) {
+            this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
+        }*/
+        switch (this.sm.currentStateName) {
+            case PlayerStates.Idle:
+                this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
+                break;
+            case PlayerStates.Running:
+                this.arcadeBody.velocity.x *= PLAYER_ACCELERATION;
+                break;
+            case PlayerStates.Crouched:
+                this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
+                break;
+            case PlayerStates.Jumping:
+                this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
+                break;
+            case PlayerStates.WallSliding:
+                this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
+                break;
         }
         this.scale.x = Math.abs(this.scale.x) * mult;
     }
 
     public setJumping(jumping: boolean): void {
-        this.sm.setProperty('isJumpPressed', jumping);
-        if (jumping && this.arcadeBody.onFloor()) {
+        if (jumping && this.arcadeBody.onFloor() && this.sm.isOneOf(PlayerStates.Idle, PlayerStates.Running)) {
             this.arcadeBody.velocity.y = -PLAYER_JUMP;
         }
+        this.sm.setProperty('isJumpPressed', jumping);
     }
 
     public setCrouching(crouching: boolean): void {
         this.sm.setProperty('isCrouchPressed', crouching);
+        if (crouching && this.sm.isOneOf(PlayerStates.Crouched, PlayerStates.CrouchWalking, PlayerStates.SlideCrouched)) {
+            this.goHalfWidth();
+        } else {
+            this.exitHalfWidth();
+        }
     }
 
     public stop(): void {
@@ -143,10 +165,10 @@ export class Player extends Phaser.Sprite {
         this.dustParticles.on = onFloor && this.arcadeBody.velocity.x !== 0;
 
         if (this.sm.is(PlayerStates.SlideCrouched))
-            this.arcadeBody.velocity.x /= PLAYER_ACCELERATION;
+            this.arcadeBody.velocity.x /= PLAYER_DESCELERATION;
 
         if (this.sm.is(PlayerStates.Running)) {
-            this.arcadeBody.velocity.x *= PLAYER_DESCELERATION;
+           // this.arcadeBody.velocity.x *= PLAYER_ACCELERATION;
         }
 
         this.sm.setProperties({
