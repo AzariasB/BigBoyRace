@@ -13,7 +13,7 @@ export class Player extends Phaser.Sprite {
     arcadeBody: Phaser.Physics.Arcade.Body;
     private dustParticles: Phaser.Particles.Arcade.Emitter;
     private isHalfWidth: boolean = false;
-    private sm: FiniteStateMachine;
+    public sm: FiniteStateMachine;
 
     constructor (game: Phaser.Game, x: number, y: number,
                     group: string,
@@ -114,7 +114,7 @@ export class Player extends Phaser.Sprite {
 
     public goDirection(dir: PlayerDirection): void {
         let mult = dir === PlayerDirection.Left ? -1 : 1;
-        if (! (this.sm.isOneOf(PlayerStates.Crouched, PlayerStates.SlideCrouched) || this.arcadeBody.velocity.x !== 0) ) {
+        if (! (this.sm.isOneOf(PlayerStates.Crouched, PlayerStates.SlideCrouched) || this.arcadeBody.velocity.x !== 0) || this.arcadeBody.onWall() ) {
             this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
         }
         this.scale.x = Math.abs(this.scale.x) * mult;
@@ -143,10 +143,10 @@ export class Player extends Phaser.Sprite {
         this.dustParticles.on = onFloor && this.arcadeBody.velocity.x !== 0;
 
         if (this.sm.is(PlayerStates.SlideCrouched))
-            this.arcadeBody.velocity.x /= PLAYER_ACCELERATION;
+            this.arcadeBody.velocity.x /= PLAYER_DESCELERATION;
 
         if (this.sm.is(PlayerStates.Running)) {
-            this.arcadeBody.velocity.x *= PLAYER_DESCELERATION;
+            this.arcadeBody.velocity.x *= PLAYER_ACCELERATION;
         }
 
         this.sm.setProperties({

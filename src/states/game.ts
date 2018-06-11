@@ -116,6 +116,7 @@ export default class Game extends Phaser.State {
 
     public render(): void {
         this.game.debug.bodyInfo(this.player, 32, 32);
+        this.game.debug.text(this.player.sm.currentStateName, 32, 256);
     }
 
     public update(): void {
