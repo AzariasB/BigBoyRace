@@ -42,7 +42,7 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             animation: PlayerAnimation.Idle,
             transitions: {
                 [PlayerStates.Crouched]: opts => opts.isCrouchPressed,
-                [PlayerStates.Jumping]: opts => opts.isJumpPressed,
+                [PlayerStates.Jumping]: opts => opts.velocityY !== 0,
                 [PlayerStates.Running]: opts => opts.velocityX !== 0
             }
         },
