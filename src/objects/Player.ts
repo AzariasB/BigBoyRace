@@ -145,6 +145,8 @@ export class Player extends Phaser.Sprite {
                     this.arcadeBody.velocity.x /= PLAYER_DESCELERATION;
                 break;
             case PlayerStates.WallSliding:
+                if (this.arcadeBody.velocity.y > 0)
+                    this.arcadeBody.velocity.y = 50;
                 this.arcadeBody.velocity.x = PLAYER_SPEED.RUNNING * mult;
                 break;
         }
