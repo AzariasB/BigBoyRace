@@ -88,7 +88,7 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
         [PlayerStates.WallSliding]: {
             animation:  PlayerAnimation.WallSliding,
             transitions: {
-                [PlayerStates.Jumping]: opts => opts.isJumpPressed || ( !opts.isOnWall && !opts.isOnFloor),
+                [PlayerStates.Jumping]: opts => !opts.isOnWall && !opts.isOnFloor,
                 [PlayerStates.Idle]: opts => opts.isOnFloor // && opts.velocityX === 0
             }
         }
