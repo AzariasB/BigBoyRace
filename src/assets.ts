@@ -430,6 +430,10 @@ export namespace Tilemaps {
         static getName(): string { return 'JungleMap'; }
         static getJSON(): string { return require('assets/tilemaps/JungleMap.json'); }
     }
+    export class JungleMap2 {
+        static getName(): string { return 'JungleMap2'; }
+        static getJSON(): string { return require('assets/tilemaps/JungleMap2.json'); }
+    }
 }
 
 export namespace JSON {
