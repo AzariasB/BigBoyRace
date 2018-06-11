@@ -25,9 +25,8 @@ export default class Game extends Phaser.State {
 
     public create(): void {
         for (let name of BackgroundScroller.BG_NAMES) {
-            let img = this.game.cache.getImage(name);
             let bg = this.game.add.tileSprite(0, 0, this.game.world.width, this.game.height, name);
-            bg.scale.set(this.game.height / img.height, this.game.height / img.height);
+            bg.scale.set(2, 2);
             this.backgrounds.push(bg);
         }
 
@@ -56,11 +55,13 @@ export default class Game extends Phaser.State {
 
         this.tilemap.addTilesetImage(Assets.Images.TilesetsJungleTileset.getName());
         this.tilemap.setCollisionByExclusion([], true, 'Collision');
-        // let bgLayer = this.tilemap.createLayer("Background1");
+        this.tilemap.createLayer('Background');
         this.collisionLayer = this.tilemap.createLayer('Collision');
         this.collisionLayer.resizeWorld();
-
-        for (let bg of this.backgrounds) bg.width = this.game.world.width;
+        for (let bg of this.backgrounds) {
+            bg.width = this.world.width;
+            bg.height = this.world.height;
+        }
 
         this.player = new Player(this.game, 32, 32, Assets.Spritesheets.Adventurer.getName(), this.tilemap, this.collisionLayer);
         // this.ennemy = new Player(this.game, 32, 32, Assets.Spritesheets.HeroBlue.getName(), this.collisionLayer);

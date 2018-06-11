@@ -1,13 +1,7 @@
 # Progression de chaque membre du groupe :
 
-[Jean-Baptiste Abet](https://github.com/AzariasB/Grace/blob/master/progression/Abet.md)
+[Vendredi 1er Juin](https://github.com/AzariasB/Grace/blob/master/progression/Vendredi1.md)
 
-[Azarias Boutin](https://github.com/AzariasB/Grace/blob/master/progression/Boutin.md)
+[Vendredi 8 Juin](https://github.com/AzariasB/Grace/blob/master/progression/Vendredi8.md)
 
-[Tommy Kaindoh](https://github.com/AzariasB/Grace/blob/master/progression/Kaindoh.md)
-
-[Maxime Mockels](https://github.com/AzariasB/Grace/blob/master/progression/Mockels.md)
-
-[Guillaume Raffi](https://github.com/AzariasB/Grace/blob/master/progression/Raffi.md)
-
-[Lucas Segrais](https://github.com/AzariasB/Grace/blob/master/progression/Segrais.md)
+[Lundi 11 Juin](https://github.com/AzariasB/Grace/blob/master/progression/Lundi11.md)

@@ -42,7 +42,7 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             animation: PlayerAnimation.Idle,
             transitions: {
                 [PlayerStates.Crouched]: opts => opts.isCrouchPressed,
-                [PlayerStates.Jumping]: opts => opts.isJumpPressed,
+                [PlayerStates.Jumping]: opts => opts.velocityY !== 0,
                 [PlayerStates.Running]: opts => opts.velocityX !== 0
             }
         },
@@ -58,7 +58,7 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             animation: PlayerAnimation.JumpCrouch,
             transitions: {
                 [PlayerStates.Crouched]: opts => opts.velocityX === 0,
-                [PlayerStates.Running]: opts => opts.velocityX !== 0 && !opts.isStuck
+                [PlayerStates.Running]: opts => opts.velocityX !== 0 && !opts.isStuck && !opts.isCrouchPressed
                 // could add a state to go from sliding to iddle ?
             }
         },
@@ -72,7 +72,7 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
         [PlayerStates.CrouchWalking]: {
             animation: PlayerAnimation.WalkCrouch,
             transitions: {
-                [PlayerStates.Running]: opts => !opts.isCrouchPressed && !opts.isStuck,
+                [PlayerStates.Idle]: opts => !opts.isCrouchPressed && !opts.isStuck,
                 [PlayerStates.Jumping]: opts => !opts.isOnFloor,
                 [PlayerStates.Crouched]: opts => opts.velocityX === 0
             }
@@ -86,7 +86,7 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             }
         },
         [PlayerStates.WallSliding]: {
-            animation: PlayerAnimation.WallSliding,
+            animation:  PlayerAnimation.WallSliding,
             transitions: {
                 [PlayerStates.Jumping]: opts => opts.isJumpPressed || ( !opts.isOnWall && !opts.isOnFloor),
                 [PlayerStates.Idle]: opts => opts.isOnFloor // && opts.velocityX === 0
