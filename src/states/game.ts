@@ -3,6 +3,7 @@ import { Player, PlayerDirection } from '../objects/Player';
 import Shield from '../objects/Shield';
 import BackgroundScroller from '../widgets/backgroundScroller';
 import { Network } from '../network';
+import ItemHolder from '../objects/ItemHolder';
 
 export default class Game extends Phaser.State {
     private sfxAudiosprite: Phaser.AudioSprite = null;
@@ -108,6 +109,9 @@ export default class Game extends Phaser.State {
         setInterval(() => {
             // Network.send('update', this.player.serialize());
         }, 100);
+
+        let itemholder = new ItemHolder(this.game, 50, 50, Assets.Atlases.AtlasesBlueSheet.getName(), Assets.Atlases.AtlasesBlueSheet.Frames.BlueButton09);
+        this.game.add.existing(itemholder);
     }
 
     public render(): void {
