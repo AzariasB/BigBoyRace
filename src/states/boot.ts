@@ -1,5 +1,6 @@
 import * as Utils from '../utils/utils';
 import * as Assets from '../assets';
+import { WORLD_GRAVITY } from '../constant';
 
 export default class Boot extends Phaser.State {
     public preload(): void {
@@ -10,6 +11,9 @@ export default class Boot extends Phaser.State {
     }
 
     public create(): void {
+        this.game.physics.startSystem(Phaser.Physics.ARCADE);
+        this.game.physics.arcade.gravity.y = WORLD_GRAVITY;
+
         // Do anything here that you need to be setup immediately, before the game actually starts doing anything.
 
         // Uncomment the following to disable multitouch

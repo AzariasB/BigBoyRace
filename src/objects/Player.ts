@@ -1,38 +1,28 @@
 import * as Assets from '../assets';
-import {TypeState} from 'typestate';
+import { FiniteStateMachine } from '../StateMachine';
+import { PLAYER_ACCELERATION, PLAYER_JUMP, PLAYER_DESCELERATION, PLAYER_SPEED } from '../constant';
+import {PlayerAnimation, PlayerStates, Config} from '../PlayerAnimation';
 
-enum PlayerStates {
-    Running,
-    Iddle,
-    Crouched,
-    JumpCrouched,
-    SlideCrouched,
-    StuckCrouched,
-    EndCrouched,
-    Jumping,
-    Landing
+export enum PlayerDirection {
+    Left = 'left',
+    Right = 'right'
 }
 
-
-enum PlayerAnimation {
-    Run = 'run_right',
-    Iddle = 'iddle',
-    Crouch = 'crouch',
-    JumpCrouch = 'jum_crouch',
-    SlideCrouch = 'slide_crouch',
-    Jump = 'jump',
-    Land = 'land'
-}
-
-export default class Player extends Phaser.Sprite {
+export class Player extends Phaser.Sprite {
 
     arcadeBody: Phaser.Physics.Arcade.Body;
     private dustParticles: Phaser.Particles.Arcade.Emitter;
-    private fsm: TypeState.FiniteStateMachine<PlayerStates> = new TypeState.FiniteStateMachine<PlayerStates>(PlayerStates.Landing);
     private isHalfWidth: boolean = false;
+    public sm: FiniteStateMachine;
 
-    constructor (game: Phaser.Game, x: number, y: number, group: string, private collisionLayer: Phaser.TilemapLayer) {
+    constructor (game: Phaser.Game, x: number, y: number,
+                    group: string,
+                    private  map: Phaser.Tilemap,
+                    private collisionLayer: Phaser.TilemapLayer) {
         super(game, x, y, group);
+
+        this.height = this.map.tileHeight * 2;
+        this.width = this.map.tileWidth * 2;
         this.game.physics.arcade.enable(this);
         this.dustParticles = this.game.add.emitter(x, y, 10);
         this.dustParticles.makeParticles(Assets.Images.ImagesDust.getName());
@@ -41,26 +31,31 @@ export default class Player extends Phaser.Sprite {
         this.dustParticles.start(false, 100, 10);
         this.dustParticles.on = false;
 
+
         this.arcadeBody = this.body;
-        this.arcadeBody.gravity.y = 800;
         this.arcadeBody.collideWorldBounds = true;
+        this.arcadeBody.width /= 2;
+        this.arcadeBody.offset.x += this.arcadeBody.width / 2;
         this.anchor.set(0.5, 0.5);
 
-        this.animations.add(PlayerAnimation.Run, [24, 25, 26, 27, 28, 29, 30, 31]);
-        this.animations.add(PlayerAnimation.Iddle, [0]);
-        this.animations.add(PlayerAnimation.Crouch, [1]);
-        this.animations.add(PlayerAnimation.JumpCrouch, [16]).onComplete.add(() => {
-            this.fsm.go(PlayerStates.SlideCrouched);
+        this.animations.add(PlayerAnimation.Run, [8, 9, 10, 11, 12, 13], 10, true);
+        this.animations.add(PlayerAnimation.Idle, [0, 1, 2, 3], 5, true);
+        this.animations.add(PlayerAnimation.Crouch, [4, 5, 6, 7], 5, true);
+        this.animations.add(PlayerAnimation.JumpCrouch, [28], 5, false).onComplete.add(() => {
+            this.animations.play(PlayerAnimation.SlideCrouch);
         });
-        this.animations.add(PlayerAnimation.SlideCrouch, [17]);
-        this.animations.add(PlayerAnimation.Jump, [6]);
-        this.animations.add(PlayerAnimation.Land, [7]);
+        this.animations.add(PlayerAnimation.SlideCrouch, [24, 25, 26], 10, true);
+        this.animations.add(PlayerAnimation.Jump, [16], 5, true);
+        this.animations.add(PlayerAnimation.Land, [22, 23], 5, true);
+        this.animations.add(PlayerAnimation.WallSliding, [93], 5, true);
 
+        this.sm = new FiniteStateMachine(this.animations);
         this.initStatemachine();
     }
 
     public serialize(): Float32Array {
-        return new Float32Array([this.x, this.y, this.arcadeBody.velocity.x, this.arcadeBody.velocity.y, this.fsm.currentState]);
+        // return new Float32Array([this.x, this.y, this.arcadeBody.velocity.x, this.arcadeBody.velocity.y, this.fsm.currentState]);
+        return new Float32Array([]);
     }
 
     public deserialize(data: Float32Array): void {
@@ -68,41 +63,39 @@ export default class Player extends Phaser.Sprite {
         this.y = data[1];
         this.arcadeBody.velocity.x = data[2];
         this.arcadeBody.velocity.y = data[3];
-        this.fsm.currentState = data[4];
     }
 
     private initStatemachine(): void {
-        this.fsm.from(PlayerStates.Iddle).to(PlayerStates.Crouched, PlayerStates.Jumping, PlayerStates.Running);
-        this.fsm.from(PlayerStates.Running).to(PlayerStates.Iddle, PlayerStates.JumpCrouched, PlayerStates.Jumping, PlayerStates.Landing);
-        this.fsm.from(PlayerStates.Jumping).to(PlayerStates.Landing);
-        this.fsm.from(PlayerStates.Landing).to(PlayerStates.Running, PlayerStates.Iddle);
-        this.fsm.from(PlayerStates.Crouched).to(PlayerStates.EndCrouched, PlayerStates.StuckCrouched);
-        this.fsm.from(PlayerStates.JumpCrouched).to(PlayerStates.SlideCrouched, PlayerStates.EndCrouched);
-        this.fsm.from(PlayerStates.SlideCrouched).to(PlayerStates.EndCrouched, PlayerStates.StuckCrouched);
-        this.fsm.from(PlayerStates.EndCrouched).to(PlayerStates.Crouched, PlayerStates.Iddle, PlayerStates.Running, PlayerStates.StuckCrouched);
+        const states = Config.states;
+        for (let k in states) {
+            this.sm.addState(k, states[k].animation);
+        }
+        for (let origin in states) {
+            let transitions = states[origin].transitions;
+            for (let destination in transitions) {
+                this.sm.from(origin)
+                        .to(destination)
+                        .when(transitions[destination]);
+            }
+        }
+        this.sm.setCurrentState(PlayerStates.Idle);
 
-        this.stateToAnim(PlayerStates.Iddle, PlayerAnimation.Iddle)
-            .stateToAnim(PlayerStates.Crouched, PlayerAnimation.Crouch)
-            .stateToAnim(PlayerStates.Running, PlayerAnimation.Run, 20, true)
-            .stateToAnim(PlayerStates.Jumping, PlayerAnimation.Jump)
-            .stateToAnim(PlayerStates.Landing, PlayerAnimation.Land)
-            .stateToAnim(PlayerStates.JumpCrouched, PlayerAnimation.JumpCrouch, 10, false)
-            .stateToAnim(PlayerStates.SlideCrouched, PlayerAnimation.SlideCrouch)
-            .stateToAnim(PlayerStates.StuckCrouched, PlayerAnimation.Crouch);
+        // this.fsm.on(PlayerStates.SlideCrouched, () => this.goHalfWidth());
+        // this.fsm.on(PlayerStates.Crouched, () => this.goHalfWidth());
 
-        this.fsm.on(PlayerStates.SlideCrouched, () => this.goHalfWidth());
-        this.fsm.on(PlayerStates.Crouched, () => this.goHalfWidth());
-
-        this.fsm.onExit(PlayerStates.EndCrouched, () => {
-            this.exitHalfWidth();
-            /* if (this.game.physics.arcade.collide(this.arcadeBody, this.collisionLayer)) {// crouch
-                console.log(this.arcadeBody.touching);
-                // this.fsm.go(PlayerStates.StuckCrouched);
-                this.goHalfWidth();
-                return false;
-            } */
-            return true;
-        });
+        // this.fsm.onExit(PlayerStates.EndCrouched, () => {
+        //     let ltPos = this.collisionLayer.getTileXY(this.left, this.top, new Phaser.Point());
+        //     let rtPos = this.collisionLayer.getTileXY(this.right, this.top, new Phaser.Point());
+        //     let topLeft = this.map.getTile(ltPos.x, ltPos.y, this.collisionLayer);
+        //     let topRight = this.map.getTile(rtPos.x, rtPos.y, this.collisionLayer);
+        //     if (topLeft === null && topRight === null) {
+        //         this.exitHalfWidth();
+        //         return true;
+        //     } else {
+        //         return false;
+        //     }
+        //     return true;
+        // });
     }
 
     private goHalfWidth() {
@@ -119,51 +112,50 @@ export default class Player extends Phaser.Sprite {
         this.isHalfWidth = false;
     }
 
-    private stateToAnim(state: PlayerStates, animation: PlayerAnimation, frameTime?: number, loop?: boolean): Player {
-        this.fsm.on(state, () => this.animations.play(animation, frameTime, loop));
-        return this;
-    }
-
-    public goLeft(): void {
-        if (!this.fsm.is(PlayerStates.Crouched)) this.arcadeBody.velocity.x = -250;
-        if (this.scale.x > 0)this.scale.x *= -1;
-        if (this.arcadeBody.onFloor() && this.fsm.canGo(PlayerStates.Running)) {
-            this.fsm.go(PlayerStates.Running);
+    public goDirection(dir: PlayerDirection): void {
+        let mult = dir === PlayerDirection.Left ? -1 : 1;
+     /*   if (! (this.sm.isOneOf(PlayerStates.Crouched, PlayerStates.SlideCrouched) || this.arcadeBody.velocity.x !== 0)  ) {
+            this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
+        }*/
+        switch (this.sm.currentStateName) {
+            case PlayerStates.Idle:
+                this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
+                break;
+            case PlayerStates.Running:
+                this.arcadeBody.velocity.x *= PLAYER_ACCELERATION;
+                break;
+            case PlayerStates.Crouched:
+                this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
+                break;
+            case PlayerStates.Jumping:
+                this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
+                break;
+            case PlayerStates.WallSliding:
+                this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
+                break;
         }
+        this.scale.x = Math.abs(this.scale.x) * mult;
     }
 
-    public goRight(): void {
-        if (!this.fsm.is(PlayerStates.Crouched)) this.arcadeBody.velocity.x = 250;
-        if (this.scale.x < 0)this.scale.x *= -1;
-        if (this.arcadeBody.onFloor() && this.fsm.canGo(PlayerStates.Running)) {
-            this.fsm.go(PlayerStates.Running);
+    public setJumping(jumping: boolean): void {
+        if (jumping && this.arcadeBody.onFloor() && this.sm.isOneOf(PlayerStates.Idle, PlayerStates.Running)) {
+            this.arcadeBody.velocity.y = -PLAYER_JUMP;
         }
+        this.sm.setProperty('isJumpPressed', jumping);
     }
 
-    public jump(): void {
-        if (this.arcadeBody.onFloor()) {
-            this.arcadeBody.velocity.y = -400;
-            if (this.fsm.canGo(PlayerStates.Jumping)) this.fsm.go(PlayerStates.Jumping);
-        }
-    }
-
-    public crouch(): void {
-        if (this.arcadeBody.velocity.x !== 0) {
-            if (this.fsm.canGo(PlayerStates.JumpCrouched)) this.fsm.go(PlayerStates.JumpCrouched);
+    public setCrouching(crouching: boolean): void {
+        this.sm.setProperty('isCrouchPressed', crouching);
+        if (crouching && this.sm.isOneOf(PlayerStates.Crouched, PlayerStates.CrouchWalking, PlayerStates.SlideCrouched)) {
+            this.goHalfWidth();
         } else {
-            if (this.fsm.canGo(PlayerStates.Crouched)) this.fsm.go(PlayerStates.Crouched);
+            this.exitHalfWidth();
         }
-    }
-
-    public stopCrouch(): void {
-        if (this.fsm.canGo(PlayerStates.EndCrouched)) this.fsm.go(PlayerStates.EndCrouched);
     }
 
     public stop(): void {
         this.arcadeBody.velocity.x = 0;
-        if (this.arcadeBody.onFloor() && this.fsm.canGo(PlayerStates.Iddle)) {
-            this.fsm.go(PlayerStates.Iddle);
-        }
+        this.arcadeBody.acceleration.x = 0;
     }
 
     public update(): void {
@@ -172,21 +164,19 @@ export default class Player extends Phaser.Sprite {
         this.dustParticles.y = this.y + this.height / 2;
         this.dustParticles.on = onFloor && this.arcadeBody.velocity.x !== 0;
 
-        if ((this.arcadeBody.velocity.y > 0) && this.fsm.canGo(PlayerStates.Landing)) {
-            this.fsm.go(PlayerStates.Landing);
-        }
-        if (!onFloor)  return;
-        if (this.arcadeBody.velocity.y >= 0 && this.fsm.is(PlayerStates.Jumping)) {
-            this.fsm.go(PlayerStates.Landing);
+        if (this.sm.is(PlayerStates.SlideCrouched))
+            this.arcadeBody.velocity.x /= PLAYER_DESCELERATION;
+
+        if (this.sm.is(PlayerStates.Running)) {
+           // this.arcadeBody.velocity.x *= PLAYER_ACCELERATION;
         }
 
-        // Update animations
-        let xvel = this.arcadeBody.velocity.x;
-        if (xvel === 0) {
-            if (this.fsm.canGo(PlayerStates.Iddle)) this.fsm.go(PlayerStates.Iddle);
-            return;
-        }
-
-        if (this.fsm.canGo(PlayerStates.Running))this.fsm.go(PlayerStates.Running);
+        this.sm.setProperties({
+            'isOnFloor' : this.arcadeBody.onFloor(),
+            'velocityX': this.arcadeBody.velocity.x,
+            'velocityY': this.arcadeBody.velocity.y,
+            'isStuck': false,
+            'isOnWall': this.arcadeBody.onWall()
+        });
     }
 }
