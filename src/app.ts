@@ -24,8 +24,6 @@ class App extends Phaser.Game {
         this.state.add('lobby', Lobby);
 
         this.state.start('boot');
-        // this.physics.startSystem(Phaser.Physics.ARCADE);
-        // this.physics.arcade.gravity.y = 250;
     }
 
 }
