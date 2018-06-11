@@ -50,7 +50,7 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             },
             transitions: {
                 [PlayerStates.Crouched]: opts => opts.isCrouchPressed,
-                [PlayerStates.Jumping]: opts => opts.isJumpPressed,
+                [PlayerStates.Jumping]: opts => opts.velocityY !== 0,
                 [PlayerStates.Running]: opts => opts.velocityX !== 0
             }
         },

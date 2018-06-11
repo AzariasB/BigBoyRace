@@ -121,20 +121,24 @@ export class Player extends Phaser.Sprite {
         switch (this.sm.currentStateName) {
             case PlayerStates.Idle:
                 this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
+                break;
             case PlayerStates.Running:
-                this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
+                this.arcadeBody.velocity.x *= PLAYER_ACCELERATION;
+                break;
             case PlayerStates.Crouched:
                 this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
+                break;
             case PlayerStates.Jumping:
                 this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
+                break;
             case PlayerStates.WallSliding:
                 this.arcadeBody.velocity.x = PLAYER_SPEED * mult;
+                break;
         }
         this.scale.x = Math.abs(this.scale.x) * mult;
     }
 
     public setJumping(jumping: boolean): void {
-        console.log(this.sm.currentStateName);
         if (jumping && this.arcadeBody.onFloor() && this.sm.isOneOf(PlayerStates.Idle, PlayerStates.Running)) {
             this.arcadeBody.velocity.y = -PLAYER_JUMP;
         }
@@ -160,7 +164,7 @@ export class Player extends Phaser.Sprite {
             this.arcadeBody.velocity.x /= PLAYER_DESCELERATION;
 
         if (this.sm.is(PlayerStates.Running)) {
-            this.arcadeBody.velocity.x *= PLAYER_ACCELERATION;
+           // this.arcadeBody.velocity.x *= PLAYER_ACCELERATION;
         }
 
         this.sm.setProperties({
