@@ -1,7 +1,7 @@
 import * as Assets from '../assets';
 
 
-export default class Shield extends Phaser.Sprite {
+export default class Box extends Phaser.Sprite {
 
     private maxY: number;
     private minY: number;
@@ -21,11 +21,7 @@ export default class Shield extends Phaser.Sprite {
 
     update() {
         super.update();
-        if (!this.isCollected) {
-            if (this.y >= this.maxY) this.multiplier = -1;
-            else if (this.y <= this.minY) this.multiplier = 1;
-            this.y += this.multiplier * 0.01 * this.game.time.elapsed;
-        } else {
+        if (this.isCollected) {
             this.rotation += Math.PI / 20;
             this.alpha -= 1 * this.game.time.elapsed / 1000;
             this.scale.divide(1.01, 1.01);
