@@ -30,3 +30,5 @@ Raffi
 
 Segrais
 -------
+- Fin de création de la première map (JungleMap.json)
+- Début de la création de la map 2 (JungleMap2.json)
