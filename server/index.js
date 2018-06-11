@@ -1,20 +1,14 @@
-const express = require('express')
-const app = express()
-const path = require('path');
+const express = require('express');
+const app = express();
 const http = require('http').Server(app);
-const io = require('socket.io')(http, {path : '/infrace/socket'});
-
-const publicDir = path.join(__dirname, "/../dist");
-
-app.use(express.static(publicDir))
-
-app.get('/', (req, res) => res.sendFile(path.join(publicDir, "index.html")));
+const io = require('socket.io')(http, {path : '/grace/socket'});
+require('./zombie');
 
 let players = [];
 
 io.on('connection', socket => {
     console.log('a user connected');
-    if (players.length == 2)return socket.disconnect();
+    if (players.length === 2)return socket.disconnect();
     players.push(socket);
 
     socket.emit('connected', new Float32Array(true));
@@ -31,8 +25,11 @@ io.on('connection', socket => {
 
     socket.on('disconnect', function(){
         console.log('the user disconnected');
-        players = players.filter(x => x != socket);
+        players = players.filter(x => x !== socket);
     });
 });
 
-http.listen(4334, () => console.log('Example app listening on port 4334!'))
+http.listen(4334, function() {
+        console.log('Example app listening on port 4334!');
+    }
+);
