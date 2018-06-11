@@ -26,7 +26,11 @@ export enum PlayerAnimation {
 export class AnimationConfiguration {
     public states: {[key: string]:
         {
-            animation: PlayerAnimation,
+            animation: {
+                name: PlayerAnimation,
+                frameRate: number,
+                loop: boolean
+            },
             transitions: {[key: string]: (o: any) => boolean}
         }
     };
@@ -39,7 +43,11 @@ export class AnimationConfiguration {
 const Config: AnimationConfiguration = new AnimationConfiguration({
     states: {
         [PlayerStates.Idle]: {
-            animation: PlayerAnimation.Idle,
+            animation: {
+                name: PlayerAnimation.Idle,
+                loop: true,
+                frameRate: 5
+            },
             transitions: {
                 [PlayerStates.Crouched]: opts => opts.isCrouchPressed,
                 [PlayerStates.Jumping]: opts => opts.isJumpPressed,
@@ -47,7 +55,11 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             }
         },
         [PlayerStates.Running]: {
-            animation: PlayerAnimation.Run,
+            animation: {
+                name: PlayerAnimation.Run,
+                loop: true,
+                frameRate: 20
+            },
             transitions: {
                 [PlayerStates.SlideCrouched]: opts => opts.isCrouchPressed,
                 [PlayerStates.Jumping]: opts => opts.velocityY !== 0 ,
@@ -55,7 +67,11 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             }
         },
         [PlayerStates.SlideCrouched]: {
-            animation: PlayerAnimation.JumpCrouch,
+            animation: {
+                name: PlayerAnimation.JumpCrouch,
+                loop: false,
+                frameRate: 5
+            },
             transitions: {
                 [PlayerStates.Crouched]: opts => opts.velocityX === 0,
                 [PlayerStates.Running]: opts => opts.velocityX !== 0 && !opts.isStuck
@@ -63,14 +79,22 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             }
         },
         [PlayerStates.Crouched]: {
-            animation: PlayerAnimation.Crouch,
+            animation: {
+                name: PlayerAnimation.Crouch,
+                loop: true,
+                frameRate: 5
+            },
             transitions: {
                 [PlayerStates.CrouchWalking]: opts => opts.velocityX !== 0,
                 [PlayerStates.Idle]: opts => !opts.isStuck && !opts.isCrouchPressed,
             }
         },
         [PlayerStates.CrouchWalking]: {
-            animation: PlayerAnimation.WalkCrouch,
+            animation: {
+                name: PlayerAnimation.WalkCrouch,
+                loop: true,
+                frameRate: 5
+            },
             transitions: {
                 [PlayerStates.Running]: opts => !opts.isCrouchPressed && !opts.isStuck,
                 [PlayerStates.Jumping]: opts => !opts.isOnFloor,
@@ -78,7 +102,11 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             }
         },
         [PlayerStates.Jumping]: {
-            animation: PlayerAnimation.Jump,
+            animation: {
+                name: PlayerAnimation.Jump,
+                loop: true,
+                frameRate: 5
+            },
             transitions: {
                 [PlayerStates.Running]: opts => opts.isOnFloor && opts.velocityX !== 0,
                 [PlayerStates.Idle]: opts => opts.isOnFloor && opts.velocityX === 0,
@@ -86,7 +114,11 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             }
         },
         [PlayerStates.WallSliding]: {
-            animation: PlayerAnimation.WallSliding,
+            animation: {
+                name: PlayerAnimation.WallSliding,
+                loop: true,
+                frameRate: 10
+            },
             transitions: {
                 [PlayerStates.Jumping]: opts => opts.isJumpPressed || ( !opts.isOnWall && !opts.isOnFloor),
                 [PlayerStates.Idle]: opts => opts.isOnFloor // && opts.velocityX === 0

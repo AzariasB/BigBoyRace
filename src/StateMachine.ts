@@ -1,9 +1,16 @@
 
+
+interface AnimationData {
+    name: string;
+    loop: boolean;
+    frameRate: number;
+}
+
 export class State {
 
     private _transitions: Transition[];
 
-    constructor(public fsm: FiniteStateMachine, public name: string, public animation: string) {
+    constructor(public fsm: FiniteStateMachine, public name: string, public animation: AnimationData) {
         this._transitions = [];
     }
 
@@ -74,11 +81,11 @@ export class FiniteStateMachine {
 
     public setCurrentState(stateName: string): FiniteStateMachine {
         this.currentState = this.getState(stateName);
-        this.animationManager.play(this.currentState.animation, 5, true);
+        this.animationManager.play(this.currentState.animation.name, this.currentState.animation.frameRate, this.currentState.animation.loop);
         return this;
     }
 
-    public addState(stateName: string, stateAnim: string): FiniteStateMachine {
+    public addState(stateName: string, stateAnim: AnimationData): FiniteStateMachine {
         this._states[stateName] = new State(this, stateName, stateAnim);
         return this;
     }

@@ -43,6 +43,7 @@ export class Player extends Phaser.Sprite {
         this.animations.add(PlayerAnimation.Crouch, [4, 5, 6, 7]);
         this.animations.add(PlayerAnimation.JumpCrouch, [28]).onComplete.add(() => {
             this.animations.play(PlayerAnimation.SlideCrouch);
+            console.log('Sliding !');
         });
         this.animations.add(PlayerAnimation.SlideCrouch, [24, 25, 26]);
         this.animations.add(PlayerAnimation.Jump, [16]);
