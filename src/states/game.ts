@@ -1,6 +1,6 @@
 import * as Assets from '../assets';
 import { Player, PlayerDirection } from '../objects/Player';
-import Shield from '../objects/Shield';
+import Box from '../objects/Box';
 import BackgroundScroller from '../widgets/backgroundScroller';
 import { Network } from '../network';
 import ItemHolder from '../objects/ItemHolder';
@@ -13,7 +13,7 @@ export default class Game extends Phaser.State {
     private collisionLayer: Phaser.TilemapLayer = null;
     private cursors: Phaser.CursorKeys = null;
     private backgrounds: Phaser.TileSprite[] = [];
-    private shields: Shield[] = [];
+    private box: Box[] = [];
     private particlesGenerator: Phaser.Particles.Arcade.Emitter = null;
     private ennemy: Player = null;
 
@@ -34,12 +34,12 @@ export default class Game extends Phaser.State {
 
         this.particlesGenerator = this.game.add.emitter(0, 0, 100);
         this.particlesGenerator.setAlpha(1, 0, 900);
-        this.particlesGenerator.makeParticles(Assets.Images.ImagesShield.getName());
+        this.particlesGenerator.makeParticles(Assets.Images.ImagesBox.getName());
+        this.particlesGenerator.minParticleScale = 0.3;
+        this.particlesGenerator.maxParticleScale = 0.3;
 
         this.tilemap = this.game.add.tilemap(Assets.Tilemaps.JungleMap.getName(), 16, 16);
 
-        let shields = this.game.add.group();
-        shields.enableBody = true;
 
         let img = this.game.cache.getImage(Assets.Spritesheets.Adventurer.getName());
         let bitmap = this.game.make.bitmapData(img.width, img.height);
@@ -73,11 +73,14 @@ export default class Game extends Phaser.State {
 
 
         this.tilemap.objects['Powerups'].map(o => {
-            if (o.name === 'shield') {
-                let nwShield;
-                this.shields.push(nwShield = new Shield(this.game, o.x, o.y, Assets.Images.ImagesShield.getName()));
-                nwShield.body.gravity = 0;
-                this.game.add.existing(nwShield);
+            if (o.name === 'item') {
+                let nwBox;
+                this.box.push(nwBox = new Box(this.game, o.x + this.tilemap.tileWidth / 2, o.y + this.tilemap.tileHeight / 2, Assets.Images.ImagesBox.getName()));
+                nwBox.body.gravity = 0;
+                nwBox.height = this.tilemap.tileHeight;
+                nwBox.width = this.tilemap.tileWidth;
+                this.game.add.existing(nwBox);
+
             } else if (o.name === 'start') {
                 this.player.x = o.x;
                 this.player.y = o.y;
@@ -130,7 +133,7 @@ export default class Game extends Phaser.State {
             bg.x = this.game.camera.x / divisor;
             divisor << 1;
         }
-        this.shields = this.shields.filter(s => {
+        this.box = this.box.filter(s => {
             s.update();
             let playerOverlap = this.game.physics.arcade.overlap(s, this.player, (s) => {
                 this.particlesGenerator.x = s.x;
