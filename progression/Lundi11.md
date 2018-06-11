@@ -17,9 +17,13 @@ Boutin
 
 Kaindoh
 -------
+- Installation et prise en main de Tiled (logiciel de mapping) (3h)
+- Création et implémentation d'une première map pour tests (général et physique du jeu) (2h)
+- En cours, ajout de différents éléments dans le tileset principal (arbre, buisson, barrière, ...) (1h)
 
 Mockels
 -------
+
 
 Raffi
 -----

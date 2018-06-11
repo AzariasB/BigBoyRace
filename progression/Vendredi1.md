@@ -16,6 +16,9 @@ Kaindoh
 
 Mockels
 -------
+- Installation, prise en main de phaser npm webpack (4h)
+- Reflexion sur le document "Questions qu'on se pose" (2h)
+
 
 Raffi
 -----

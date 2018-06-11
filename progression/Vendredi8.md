@@ -24,6 +24,8 @@ Kaindoh
 
 Mockels
 -------
+- Prise en main de phaser (3h)
+- tests création de la mécanique wallslide/walljump (3h)
 
 Raffi
 -----
