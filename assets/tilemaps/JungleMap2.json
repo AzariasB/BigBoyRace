@@ -27,7 +27,7 @@
         }, 
         {
          "draworder":"topdown",
-         "name":"Objects",
+         "name":"Powerups",
          "objects":[
                 {
                  "height":32,
