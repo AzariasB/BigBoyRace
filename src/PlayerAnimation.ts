@@ -1,7 +1,7 @@
 
 export enum PlayerStates {
     Running = 'Running',
-    Idle = 'Iddle',
+    Idle = 'Idle',
     Crouched = 'Crouched',
     SlideCrouched = 'SlideCrouched',
     WallSliding = 'WallSliding',
@@ -13,7 +13,7 @@ export enum PlayerStates {
 
 export enum PlayerAnimation {
     Run = 'run_right',
-    Idle = 'iddle',
+    Idle = 'idle',
     Crouch = 'crouch',
     JumpCrouch = 'jum_crouch',
     SlideCrouch = 'slide_crouch',
@@ -50,7 +50,7 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             animation: PlayerAnimation.Run,
             transitions: {
                 [PlayerStates.SlideCrouched]: opts => opts.isCrouchPressed,
-                [PlayerStates.Jumping]: opts => opts.isJumpPressed && opts.isOnFloor,
+                [PlayerStates.Jumping]: opts => opts.velocityY !== 0 ,
                 [PlayerStates.Idle]: opts => opts.isOnFloor && opts.velocityX === 0
             }
         },
@@ -73,7 +73,8 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             animation: PlayerAnimation.WalkCrouch,
             transitions: {
                 [PlayerStates.Running]: opts => !opts.isCrouchPressed && !opts.isStuck,
-                [PlayerStates.Jumping]: opts => !opts.isOnFloor
+                [PlayerStates.Jumping]: opts => !opts.isOnFloor,
+                [PlayerStates.Crouched]: opts => opts.velocityX === 0
             }
         },
         [PlayerStates.Jumping]: {
