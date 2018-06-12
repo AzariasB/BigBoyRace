@@ -2,6 +2,8 @@ import * as Assets from '../assets';
 import { FiniteStateMachine } from '../StateMachine';
 import { PLAYER_ACCELERATION, PLAYER_JUMP, PLAYER_DESCELERATION, PLAYER_SPEED, PLAYER_WALLJUMP } from '../constant';
 import {PlayerAnimation, PlayerStates, Config} from '../PlayerAnimation';
+import { Powerup } from './powerups/Powerup';
+import {EmptyPowerup} from './powerups/EmptyPowerup';
 
 export enum PlayerDirection {
     Left = 'left',
@@ -17,6 +19,7 @@ export class Player extends Phaser.Sprite {
     public sm: FiniteStateMachine;
     public direction: PlayerDirection = PlayerDirection.Right;
     private wallJumped: boolean = false;
+    private item = new EmptyPowerup(this.game, 50, 50);
 
     constructor (game: Phaser.Game, x: number, y: number,
                     group: string,
@@ -130,6 +133,16 @@ export class Player extends Phaser.Sprite {
         }
     }
 
+    public setItem(powerup: Powerup) {
+        this.item = powerup;
+    }
+    public getItem() {
+        return this.item;
+    }
+    public useItem() {
+        this.item.activate();
+        this.item = new EmptyPowerup(this.game, 50, 50);
+    }
     public stop(): void {
         if (this.wallJumped)return;
         this.arcadeBody.velocity.x = 0;
@@ -156,11 +169,13 @@ export class Player extends Phaser.Sprite {
             'isStuck': topLeft !== null,
             'isOnWall': this.arcadeBody.onWall()
         });
+        // console.log(this.item);
     }
 
     private updateVelocity() {
         let mult = this.direction === PlayerDirection.Left ? -1 :
                    this.direction === PlayerDirection.Right ? 1 : 0;
+
         switch (this.sm.currentStateName) {
             case PlayerStates.Idle:
                 this.arcadeBody.velocity.x = PLAYER_SPEED.RUNNING * mult;
