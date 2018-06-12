@@ -49,7 +49,7 @@ module.exports = {
             path.join(__dirname, 'dist')
         ]),
         new HtmlWebpackPlugin({
-            title: 'DEV MODE: Phaser NPM Webpack TypeScript Starter Project!',
+            title: 'Grace online!',
             template: path.join(__dirname, 'templates/index.ejs')
         })
     ],
@@ -58,7 +58,7 @@ module.exports = {
         compress: true,
         port: 9000,
         inline: true,
-        host : '0.0.0.0',
+        host : 'localhost',
         watchOptions: {
             aggregateTimeout: 300,
             poll: true,
