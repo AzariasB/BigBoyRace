@@ -19,6 +19,8 @@ Boutin
 - Dessin de la machine à état sur tableau avec Jean-Baptiste: 1h00
 - Traduction de la machine à Etat sur draw.io: 2h00
 
+Total: 7h00
+
 Kaindoh
 -------
 - Suite de la création des sprites (Run, Jump) : 7h

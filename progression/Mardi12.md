@@ -10,6 +10,8 @@ Boutin
 - Restructuration du projet: 1h00
 - Correction de bugs avec Jean-Baptiste: 2h00
 
+Total: 7h00
+
 
 Kaindoh
 -------

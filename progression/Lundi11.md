@@ -15,6 +15,8 @@ Boutin
 - Reconfiguration de la machine à état: 3h00
 - Implémentation du serveur en typescript: 3h00
 
+Total: 9h00
+
 Kaindoh
 -------
 - Suite de la création des sprites (Wall Jump, Wall Slide, Iddle)

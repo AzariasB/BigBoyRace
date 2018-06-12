@@ -11,6 +11,8 @@ Boutin
 - Test d'intégration des sprites de Tommy au jeu: 30mn
 - Integration des constantes du jeu: 2h00
 
+Total: 4h30
+
 Kaindoh
 -------
 - Création des sprites (Run) : 7h

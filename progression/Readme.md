@@ -1,4 +1,4 @@
-# Progression de chaque membre du groupe :
+# Progression de chaque jour:
 
 [Vendredi 1er Juin](https://github.com/AzariasB/Grace/blob/master/progression/Vendredi1.md)
 
