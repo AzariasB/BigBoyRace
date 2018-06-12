@@ -63,7 +63,7 @@ export default class Game extends Phaser.State {
             bg.height = this.world.height;
         }
 
-        this.player = new Player(this.game, 32, 32, Assets.Spritesheets.Adventurer.getName(), this.tilemap, this.collisionLayer);
+        this.player = new Player(0, this.game, 32, 32, Assets.Spritesheets.Adventurer.getName(), this.tilemap, this.collisionLayer);
         // this.ennemy = new Player(this.game, 32, 32, Assets.Spritesheets.HeroBlue.getName(), this.collisionLayer);
 
         this.game.add.existing(this.player);
@@ -116,7 +116,7 @@ export default class Game extends Phaser.State {
         let timer = this.game.time.create(false);
         // send input to server every 25 ms
         timer.loop(25, () => {
-            Network.send('inputs', new Float32Array([
+            Network.send('inputs', new Int8Array([
                 +this.cursors.up.isDown,
                 +this.cursors.right.isDown,
                 +this.cursors.down.isDown,

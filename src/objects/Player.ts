@@ -18,7 +18,10 @@ export class Player extends Phaser.Sprite {
     public direction: PlayerDirection = PlayerDirection.Right;
     private wallJumped: boolean = false;
 
-    constructor (game: Phaser.Game, x: number, y: number,
+    constructor (public readonly id: number,
+                    game: Phaser.Game,
+                    x: number,
+                    y: number,
                     group: string,
                     private  map: Phaser.Tilemap,
                     private collisionLayer: Phaser.TilemapLayer) {
