@@ -6,6 +6,9 @@ Abet
 
 Boutin
 ------
+- Implémentation de phaser côté serveur, en typescript: 4h00
+- Restructuration du projet: 1h00
+- Correction de bugs avec Jean-Baptiste: 2h00
 
 
 Kaindoh
