@@ -1,12 +1,13 @@
 const webpack = require('webpack');
 const path = require('path');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const Uglify = require("uglifyjs-webpack-plugin");
 
 module.exports = {
     entry: path.join(__dirname, 'server/index.ts'),
     output: {
         path: path.join(__dirname, 'dist'),
-        filename: 'server.js'
+        filename: 'server.min.js'
     },
     node: {
         'fs': 'empty'
@@ -23,7 +24,7 @@ module.exports = {
     },
     plugins: [
         new webpack.DefinePlugin({
-            'DEBUG': true,
+            'DEBUG': false,
 
             // Do not modify these manually, you may break things...
             'DEFAULT_GAME_WIDTH': /*[[DEFAULT_GAME_WIDTH*/800/*DEFAULT_GAME_WIDTH]]*/,
@@ -42,7 +43,14 @@ module.exports = {
         }),
         new CleanWebpackPlugin([
             path.join(__dirname, 'dist')
-        ])
+        ]),
+        new Uglify({
+            uglifyOptions: {
+                mangle: {
+                    safari10: true
+                }
+            }
+        }),
     ],
     module: {
         rules: [
@@ -54,6 +62,6 @@ module.exports = {
             { test: /\.ts$/, loader: 'ts-loader', exclude: '/node_modules/' },
             { test: /\.node$/, loader: 'node-loader'}
         ]
-    },
-    devtool: 'source-map'
+    }
 };
+
