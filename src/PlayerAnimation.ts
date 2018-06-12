@@ -72,7 +72,7 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
         [PlayerStates.CrouchWalking]: {
             animation: PlayerAnimation.WalkCrouch,
             transitions: {
-                [PlayerStates.Running]: opts => !opts.isCrouchPressed && !opts.isStuck,
+                [PlayerStates.Idle]: opts => !opts.isCrouchPressed && !opts.isStuck,
                 [PlayerStates.Jumping]: opts => !opts.isOnFloor,
                 [PlayerStates.Crouched]: opts => opts.velocityX === 0
             }
@@ -82,13 +82,13 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             transitions: {
                 [PlayerStates.Running]: opts => opts.isOnFloor && opts.velocityX !== 0,
                 [PlayerStates.Idle]: opts => opts.isOnFloor && opts.velocityX === 0,
-                [PlayerStates.WallSliding]: opts => !opts.isOnFloor && opts.isOnWall
+                [PlayerStates.WallSliding]: opts => !opts.isOnFloor && opts.isOnWall && opts.velocityY > 0
             }
         },
         [PlayerStates.WallSliding]: {
             animation:  PlayerAnimation.WallSliding,
             transitions: {
-                [PlayerStates.Jumping]: opts => opts.isJumpPressed || ( !opts.isOnWall && !opts.isOnFloor),
+                [PlayerStates.Jumping]: opts => !opts.isOnWall && !opts.isOnFloor,
                 [PlayerStates.Idle]: opts => opts.isOnFloor // && opts.velocityX === 0
             }
         }

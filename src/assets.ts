@@ -6,6 +6,11 @@ export namespace Images {
 
         static getPNG(): string { return require('assets/images/background_template.png'); }
     }
+    export class ImagesBox {
+        static getName(): string { return 'box'; }
+
+        static getPNG(): string { return require('assets/images/box.png'); }
+    }
     export class ImagesClouds {
         static getName(): string { return 'clouds'; }
 
@@ -424,6 +429,14 @@ export namespace Tilemaps {
     export class JungleMap {
         static getName(): string { return 'JungleMap'; }
         static getJSON(): string { return require('assets/tilemaps/JungleMap.json'); }
+    }
+    export class JungleMap2 {
+        static getName(): string { return 'JungleMap2'; }
+        static getJSON(): string { return require('assets/tilemaps/JungleMap2.json'); }
+    }
+    export class JungleMapTest1 {
+        static getName(): string { return 'JungleMapTest1'; }
+        static getJSON(): string { return require('assets/tilemaps/JungleMapTest1.json'); }
     }
 }
 
