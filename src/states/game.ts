@@ -38,7 +38,7 @@ export default class Game extends Phaser.State {
         this.particlesGenerator.minParticleScale = 0.3;
         this.particlesGenerator.maxParticleScale = 0.3;
 
-        this.tilemap = this.game.add.tilemap(Assets.Tilemaps.JungleMap2.getName(), 16, 16);
+        this.tilemap = this.game.add.tilemap(Assets.Tilemaps.JungleSonic.getName(), 16, 16);
 
 
         let img = this.game.cache.getImage(Assets.Spritesheets.Adventurer.getName());
