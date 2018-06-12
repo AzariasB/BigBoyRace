@@ -10,8 +10,9 @@ Boutin
 - Implémentation de phaser côté serveur, en typescript: 4h00
 - Restructuration du projet: 1h00
 - Correction de bugs avec Jean-Baptiste: 2h00
+- Mise en place du serveur Phaser en typescript: 2h00
 
-Total: 7h00
+Total: 9h00
 
 
 Kaindoh
