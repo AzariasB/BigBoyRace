@@ -20,6 +20,8 @@ io.on('connection', socket => {
     socket.on('update', function(data) {
         players.map(x => {
             if (x !== socket)x.emit('update', data);
+
+            // anti-cheat goes here
         });
     });
 
@@ -39,7 +41,7 @@ require('./phaser');
 var game = new Phaser.Game(800, 600, Phaser.HEADLESS, 'phaser-example', { preload: preload, create: create });
 
 function preload() {
-    game.load.tilemap('mario', 'file://'+__dirname+'/../assets/tilemaps/JungleMap.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('JungleMap', 'file://'+__dirname+'/../assets/tilemaps/JungleMap.json', null, Phaser.Tilemap.TILED_JSON);
 
 
     //game.load.image('tiles', 'file://'+__dirname+'/../assets/tilesets/jungle_tileset.png');
@@ -52,7 +54,7 @@ var layer;
 function create() {
 
     //game.stage.backgroundColor = '#787878';
-    map = game.add.tilemap('mario');
+    map = game.add.tilemap('JungleMap');
 
     //map.addTilesetImage('tiles');
 

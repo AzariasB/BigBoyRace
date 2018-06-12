@@ -38,7 +38,7 @@ export default class Game extends Phaser.State {
         this.particlesGenerator.minParticleScale = 0.3;
         this.particlesGenerator.maxParticleScale = 0.3;
 
-        this.tilemap = this.game.add.tilemap(Assets.Tilemaps.JungleMap2.getName(), 16, 16);
+        this.tilemap = this.game.add.tilemap(Assets.Tilemaps.JungleMap2.getName());
 
 
         let img = this.game.cache.getImage(Assets.Spritesheets.Adventurer.getName());
@@ -53,7 +53,7 @@ export default class Game extends Phaser.State {
         });
 
 
-        this.tilemap.addTilesetImage(Assets.Images.TilesetsJungleTileset.getName());
+        this.tilemap.addTilesetImage(Assets.Images.TilesetsJungle.getName());
         this.tilemap.setCollisionByExclusion([], true, 'Collision');
         this.tilemap.createLayer('Background');
         this.collisionLayer = this.tilemap.createLayer('Collision');
@@ -110,12 +110,20 @@ export default class Game extends Phaser.State {
 
         this.cursors = this.game.input.keyboard.createCursorKeys();
 
-        setInterval(() => {
-            // Network.send('update', this.player.serialize());
-        }, 100);
-
         let itemholder = new ItemHolder(this.game, 50, 50, Assets.Atlases.AtlasesBlueSheet.getName(), Assets.Atlases.AtlasesBlueSheet.Frames.BlueButton09);
         this.game.add.existing(itemholder);
+
+        let timer = this.game.time.create(false);
+        // send input to server every 25 ms
+        timer.loop(25, () => {
+            Network.send('inputs', new Float32Array([
+                +this.cursors.up.isDown,
+                +this.cursors.right.isDown,
+                +this.cursors.down.isDown,
+                +this.cursors.left.isDown,
+                +this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)
+            ]));
+        });
     }
 
     public render(): void {
