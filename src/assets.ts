@@ -26,6 +26,11 @@ export namespace Images {
 
         static getPNG(): string { return require('assets/images/far-grounds.png'); }
     }
+    export class ImagesGlue {
+        static getName(): string { return 'glue'; }
+
+        static getPNG(): string { return require('assets/images/glue.png'); }
+    }
     export class ImagesPlx1 {
         static getName(): string { return 'plx-1'; }
 

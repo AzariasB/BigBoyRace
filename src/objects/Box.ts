@@ -1,5 +1,6 @@
 import * as Assets from '../assets';
 import { Boost } from './powerups/Boost';
+import { GlueArea } from './powerups/GlueArea';
 import { Player } from './Player';
 
 
@@ -28,7 +29,7 @@ export default class Box extends Phaser.Sprite {
     public collect(target: Player): void {
         this.target = target;
         this.isCollected = true;
-        this.target.setItem(new Boost(this.game, 50, 50));
+        this.target.setItem(new GlueArea(this.game, 50, 50));
         let body: Phaser.Physics.Arcade.Body = this.body;
         body.destroy();
     }
