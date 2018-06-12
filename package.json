@@ -9,8 +9,11 @@
     "client:build:dist": "echo-cli 'Building DIST ...' && npm run client:webpack:dist && echo-cli 'Build Complete ✔'",
     "client:dev": "webpack-dev-server --config webpack.dev.config.js --open",
     "client:dist": "webpack-dev-server --config webpack.dist.config.js --open",
-    "server:build": "tsc -p server/tsconfig.json",
-    "server:run": "tsc -p server/tsconfig.json --watch & nodemon server/dist",
+
+    "server:webpack:dev": "webpack --config webpack.server.dev.js --progress --colors",
+    "server:dev": "webpack --config webpack.server.dev.js && node dist/server.js",
+    "server:build:dev": "echo-cli 'Building SERVER DEV ...' && npm run server:webpack:dev && echo-cli 'Build Complete ✔'",
+
     "setupGameSize": "node ./scripts/setupGameSize.js",
     "assets:dev": "node ./scripts/generateAssetsClass.js --dev",
     "assets": "node ./scripts/generateAssetsClass.js",
@@ -52,5 +55,8 @@
     "ws": "^5.2.0",
     "xml2js": "0.4.19",
     "xmlhttprequest": "^1.8.0"
+  },
+  "devDependencies": {
+    "node-loader": "^0.6.0"
   }
 }

@@ -7,7 +7,8 @@
   },
   "files": [
     "../node_modules/@types/node/index.d.ts",
-    "../node_modules/phaser-ce/typescript/phaser.comments.d.ts"
+    "../node_modules/phaser-ce/typescript/phaser.comments.d.ts",
+    "../src/globals.d.ts",
   ],
   "include": [
     "**/*.ts",

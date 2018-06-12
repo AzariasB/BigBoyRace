@@ -3,6 +3,7 @@ import App from './App';
 
 const port = process.env.PORT || 3000;
 const game = new App();
+console.log('coucou');
 /*
 app.listen(port, (err) => {
   if (err) {
