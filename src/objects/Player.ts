@@ -136,13 +136,16 @@ export class Player extends Phaser.Sprite {
     public setItem(powerup: Powerup) {
         this.item = powerup;
     }
+
     public getItem() {
         return this.item;
     }
+
     public useItem() {
         this.item.activate();
         this.item = new EmptyPowerup(this.game, 50, 50);
     }
+
     public stop(): void {
         if (this.wallJumped)return;
         this.arcadeBody.velocity.x = 0;
