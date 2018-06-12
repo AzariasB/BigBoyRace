@@ -17,7 +17,8 @@ io.on('connection', socket => {
         players.map(x=>x.emit('start'));
     }
 
-    socket.on('update', function(data) {
+    socket.on('inputs', function(data) {
+        console.log(data);
         players.map(x => {
             if (x !== socket)x.emit('update', data);
 

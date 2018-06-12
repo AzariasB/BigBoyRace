@@ -124,6 +124,7 @@ export default class Game extends Phaser.State {
                 +this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)
             ]));
         });
+        timer.start();
     }
 
     public render(): void {
