@@ -13,8 +13,8 @@ Kaindoh
 
 Mockels
 -------
-
-- Construction 
+- Construction d'une map pour tester la physique (saut, walljump, vitesse max, eviter de traverser les murs à partir d'une vitesse trop élevée)
+- Construction d'une map de type Sonic ainsi qu'une map labyrinthe
 
 Raffi
 -----
