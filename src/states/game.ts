@@ -161,13 +161,13 @@ export default class Game extends Phaser.State {
             this.player.goDirection(PlayerDirection.Right);
         }
 
-        if (this.cursors.left.isUp && this.cursors.right.isUp) {
+        if (this.cursors.left.isUp && this.cursors.right.isUp && !this.player.sm.is(PlayerStates.Jumping)) {
             this.player.stop();
         }
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).justDown) {
             this.player.useItem();
         }
-
+        //console.log(this.player.sm.currentStateName + ' ' + this.player.arcadeBody.velocity.x + ' ' +  this.player.arcadeBody.velocity.y + 'gauche: ' + this.cursors.left.isDown + ' droite: ' + this.cursors.right.isDown);
         this.player.update();
         // this.ennemy.update();
     }
