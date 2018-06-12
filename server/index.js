@@ -3,6 +3,7 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http, {path : '/grace/socket'});
 
+
 let players = [];
 
 io.on('connection', socket => {
@@ -32,3 +33,30 @@ http.listen(4334, function() {
         console.log('Example app listening on port 4334!');
     }
 );
+
+//--- IMPLEMENTATION EXAMPLE OF PHASER ON NODE.JS ------
+require('./phaser');
+var game = new Phaser.Game(800, 600, Phaser.HEADLESS, 'phaser-example', { preload: preload, create: create });
+
+function preload() {
+    game.load.tilemap('mario', 'file://'+__dirname+'/../assets/tilemaps/JungleMap.json', null, Phaser.Tilemap.TILED_JSON);
+
+
+    //game.load.image('tiles', 'file://'+__dirname+'/../assets/tilesets/jungle_tileset.png');
+
+}
+
+var map;
+var layer;
+
+function create() {
+
+    //game.stage.backgroundColor = '#787878';
+    map = game.add.tilemap('mario');
+
+    //map.addTilesetImage('tiles');
+
+    layer = map.createLayer('Background');
+    layer.resizeWorld();
+
+}

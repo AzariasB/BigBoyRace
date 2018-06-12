@@ -69,7 +69,7 @@ export namespace Images {
     export class TilesetsJungleTileset {
         static getName(): string { return 'jungle tileset'; }
 
-        static getPNG(): string { return require('assets/tilesets/jungle tileset.png'); }
+        static getPNG(): string { return require('assets/tilesets/jungle_tileset.png'); }
     }
 }
 
