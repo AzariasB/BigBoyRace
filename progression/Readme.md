@@ -6,4 +6,4 @@
 
 [Lundi 11 Juin](https://github.com/AzariasB/Grace/blob/master/progression/Lundi11.md)
 
-[Mardi 12 Juin](https://github.com/AzariasB/Grace/blob/master/progression/Lundi12.md)
+[Mardi 12 Juin](https://github.com/AzariasB/Grace/blob/master/progression/Mardi12.md)
