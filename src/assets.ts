@@ -26,6 +26,11 @@ export namespace Images {
 
         static getPNG(): string { return require('assets/images/far-grounds.png'); }
     }
+    export class ImagesGlue {
+        static getName(): string { return 'glue'; }
+
+        static getPNG(): string { return require('assets/images/glue.png'); }
+    }
     export class ImagesPlx1 {
         static getName(): string { return 'plx-1'; }
 
@@ -437,6 +442,10 @@ export namespace Tilemaps {
     export class JungleMapTest1 {
         static getName(): string { return 'JungleMapTest1'; }
         static getJSON(): string { return require('assets/tilemaps/JungleMapTest1.json'); }
+    }
+    export class JungleSonic {
+        static getName(): string { return 'JungleSonic'; }
+        static getJSON(): string { return require('assets/tilemaps/JungleSonic.json'); }
     }
 }
 

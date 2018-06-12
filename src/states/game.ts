@@ -4,6 +4,7 @@ import Box from '../objects/Box';
 import BackgroundScroller from '../widgets/backgroundScroller';
 import { Network } from '../network';
 import ItemHolder from '../objects/ItemHolder';
+import { PlayerStates } from '../PlayerAnimation';
 
 export default class Game extends Phaser.State {
     private sfxAudiosprite: Phaser.AudioSprite = null;
@@ -16,6 +17,7 @@ export default class Game extends Phaser.State {
     private box: Box[] = [];
     private particlesGenerator: Phaser.Particles.Arcade.Emitter = null;
     private ennemy: Player = null;
+    // private spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
     private isMantleColor(color: {r: number, g: number, b: number, a: number}): boolean {
         let possibles = ['143,50,50', '171,67,67', '217,87,99'];
@@ -38,7 +40,7 @@ export default class Game extends Phaser.State {
         this.particlesGenerator.minParticleScale = 0.3;
         this.particlesGenerator.maxParticleScale = 0.3;
 
-        this.tilemap = this.game.add.tilemap(Assets.Tilemaps.JungleMap2.getName(), 16, 16);
+        this.tilemap = this.game.add.tilemap(Assets.Tilemaps.JungleSonic.getName(), 16, 16);
 
 
         let img = this.game.cache.getImage(Assets.Spritesheets.Adventurer.getName());
@@ -86,8 +88,6 @@ export default class Game extends Phaser.State {
                 this.player.y = o.y;
             }
         });
-
-        this.game.input.keyboard.createCursorKeys();
 
         this.sfxAudiosprite = this.game.add.audioSprite(Assets.Audiosprites.AudiospritesSfx.getName());
 
@@ -151,7 +151,7 @@ export default class Game extends Phaser.State {
             return !playerOverlap;
         });
 
-        this.player.setJumping(this.cursors.up.isDown);
+        this.player.setJumping(this.cursors.up.justDown);
         this.player.setCrouching(this.cursors.down.isDown);
 
 
@@ -161,10 +161,13 @@ export default class Game extends Phaser.State {
             this.player.goDirection(PlayerDirection.Right);
         }
 
-        if (this.cursors.left.isUp && this.cursors.right.isUp) {
+        if (this.cursors.left.isUp && this.cursors.right.isUp && !this.player.sm.is(PlayerStates.Jumping)) {
             this.player.stop();
         }
-
+        if (this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).justDown) {
+            this.player.useItem();
+        }
+        //console.log(this.player.sm.currentStateName + ' ' + this.player.arcadeBody.velocity.x + ' ' +  this.player.arcadeBody.velocity.y + 'gauche: ' + this.cursors.left.isDown + ' droite: ' + this.cursors.right.isDown);
         this.player.update();
         // this.ennemy.update();
     }

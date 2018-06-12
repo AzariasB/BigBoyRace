@@ -2,6 +2,8 @@ import * as Assets from '../assets';
 import { FiniteStateMachine } from '../StateMachine';
 import { PLAYER_ACCELERATION, PLAYER_JUMP, PLAYER_DESCELERATION, PLAYER_SPEED, PLAYER_WALLJUMP } from '../constant';
 import {PlayerAnimation, PlayerStates, Config} from '../PlayerAnimation';
+import { Powerup } from './powerups/Powerup';
+import {EmptyPowerup} from './powerups/EmptyPowerup';
 
 export enum PlayerDirection {
     Left = 'left',
@@ -17,6 +19,7 @@ export class Player extends Phaser.Sprite {
     public sm: FiniteStateMachine;
     public direction: PlayerDirection = PlayerDirection.Right;
     private wallJumped: boolean = false;
+    private item = new EmptyPowerup(this.game, 50, 50);
 
     constructor (game: Phaser.Game, x: number, y: number,
                     group: string,
@@ -34,12 +37,15 @@ export class Player extends Phaser.Sprite {
         this.dustParticles.start(false, 100, 10);
         this.dustParticles.on = false;
 
-
         this.arcadeBody = this.body;
         this.arcadeBody.collideWorldBounds = true;
         this.arcadeBody.width /= 2;
         this.arcadeBody.offset.x += this.arcadeBody.width / 2;
         this.anchor.set(0.5, 0.5);
+        this.arcadeBody.maxVelocity.x = 1000;
+        this.arcadeBody.maxVelocity.y = 1000;
+
+
 
         this.animations.add(PlayerAnimation.Run, [8, 9, 10, 11, 12, 13], 10, true);
         this.animations.add(PlayerAnimation.Idle, [0, 1, 2, 3], 5, true);
@@ -100,11 +106,10 @@ export class Player extends Phaser.Sprite {
 
     public goDirection(dir: PlayerDirection): void {
         let mult = dir === PlayerDirection.Left ? -1 : 1;
-        if (this.direction !== dir) {
+        if (this.direction !== dir && !this.sm.is(PlayerStates.Jumping)) {
             this.arcadeBody.velocity.x = 0;
-            this.direction = dir;
         }
-
+        this.direction = dir;
         this.scale.x = Math.abs(this.scale.x) * mult;
     }
 
@@ -114,9 +119,10 @@ export class Player extends Phaser.Sprite {
                 this.arcadeBody.velocity.y = -PLAYER_JUMP;
             } else if (this.sm.is(PlayerStates.WallSliding) && this.arcadeBody.onWall()) {
                 let mult = this.arcadeBody.blocked.left ? 1 : -1;
-                this.arcadeBody.velocity.set(PLAYER_SPEED.RUNNING * mult, -PLAYER_WALLJUMP);
+                this.direction = PlayerDirection.None;
+                this.arcadeBody.velocity.set(PLAYER_SPEED.RUNNING * mult * 2.5, -PLAYER_WALLJUMP);
                 this.wallJumped = true;
-                this.game.time.events.add(50, () => this.wallJumped = false);
+                this.game.time.events.add(20, () => this.wallJumped = false);
             }
         }
     }
@@ -128,6 +134,19 @@ export class Player extends Phaser.Sprite {
         } else {
             this.exitHalfWidth();
         }
+    }
+
+    public setItem(powerup: Powerup) {
+        this.item = powerup;
+    }
+
+    public getItem() {
+        return this.item;
+    }
+
+    public useItem() {
+        this.item.activate();
+        this.item = new EmptyPowerup(this.game, 50, 50);
     }
 
     public stop(): void {
@@ -156,6 +175,7 @@ export class Player extends Phaser.Sprite {
             'isStuck': topLeft !== null,
             'isOnWall': this.arcadeBody.onWall()
         });
+        // console.log(this.item);
     }
 
     private updateVelocity() {
@@ -168,7 +188,8 @@ export class Player extends Phaser.Sprite {
             case PlayerStates.Running:
                 if (Math.abs(this.arcadeBody.velocity.x) < PLAYER_SPEED.RUNNING)
                     this.arcadeBody.velocity.x = PLAYER_SPEED.RUNNING * mult;
-                this.arcadeBody.velocity.x *= PLAYER_ACCELERATION;
+                else
+                    this.arcadeBody.velocity.x *= PLAYER_ACCELERATION;
                 break;
             case PlayerStates.Crouched:
                 this.arcadeBody.velocity.x = PLAYER_SPEED.CROUCH * mult;
@@ -177,10 +198,15 @@ export class Player extends Phaser.Sprite {
                 this.arcadeBody.velocity.x /= PLAYER_DESCELERATION;
                 break;
             case PlayerStates.Jumping:
-                if (Math.abs(this.arcadeBody.velocity.x) < PLAYER_SPEED.JUMP)
+                if (Math.abs(this.arcadeBody.velocity.x) < PLAYER_SPEED.JUMP) {
+                    console.log('passage vitesse de base');
                     this.arcadeBody.velocity.x = PLAYER_SPEED.JUMP * mult;
-                else
+                }
+                else if (  Math.sign(this.arcadeBody.velocity.x) !== mult ) {
+                    this.arcadeBody.velocity.x += 10 * mult;
+                } else {
                     this.arcadeBody.velocity.x /= PLAYER_DESCELERATION;
+                }
                 break;
             case PlayerStates.WallSliding:
                 if (this.arcadeBody.velocity.y > 50)
