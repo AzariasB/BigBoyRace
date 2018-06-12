@@ -156,6 +156,8 @@ export class DisplayObject {
 
     }
 
+    update() {}
+
     /*
     * Updates the object transform for rendering.
     *
@@ -168,7 +170,7 @@ export class DisplayObject {
     * @method updateTransform
     * @param {DisplayObject} [parent] - Optional parent to parent this DisplayObject transform from.
     */
-    updateTransform (parent?: DisplayObject) {
+    protected updateTransform (parent?: DisplayObject) {
         if (!parent && !this.parent && !this.game) {
             return;
         }

@@ -1,7 +1,7 @@
-import { DisplayObject } from "./DisplayObject";
-import { Rectangle, EmptyRectangle } from "../geom/Rectangle";
-import { identityMatrix } from "../geom/Matrix";
-import { Stage } from "./Stage";
+import { DisplayObject } from './DisplayObject';
+import { Rectangle, EmptyRectangle } from '../geom/Rectangle';
+import { identityMatrix } from '../geom/Matrix';
+import { Stage } from './Stage';
 
 /**
  * @author Mat Groves http://matgroves.com/ @Doormat23
@@ -239,7 +239,7 @@ export class DisplayObjectContainer extends DisplayObject {
     * @method updateTransform
     * @private
     */
-    private updateTransform() {
+    protected updateTransform() {
 
         this.displayObjectUpdateTransform();
 
