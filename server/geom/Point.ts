@@ -60,7 +60,7 @@ export class Point{
     * @param {number} [y] - The vertical value of this point. If not given the x value will be used in its place.
     * @return {Phaser.Point} This Point object. Useful for chaining method calls.
     */
-    set(x: number, y: number): Point {
+    set(x: number, y: number = x): Point {
 
         return Point.set(this, x, y);
 
@@ -112,6 +112,23 @@ export class Point{
         this.x *= x;
         this.y *= y;
         return this;
+
+    }
+
+        /**
+     * Sets the `x` and `y` values of this Point object from a given polar coordinate.
+     *
+     * @method Phaser.Point#setToPolar
+     * @param {number} azimuth - The angular coordinate, in radians (unless `asDegrees`).
+     * @param {number} [radius=1] - The radial coordinate (length).
+     * @param {boolean} [asDegrees=false] - True if `azimuth` is in degrees.
+     * @return {Phaser.Point} This Point object. Useful for chaining method calls.
+     */
+    setToPolar(azimuth: number, radius: number = 1, asDegrees: boolean = false): Point {
+
+        if (asDegrees) { azimuth = MMaths.degToRad(azimuth); }
+
+        return this.setTo(Math.cos(azimuth) * radius, Math.sin(azimuth) * radius);
 
     }
 
@@ -356,7 +373,7 @@ export class Point{
     * @param {number} [distance] - An optional distance constraint between the Point and the anchor.
     * @return {Phaser.Point} The modified point object.
     */
-    rotate(x: number, y: number, angle: number, asDegrees: boolean, distance: number) {
+    rotate(x: number, y: number, angle: number, asDegrees?: boolean, distance?: number) {
 
         return Point.rotate(this, x, y, angle, asDegrees, distance);
 
