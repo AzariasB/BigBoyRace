@@ -11,6 +11,11 @@
 * @constructor
 * @param {Phaser.Game} game - reference to the current game instance.
 */
+export class World {
+
+    
+
+}
 
 Phaser.Physics.Arcade = function (game)
 {

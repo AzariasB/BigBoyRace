@@ -12,9 +12,19 @@
         CENTER
     }
 
+    export enum Facing {
+        NONE,
+        LEFT,
+        RIGHT,
+        UP,
+        DOWN
+    }
+
 export namespace MMaths {
 
     export const RAD_TO_DEG = 180 / Math.PI;
+
+    export const PI_2 = Math.PI * 2;
 
     /**
     * Degrees to Radians factor.
@@ -79,4 +89,64 @@ export namespace MMaths {
        return degrees * DEG_TO_RAD;
 
     }
-}
+
+        /**
+    * Ensures that the value always stays between min and max, by wrapping the value around.
+    *
+    * If `max` is not larger than `min` the result is 0.
+    *
+    * @method Phaser.Math#wrap
+    * @param {number} value - The value to wrap.
+    * @param {number} min - The minimum the value is allowed to be.
+    * @param {number} max - The maximum the value is allowed to be, should be larger than `min`.
+    * @return {number} The wrapped value.
+    */
+    export function wrap(value: number, min: number, max: number): number {
+
+        let range = max - min;
+
+        if (range <= 0) {
+            return 0;
+        }
+
+        let result = (value - min) % range;
+
+        if (result < 0) {
+            result += range;
+        }
+
+        return result + min;
+
+    }
+
+    /**
+    * Ensures that the value always stays between min and max, by wrapping the value around.
+    *
+    * If `max` is not larger than `min` the result is 0.
+    *
+    * @method Phaser.Math#wrap
+    * @param {number} value - The value to wrap.
+    * @param {number} min - The minimum the value is allowed to be.
+    * @param {number} max - The maximum the value is allowed to be, should be larger than `min`.
+    * @return {number} The wrapped value.
+    */
+    wrap: function (value, min, max)
+    {
+
+        var range = max - min;
+
+        if (range <= 0)
+        {
+            return 0;
+        }
+
+        var result = (value - min) % range;
+
+        if (result < 0)
+        {
+            result += range;
+        }
+
+        return result + min;
+
+    },

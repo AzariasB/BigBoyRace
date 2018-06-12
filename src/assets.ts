@@ -438,6 +438,10 @@ export namespace Tilemaps {
         static getName(): string { return 'JungleMapTest1'; }
         static getJSON(): string { return require('assets/tilemaps/JungleMapTest1.json'); }
     }
+    export class JungleSonic {
+        static getName(): string { return 'JungleSonic'; }
+        static getJSON(): string { return require('assets/tilemaps/JungleSonic.json'); }
+    }
 }
 
 export namespace JSON {

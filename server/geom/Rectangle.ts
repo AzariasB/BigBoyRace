@@ -981,3 +981,5 @@ export class Rectangle {
         return out;
     };
 }
+
+export const EmptyRectangle = new Rectangle();
