@@ -188,9 +188,7 @@ export class Matrix {
     * @param {Phaser.Point} [newPos] - The point that the new position is assigned to. This can be same as input point.
     * @return {Phaser.Point} The new point, transformed through this matrix.
     */
-    apply(pos: Point, newPos: Point): Point {
-
-        if (newPos === undefined) { newPos = new Point(); }
+    apply(pos: Point, newPos: Point = new Point()): Point {
 
         newPos.x = this.a * pos.x + this.c * pos.y + this.tx;
         newPos.y = this.b * pos.x + this.d * pos.y + this.ty;

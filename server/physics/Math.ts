@@ -24,6 +24,8 @@ export namespace MMaths {
 
     export const RAD_TO_DEG = 180 / Math.PI;
 
+    export const PI_2 = Math.PI * 2;
+
     /**
     * Degrees to Radians factor.
     * @property {number} Phaser.Math#DEG_TO_RAD
