@@ -22,7 +22,7 @@ export default class Lobby extends Phaser.State {
             }
 
             this.clients.push(socket);
-            socket.emit('connected');
+            socket.emit('id', this.clients.length);
 
             if (this.clients.length === N_PLAYERS) {
                 console.log('Starting game !');

@@ -1,7 +1,7 @@
 import * as socket from 'socket.io';
 import { FiniteStateMachine } from '../../src/StateMachine';
 import { PlayerDirection, Config, PlayerStates } from '../../src/PlayerAnimation';
-import { PLAYER_JUMP, PLAYER_SPEED, PLAYER_WALLJUMP, WALLJUMP_IGNORE_TIME, PLAYER_ACCELERATION, PLAYER_DESCELERATION, N_INPUT } from '../../src/constant';
+import { PLAYER_JUMP, PLAYER_SPEED, PLAYER_WALLJUMP, PLAYER_VMAX_GRAB_WALLSLIDE, PLAYER_ACCELERATION, PLAYER_DESCELERATION, N_INPUT } from '../../src/constant';
 
 export default class Player extends Phaser.Sprite {
 
@@ -90,7 +90,7 @@ export default class Player extends Phaser.Sprite {
                 let mult = this.arcadeBody.blocked.left ? 1 : -1;
                 this.arcadeBody.velocity.set(PLAYER_SPEED.RUNNING * mult, -PLAYER_WALLJUMP);
                 this.wallJumped = true;
-                this.game.time.events.add(WALLJUMP_IGNORE_TIME, () => this.wallJumped = false);
+                // this.game.time.events.add(PLAYER_VMAX_GRAB_WALLSLIDE, () => this.wallJumped = false);
             }
         }
     }

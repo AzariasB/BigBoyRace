@@ -2,6 +2,7 @@ import * as Assets from '../assets';
 import { FiniteStateMachine } from '../StateMachine';
 import { PLAYER_ACCELERATION, PLAYER_JUMP, PLAYER_DESCELERATION, PLAYER_SPEED, PLAYER_WALLJUMP } from '../constant';
 import {PlayerAnimation, PlayerStates, Config} from '../PlayerAnimation';
+import {PlayerAnimation, PlayerStates, Config, PlayerDirection} from '../PlayerAnimation';
 import { Powerup } from './powerups/Powerup';
 import {EmptyPowerup} from './powerups/EmptyPowerup';
 
@@ -110,7 +111,7 @@ export class Player extends Phaser.Sprite {
 
     public goDirection(dir: PlayerDirection): void {
         let mult = dir === PlayerDirection.Left ? -1 : 1;
-        if (this.direction !== dir && !this.sm.is(PlayerStates.Jumping)) {
+        if (this.direction !== dir && this.arcadeBody.onFloor()) {
             this.arcadeBody.velocity.x = 0;
         }
         this.direction = dir;
@@ -118,15 +119,12 @@ export class Player extends Phaser.Sprite {
     }
 
     public setJumping(jumping: boolean): void {
-        if (jumping && !this.wallJumped) {
+        if (jumping) {
             if (this.arcadeBody.onFloor() && this.sm.isOneOf(PlayerStates.Idle, PlayerStates.Running)) {
                 this.arcadeBody.velocity.y = -PLAYER_JUMP;
             } else if (this.sm.is(PlayerStates.WallSliding) && this.arcadeBody.onWall()) {
                 let mult = this.arcadeBody.blocked.left ? 1 : -1;
-                this.direction = PlayerDirection.None;
-                this.arcadeBody.velocity.set(PLAYER_SPEED.RUNNING * mult * 2.5, -PLAYER_WALLJUMP);
-                this.wallJumped = true;
-                this.game.time.events.add(20, () => this.wallJumped = false);
+                this.arcadeBody.velocity.set(PLAYER_SPEED.RUNNING * mult * 2, -PLAYER_WALLJUMP);
             }
         }
     }
@@ -166,8 +164,7 @@ export class Player extends Phaser.Sprite {
         this.dustParticles.y = this.y + this.height / 2;
         this.dustParticles.on = onFloor && this.arcadeBody.velocity.x !== 0;
 
-        if (!this.wallJumped)
-            this.updateVelocity();
+        this.updateVelocity();
 
         let ltPos = this.collisionLayer.getTileXY(this.centerX, this.top, new Phaser.Point());
         let topLeft = this.map.getTile(ltPos.x, ltPos.y, this.collisionLayer);
@@ -179,7 +176,6 @@ export class Player extends Phaser.Sprite {
             'isStuck': topLeft !== null,
             'isOnWall': this.arcadeBody.onWall()
         });
-        // console.log(this.item);
     }
 
     private updateVelocity() {
@@ -203,11 +199,10 @@ export class Player extends Phaser.Sprite {
                 break;
             case PlayerStates.Jumping:
                 if (Math.abs(this.arcadeBody.velocity.x) < PLAYER_SPEED.JUMP) {
-                    console.log('passage vitesse de base');
                     this.arcadeBody.velocity.x = PLAYER_SPEED.JUMP * mult;
                 }
                 else if (  Math.sign(this.arcadeBody.velocity.x) !== mult ) {
-                    this.arcadeBody.velocity.x += 10 * mult;
+                    this.arcadeBody.velocity.x += (6 + Math.abs(this.arcadeBody.velocity.x) * 0.01) * mult;
                 } else {
                     this.arcadeBody.velocity.x /= PLAYER_DESCELERATION;
                 }
@@ -215,7 +210,9 @@ export class Player extends Phaser.Sprite {
             case PlayerStates.WallSliding:
                 if (this.arcadeBody.velocity.y > 50)
                     this.arcadeBody.velocity.y = 50;
-                this.arcadeBody.velocity.x =  mult;
+                    if (!(Math.abs(this.arcadeBody.velocity.x) > 200)) {
+                        this.arcadeBody.velocity.x =  mult;
+                   }
                 break;
         }
     }

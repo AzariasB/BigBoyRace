@@ -4,12 +4,14 @@ import Box from '../objects/Box';
 import BackgroundScroller from '../widgets/backgroundScroller';
 import { Network } from '../network';
 import ItemHolder from '../objects/ItemHolder';
-import { N_SEND_INPUTS } from '../constant';
+import { N_SEND_INPUTS, N_MAX_DISTANE } from '../constant';
 import { PlayerDirection } from '../PlayerAnimation';
 import Chat from '../widgets/chat';
+import { PlayerStates } from '../PlayerAnimation';
 
 export default class Game extends Phaser.State {
     private sfxAudiosprite: Phaser.AudioSprite = null;
+    private myId: number;
     private player: Player = null;
     private sfxLaserSounds: Assets.Audiosprites.AudiospritesSfx.Sprites[] = null;
     private tilemap: Phaser.Tilemap = null;
@@ -19,6 +21,7 @@ export default class Game extends Phaser.State {
     private box: Box[] = [];
     private particlesGenerator: Phaser.Particles.Arcade.Emitter = null;
     private ennemy: Player = null;
+    // private spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
     private isMantleColor(color: {r: number, g: number, b: number, a: number}): boolean {
         let possibles = ['143,50,50', '171,67,67', '217,87,99'];
@@ -90,8 +93,6 @@ export default class Game extends Phaser.State {
             }
         });
 
-        this.game.input.keyboard.createCursorKeys();
-
         this.sfxAudiosprite = this.game.add.audioSprite(Assets.Audiosprites.AudiospritesSfx.getName());
 
         // This is an example of how you can lessen the verbosity
@@ -132,11 +133,38 @@ export default class Game extends Phaser.State {
             ]));
         });
         timer.start();
+        this.tilemap.createLayer('Foreground');
+
+        Network.when('state').add((_, data) => this.updateState(data) );
+    }
+
+    private updateState(data) {
+        let arr: number[] = Array.from(data);
+        let myPowerup = arr.shift();
+        let players = arr.shift();
+        for (let i = 0; i < players; ++i) {
+            let id = arr.shift();
+            let x = arr.shift();
+            let y = arr.shift();
+            let vx = arr.shift();
+            let vy = arr.shift();
+            let state = arr.shift();
+            let dist = Phaser.Point.distance({x, y}, this.player.position);
+            if (dist > N_MAX_DISTANE) {
+                if (id === this.myId) {
+                    console.log('Distance is too much :', dist);
+                    this.player.position.set(x, y);
+                    this.player.body.velocity.set(vx, vy);
+                }
+            }
+
+        }
     }
 
     public render(): void {
         this.game.debug.bodyInfo(this.player, 32, 32);
         this.game.debug.text(this.player.sm.currentStateName, 32, 256);
+        this.game.debug.text(this.game.time.fps + '', 32, 280);
     }
 
     public update(): void {
@@ -167,21 +195,23 @@ export default class Game extends Phaser.State {
             return !playerOverlap;
         });
 
-        this.player.setJumping(this.cursors.up.isDown);
+        this.player.setJumping(this.cursors.up.justDown);
         this.player.setCrouching(this.cursors.down.isDown);
 
 
-        if (this.cursors.left.justDown) {
+        if (this.cursors.left.isDown) {
             this.player.goDirection(PlayerDirection.Left);
-        } else if (this.cursors.right.justDown) {
+        } else if (this.cursors.right.isDown) {
             this.player.goDirection(PlayerDirection.Right);
         }
 
-        if (this.cursors.left.isUp && this.cursors.right.isUp) {
+        if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.arcadeBody.onFloor()) {
             this.player.stop();
+        }
+        if (this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).justDown) {
+            this.player.useItem();
         }
 
         this.player.update();
-        // this.ennemy.update();
     }
 }
