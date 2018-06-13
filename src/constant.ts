@@ -4,7 +4,7 @@
 export const PLAYER_SPEED = {
     RUNNING : 170,
     CROUCH : 80,
-    JUMP : 120
+    JUMP : 100
 };
 export const PLAYER_ACCELERATION = 1.005;
 export const PLAYER_JUMP = 350;

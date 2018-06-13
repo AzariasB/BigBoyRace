@@ -116,6 +116,7 @@ export default class Game extends Phaser.State {
 
         let itemholder = new ItemHolder(this.game, 50, 50, Assets.Atlases.AtlasesBlueSheet.getName(), Assets.Atlases.AtlasesBlueSheet.Frames.BlueButton09);
         this.game.add.existing(itemholder);
+        this.tilemap.createLayer('Foreground');
     }
 
     public render(): void {
@@ -155,13 +156,13 @@ export default class Game extends Phaser.State {
         this.player.setCrouching(this.cursors.down.isDown);
 
 
-        if (this.cursors.left.justDown) {
+        if (this.cursors.left.isDown) {
             this.player.goDirection(PlayerDirection.Left);
-        } else if (this.cursors.right.justDown) {
+        } else if (this.cursors.right.isDown) {
             this.player.goDirection(PlayerDirection.Right);
         }
 
-        if (this.cursors.left.isUp && this.cursors.right.isUp) {
+        if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.arcadeBody.onFloor()) {
             this.player.stop();
         }
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).justDown) {
@@ -169,6 +170,5 @@ export default class Game extends Phaser.State {
         }
 
         this.player.update();
-        // this.ennemy.update();
     }
 }
