@@ -443,6 +443,10 @@ export namespace Tilemaps {
         static getName(): string { return 'JungleMap2'; }
         static getJSON(): string { return require('assets/tilemaps/JungleMap2.json'); }
     }
+    export class JungleMapTest {
+        static getName(): string { return 'JungleMapTest'; }
+        static getJSON(): string { return require('assets/tilemaps/JungleMapTest.json'); }
+    }
     export class JungleMapTest1 {
         static getName(): string { return 'JungleMapTest1'; }
         static getJSON(): string { return require('assets/tilemaps/JungleMapTest1.json'); }
@@ -450,10 +454,6 @@ export namespace Tilemaps {
     export class JungleSonic {
         static getName(): string { return 'JungleSonic'; }
         static getJSON(): string { return require('assets/tilemaps/JungleSonic.json'); }
-    }
-    export class JungleTry {
-        static getName(): string { return 'JungleTry'; }
-        static getJSON(): string { return require('assets/tilemaps/JungleTry.json'); }
     }
 }
 
