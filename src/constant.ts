@@ -12,6 +12,7 @@ export const N_PLAYERS = 1;
 export const N_PATH = '/grace';
 export const N_PORT = 9000;
 export const N_SEND_INPUTS = 15; // ms
+export const N_MAX_DISTANE = 200;
 
 // Player related constants
 export const PLAYER_SPEED = {

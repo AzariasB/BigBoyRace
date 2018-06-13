@@ -29,7 +29,8 @@ export default class Lobby extends Phaser.State {
         this.text.anchor.set(0.5, 0.5);
 
 
-        Network.when('connected').addOnce(() => {
+        Network.when('id').addOnce((_, id) => {
+            this.game.state.states['game'].myId = id;
             this.text.text = 'Waiting for player...';
         });
 
