@@ -39,7 +39,13 @@ export default class Player extends Phaser.Sprite {
     }
 
     public serialize() {
-        return [this.id, this.x, this.y, this.arcadeBody.velocity.x, this.arcadeBody.velocity.y];
+        return {
+            id: this.id,
+            x: this.x,
+            y: this.y,
+            vx: this.arcadeBody.velocity.x,
+            vy: this.arcadeBody.velocity.y
+        };
     }
 
     private initStateMachine() {

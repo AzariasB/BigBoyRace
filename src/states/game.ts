@@ -69,7 +69,7 @@ export default class Game extends Phaser.State {
 
         this.players = [];
         for (let i = 0; i < N_PLAYERS; ++i ) {
-            let p = new Player(this.players.length + 1, this.game, startPos.x, startPos.y, Assets.Spritesheets.Adventurer.getName(), this.tilemap, this.collisionLayer);
+            let p = new Player(this.players.length, this.game, startPos.x, startPos.y, Assets.Spritesheets.Adventurer.getName(), this.tilemap, this.collisionLayer);
             this.players.push(p);
             this.game.add.existing(p);
             if (p.id === this.myId) {
@@ -86,45 +86,29 @@ export default class Game extends Phaser.State {
 
         let itemholder = new ItemHolder(this.game, 50, 50, Assets.Atlases.AtlasesBlueSheet.getName(), Assets.Atlases.AtlasesBlueSheet.Frames.BlueButton09);
         this.game.add.existing(itemholder);
-
-        let timer = this.game.time.create(false);
-        // send input to server every 25 ms
-        timer.loop(N_SEND_INPUTS, () => {
-            Network.send('inputs', new Int8Array([
-                +this.cursors.up.isDown,
-                +this.cursors.right.isDown,
-                +this.cursors.down.isDown,
-                +this.cursors.left.isDown,
-                +this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)
-            ]));
-        });
-        timer.start();
         this.tilemap.createLayer('Foreground');
 
         Network.when('state').add((_, data) => this.updateState(data) );
     }
 
     private updateState(data) {
-        console.log(data);
-        let arr: number[] = Array.from(data);
-        let myPowerup = arr.shift();
-        let players = arr.shift();
-        for (let i = 0; i < players; ++i) {
-            let id = arr.shift();
-            let x = arr.shift();
-            let y = arr.shift();
-            let vx = arr.shift();
-            let vy = arr.shift();
-            let dist = Phaser.Point.distance({x, y}, this.players[i].position);
+        for (let p of data) {
+            let dist = Phaser.Point.distance({x: p.x, y: p.y}, this.players[p.id].position);
             if (dist > N_MAX_DISTANE) {
-                this.players[id].position.set(x, y);
-                this.players[id].body.velocity.set(vx, vy);
+                this.players[p.id].position.set(p.x, p.y);
+                this.players[p.id].body.velocity.set(p.vx, p.vy);
             }
-
         }
     }
 
     public update(): void {
+        Network.send('inputs', new Int8Array([
+            +this.cursors.up.isDown,
+            +this.cursors.right.isDown,
+            +this.cursors.down.isDown,
+            +this.cursors.left.isDown,
+            +this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)
+        ]));
         for (let p of this.players) {
             this.game.physics.arcade.collide(this.player, this.collisionLayer);
             p.update();

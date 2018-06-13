@@ -16,19 +16,11 @@ export default class Game extends Phaser.State {
         // check for collision with map items' (and add it to the data list to send the players)
 
         // get all the new traps of the map (and add the to the list to send the players)
-
-        // serialize all the players
-        let data = [this.players.length, ...this.players.map(p => p.serialize()).reduce((p, c) => p.concat(c), [])];
-
-        // and send the packet to each player
-        for (let p of this.players) {
-            const powerupId = 0; // change with the player's powerup
-            p.socket.emit('state', new Float32Array([powerupId].concat(data)));
-        }
     }
 
-    init(...args: SocketIO.Socket[]) {
-        let sockets = args[0];
+
+    init(...args: SocketIO.Socket[][]) {
+        let sockets: any[] = args[0];
         this.map = this.game.add.tilemap(Assets.Tilemaps.JungleMap2.getName());
         this.map.setCollisionByExclusion([], true, 'Collision');
         this.collisionLayer = this.map.createLayer('Collision');
@@ -42,13 +34,29 @@ export default class Game extends Phaser.State {
         });
 
         this.players = [];
-        for (let i = 0; i < args.length; ++i) {
+        for (let i = 0; i < sockets.length; ++i) {
             this.players.push(new Player(i, sockets[i], this.game, this.startPosition.x, this.startPosition.y, '', this.map, this.collisionLayer));
             sockets[i].emit('id', i);
             sockets[i].on('inputs', (data: Int8Array) => {
                 if (data) this.players[i].handleInput(data);
             });
             this.game.add.existing(this.players[i]);
+        }
+
+        let timer = this.game.time.create(false);
+        timer.add(200, () => this.updateClients());
+        timer.start();
+    }
+
+    updateClients() {
+        // serialize all the players
+        let data = this.players.map(p => p.serialize());
+        // console.log(data);
+
+        // and send the packet to each player
+        for (let p of this.players) {
+            const powerupId = 0; // change with the player's powerup
+            p.socket.emit('state', data);
         }
     }
 }
