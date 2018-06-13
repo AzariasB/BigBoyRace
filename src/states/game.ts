@@ -116,6 +116,8 @@ export default class Game extends Phaser.State {
 
         let itemholder = new ItemHolder(this.game, 50, 50, Assets.Atlases.AtlasesBlueSheet.getName(), Assets.Atlases.AtlasesBlueSheet.Frames.BlueButton09);
         this.game.add.existing(itemholder);
+		
+		this.tilemap.createLayer('Foreground');
     }
 
     public render(): void {
