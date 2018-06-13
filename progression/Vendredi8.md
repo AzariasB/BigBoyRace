@@ -11,13 +11,15 @@ Temps total : 7h
 
 Boutin
 ------
-- Explication à Maxime du fonctionnement de Phaser
-- Correction du bug d'accroupissement
-- Integration d'une map de test réalisé par Lucas
-- Mise à l'échelle des différentes parties du jeu
-- Correction du saut du joueur
-- Dessin de la machine à état sur tableau avec Jean-Baptiste
-- Traduction de la machine à Etat sur draw.io
+- Explication à Maxime du fonctionnement de Phaser: 1h00
+- Correction du bug d'accroupissement: 1h00
+- Integration d'une map de test réalisé par Lucas: 30mn
+- Mise à l'échelle des différentes parties du jeu: 30mn
+- Correction du saut du joueur: 1h00
+- Dessin de la machine à état sur tableau avec Jean-Baptiste: 1h00
+- Traduction de la machine à Etat sur draw.io: 2h00
+
+Total: 7h00
 
 Kaindoh
 -------
@@ -26,11 +28,7 @@ Kaindoh
 Mockels
 -------
 - Prise en main de phaser (3h)
-<<<<<<< HEAD
 - Tests création de la mécanique wallslide/walljump (3h)
-=======
-- tests création de la mécanique wallslide/walljump (3h)
->>>>>>> develop
 
 Raffi
 -----

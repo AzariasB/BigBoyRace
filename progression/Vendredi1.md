@@ -6,10 +6,12 @@ Abet
 
 Boutin
 ------
-- Explication à Jean-Baptiste du fonctionnement de Phaser
-- Ajout d'une carte de test de Lucas au jeu
-- Test d'intégration des sprites de Tommy au jeu
-- Integration des constantes du jeu
+- Explication à Jean-Baptiste du fonctionnement de Phaser: 1h00
+- Ajout d'une carte de test de Lucas au jeu: 1h00
+- Test d'intégration des sprites de Tommy au jeu: 30mn
+- Integration des constantes du jeu: 2h00
+
+Total: 4h30
 
 Kaindoh
 -------

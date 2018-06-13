@@ -1,49 +1,42 @@
-import { PLAYER_VMAX_GRAB_WALLSLIDE } from './constant';
-
-export enum PlayerDirection {
-    Left = 'left',
-    Right = 'right',
-    None = 'none'
-}
-
-export enum PlayerStates {
-    Running = 'Running',
-    Idle = 'Idle',
-    Crouched = 'Crouched',
-    SlideCrouched = 'SlideCrouched',
-    WallSliding = 'WallSliding',
-    CrouchWalking = 'CrouchWalking',
-    Jumping = 'Jumping',
-    Landing = 'Landing'
-}
-
-
-export enum PlayerAnimation {
-    Run = 'run_right',
-    Idle = 'idle',
-    Crouch = 'crouch',
-    JumpCrouch = 'jum_crouch',
-    SlideCrouch = 'slide_crouch',
-    WalkCrouch = 'walk_crouch',
-    WallSliding = 'wall_sliding',
-    Jump = 'jump',
-    Land = 'land'
-}
-
-export class AnimationConfiguration {
-    public states: {[key: string]:
-        {
-            animation: PlayerAnimation,
-            transitions: {[key: string]: (o: any) => boolean}
-        }
-    };
-
-    constructor(init?: Partial<AnimationConfiguration>) {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const constant_1 = require("./constant");
+var PlayerDirection;
+(function (PlayerDirection) {
+    PlayerDirection["Left"] = "left";
+    PlayerDirection["Right"] = "right";
+    PlayerDirection["None"] = "none";
+})(PlayerDirection = exports.PlayerDirection || (exports.PlayerDirection = {}));
+var PlayerStates;
+(function (PlayerStates) {
+    PlayerStates["Running"] = "Running";
+    PlayerStates["Idle"] = "Idle";
+    PlayerStates["Crouched"] = "Crouched";
+    PlayerStates["SlideCrouched"] = "SlideCrouched";
+    PlayerStates["WallSliding"] = "WallSliding";
+    PlayerStates["CrouchWalking"] = "CrouchWalking";
+    PlayerStates["Jumping"] = "Jumping";
+    PlayerStates["Landing"] = "Landing";
+})(PlayerStates = exports.PlayerStates || (exports.PlayerStates = {}));
+var PlayerAnimation;
+(function (PlayerAnimation) {
+    PlayerAnimation["Run"] = "run_right";
+    PlayerAnimation["Idle"] = "idle";
+    PlayerAnimation["Crouch"] = "crouch";
+    PlayerAnimation["JumpCrouch"] = "jum_crouch";
+    PlayerAnimation["SlideCrouch"] = "slide_crouch";
+    PlayerAnimation["WalkCrouch"] = "walk_crouch";
+    PlayerAnimation["WallSliding"] = "wall_sliding";
+    PlayerAnimation["Jump"] = "jump";
+    PlayerAnimation["Land"] = "land";
+})(PlayerAnimation = exports.PlayerAnimation || (exports.PlayerAnimation = {}));
+class AnimationConfiguration {
+    constructor(init) {
         Object.assign(this, init);
     }
 }
-
-const Config: AnimationConfiguration = new AnimationConfiguration({
+exports.AnimationConfiguration = AnimationConfiguration;
+const Config = new AnimationConfiguration({
     states: {
         [PlayerStates.Idle]: {
             animation: PlayerAnimation.Idle,
@@ -57,7 +50,7 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             animation: PlayerAnimation.Run,
             transitions: {
                 [PlayerStates.SlideCrouched]: opts => opts.isCrouchPressed,
-                [PlayerStates.Jumping]: opts => opts.velocityY !== 0 ,
+                [PlayerStates.Jumping]: opts => opts.velocityY !== 0,
                 [PlayerStates.Idle]: opts => opts.isOnFloor && opts.velocityX === 0
             }
         },
@@ -89,18 +82,18 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             transitions: {
                 [PlayerStates.Running]: opts => opts.isOnFloor && opts.velocityX !== 0,
                 [PlayerStates.Idle]: opts => opts.isOnFloor && opts.velocityX === 0,
-                [PlayerStates.WallSliding]: opts => !opts.isOnFloor && opts.isOnWall && opts.velocityY > -150 && opts.velocityY < PLAYER_VMAX_GRAB_WALLSLIDE
+                [PlayerStates.WallSliding]: opts => !opts.isOnFloor && opts.isOnWall && opts.velocityY > -150 && opts.velocityY < constant_1.PLAYER_VMAX_GRAB_WALLSLIDE
             }
         },
         [PlayerStates.WallSliding]: {
-            animation:  PlayerAnimation.WallSliding,
+            animation: PlayerAnimation.WallSliding,
             transitions: {
                 [PlayerStates.Jumping]: opts => !opts.isOnWall && !opts.isOnFloor,
                 [PlayerStates.Idle]: opts => opts.isOnFloor,
-                [PlayerStates.WallSliding]: opts => opts.velocityY < PLAYER_VMAX_GRAB_WALLSLIDE
+                [PlayerStates.WallSliding]: opts => opts.velocityY < constant_1.PLAYER_VMAX_GRAB_WALLSLIDE
             }
         }
     }
 });
-
-export {Config};
+exports.Config = Config;
+//# sourceMappingURL=PlayerAnimation.js.map
