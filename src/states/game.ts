@@ -40,7 +40,7 @@ export default class Game extends Phaser.State {
         this.particlesGenerator.minParticleScale = 0.3;
         this.particlesGenerator.maxParticleScale = 0.3;
 
-        this.tilemap = this.game.add.tilemap(Assets.Tilemaps.JungleSonic.getName(), 16, 16);
+        this.tilemap = this.game.add.tilemap(Assets.Tilemaps.JungleMap2.getName(), 16, 16);
 
 
         let img = this.game.cache.getImage(Assets.Spritesheets.Adventurer.getName());
@@ -116,6 +116,8 @@ export default class Game extends Phaser.State {
 
         let itemholder = new ItemHolder(this.game, 50, 50, Assets.Atlases.AtlasesBlueSheet.getName(), Assets.Atlases.AtlasesBlueSheet.Frames.BlueButton09);
         this.game.add.existing(itemholder);
+		
+		this.tilemap.createLayer('Foreground');
     }
 
     public render(): void {
@@ -161,13 +163,13 @@ export default class Game extends Phaser.State {
             this.player.goDirection(PlayerDirection.Right);
         }
 
-        if (this.cursors.left.isUp && this.cursors.right.isUp) {
+        if (this.cursors.left.isUp && this.cursors.right.isUp && !this.player.sm.is(PlayerStates.Jumping)) {
             this.player.stop();
         }
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).justDown) {
             this.player.useItem();
         }
-
+        //console.log(this.player.sm.currentStateName + ' ' + this.player.arcadeBody.velocity.x + ' ' +  this.player.arcadeBody.velocity.y + 'gauche: ' + this.cursors.left.isDown + ' droite: ' + this.cursors.right.isDown);
         this.player.update();
         // this.ennemy.update();
     }
