@@ -1,9 +1,11 @@
 import * as Assets from '../assets';
-import { Player, PlayerDirection } from '../objects/Player';
+import { Player } from '../objects/Player';
 import Box from '../objects/Box';
 import BackgroundScroller from '../widgets/backgroundScroller';
 import { Network } from '../network';
 import ItemHolder from '../objects/ItemHolder';
+import { N_SEND_INPUTS } from '../constant';
+import { PlayerDirection } from '../PlayerAnimation';
 
 export default class Game extends Phaser.State {
     private sfxAudiosprite: Phaser.AudioSprite = null;
@@ -115,7 +117,7 @@ export default class Game extends Phaser.State {
 
         let timer = this.game.time.create(false);
         // send input to server every 25 ms
-        timer.loop(25, () => {
+        timer.loop(N_SEND_INPUTS, () => {
             Network.send('inputs', new Int8Array([
                 +this.cursors.up.isDown,
                 +this.cursors.right.isDown,

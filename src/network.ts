@@ -1,6 +1,7 @@
 
 import * as io from 'socket.io-client';
 import { Signal } from 'phaser-ce';
+import { N_PORT, N_PATH } from './constant';
 
 export namespace Network {
     let m_socket: io.Client;
@@ -26,7 +27,7 @@ export namespace Network {
     }
 
     export function initialize() {
-        m_socket = io({ path : '/grace/socket' });
+        m_socket = io({path: N_PATH});
     }
 
     export function send(key: string, data: Int8Array) {

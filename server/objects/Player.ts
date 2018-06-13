@@ -1,37 +1,32 @@
-import * as Assets from '../assets';
-import { FiniteStateMachine } from '../StateMachine';
-import { PLAYER_ACCELERATION, PLAYER_JUMP, PLAYER_DESCELERATION, PLAYER_SPEED, PLAYER_WALLJUMP } from '../constant';
-import {PlayerAnimation, PlayerStates, Config, PlayerDirection} from '../PlayerAnimation';
+import * as socket from 'socket.io';
+import { FiniteStateMachine } from '../../src/StateMachine';
+import { PlayerDirection, Config, PlayerStates } from '../../src/PlayerAnimation';
+import { PLAYER_JUMP, PLAYER_SPEED, PLAYER_WALLJUMP, WALLJUMP_IGNORE_TIME, PLAYER_ACCELERATION, PLAYER_DESCELERATION, N_INPUT } from '../../src/constant';
 
-export class Player extends Phaser.Sprite {
+export default class Player extends Phaser.Sprite {
 
-    arcadeBody: Phaser.Physics.Arcade.Body;
-    private dustParticles: Phaser.Particles.Arcade.Emitter;
+    public arcadeBody: Phaser.Physics.Arcade.Body;
     private isHalfWidth: boolean = false;
     public sm: FiniteStateMachine;
     public direction: PlayerDirection = PlayerDirection.Right;
     private wallJumped: boolean = false;
 
-    constructor (public readonly id: number,
-                    game: Phaser.Game,
-                    x: number,
-                    y: number,
-                    group: string,
-                    private  map: Phaser.Tilemap,
-                    private collisionLayer: Phaser.TilemapLayer) {
+
+    constructor(
+        public id: number,
+        public socket: SocketIO.Socket,
+        game: Phaser.Game,
+        x: number,
+        y: number,
+        group: string,
+        private  map: Phaser.Tilemap,
+        private collisionLayer: Phaser.TilemapLayer) {
         super(game, x, y, group);
 
         this.height = this.map.tileHeight * 2;
         this.width = this.map.tileWidth * 2;
+
         this.game.physics.arcade.enable(this);
-
-        this.dustParticles = this.game.add.emitter(x, y, 10);
-        this.dustParticles.makeParticles(Assets.Images.ImagesDust.getName());
-        this.dustParticles.gravity.y = 400;
-        this.dustParticles.minParticleScale = this.dustParticles.maxParticleScale = 0.5;
-        this.dustParticles.start(false, 100, 10);
-        this.dustParticles.on = false;
-
 
         this.arcadeBody = this.body;
         this.arcadeBody.collideWorldBounds = true;
@@ -39,37 +34,18 @@ export class Player extends Phaser.Sprite {
         this.arcadeBody.offset.x += this.arcadeBody.width / 2;
         this.anchor.set(0.5, 0.5);
 
-        this.animations.add(PlayerAnimation.Run, [8, 9, 10, 11, 12, 13], 10, true);
-        this.animations.add(PlayerAnimation.Idle, [0, 1, 2, 3], 5, true);
-        this.animations.add(PlayerAnimation.Crouch, [4, 5, 6, 7], 5, true);
-        this.animations.add(PlayerAnimation.JumpCrouch, [28], 5, false).onComplete.add(() => {
-            this.animations.play(PlayerAnimation.SlideCrouch);
-        });
-        this.animations.add(PlayerAnimation.SlideCrouch, [24, 25, 26], 10, true);
-        this.animations.add(PlayerAnimation.Jump, [16], 5, true);
-        this.animations.add(PlayerAnimation.Land, [22, 23], 5, true);
-        this.animations.add(PlayerAnimation.WallSliding, [93], 5, true);
-
-        this.sm = new FiniteStateMachine(this.animations);
-        this.initStatemachine();
+        this.sm = new FiniteStateMachine();
+        this.initStateMachine();
     }
 
-    public serialize(): Float32Array {
-        // return new Float32Array([this.x, this.y, this.arcadeBody.velocity.x, this.arcadeBody.velocity.y, this.fsm.currentState]);
-        return new Float32Array([]);
+    public serialize() {
+        return [this.id, this.x, this.y, this.arcadeBody.velocity.x, this.arcadeBody.velocity.y];
     }
 
-    public deserialize(data: Float32Array): void {
-        this.x = data[0];
-        this.y = data[1];
-        this.arcadeBody.velocity.x = data[2];
-        this.arcadeBody.velocity.y = data[3];
-    }
-
-    private initStatemachine(): void {
+    private initStateMachine() {
         const states = Config.states;
         for (let k in states) {
-            this.sm.addState(k, states[k].animation);
+            this.sm.addState(k);
         }
         for (let origin in states) {
             let transitions = states[origin].transitions;
@@ -114,7 +90,7 @@ export class Player extends Phaser.Sprite {
                 let mult = this.arcadeBody.blocked.left ? 1 : -1;
                 this.arcadeBody.velocity.set(PLAYER_SPEED.RUNNING * mult, -PLAYER_WALLJUMP);
                 this.wallJumped = true;
-                this.game.time.events.add(50, () => this.wallJumped = false);
+                this.game.time.events.add(WALLJUMP_IGNORE_TIME, () => this.wallJumped = false);
             }
         }
     }
@@ -136,24 +112,30 @@ export class Player extends Phaser.Sprite {
     }
 
     public update(): void {
-        let onFloor = this.arcadeBody.onFloor();
-        this.dustParticles.x = this.x;
-        this.dustParticles.y = this.y + this.height / 2;
-        this.dustParticles.on = onFloor && this.arcadeBody.velocity.x !== 0;
-
-        if (!this.wallJumped)
-            this.updateVelocity();
+        if (!this.wallJumped) this.updateVelocity();
 
         let ltPos = this.collisionLayer.getTileXY(this.centerX, this.top, new Phaser.Point());
         let topLeft = this.map.getTile(ltPos.x, ltPos.y, this.collisionLayer);
 
         this.sm.setProperties({
-            'isOnFloor' : onFloor,
+            'isOnFloor' : this.arcadeBody.onFloor(),
             'velocityX': this.arcadeBody.velocity.x,
             'velocityY': this.arcadeBody.velocity.y,
             'isStuck': topLeft !== null,
             'isOnWall': this.arcadeBody.onWall()
         });
+    }
+
+    public handleInput(inputs: Int8Array) {
+        this.setCrouching(!!inputs[N_INPUT.DOWN ]);
+        this.setJumping(!!inputs[N_INPUT.UP]);
+        if ( !!inputs[N_INPUT.LEFT] ) {
+            this.goDirection(PlayerDirection.Left);
+        } else if ( !!this.input[N_INPUT.RIGHT]) {
+            this.goDirection(PlayerDirection.Right);
+        } else {
+            this.stop();
+        }
     }
 
     private updateVelocity() {

@@ -1,20 +1,41 @@
 
 import * as express from 'express';
+import * as http from 'http';
+import * as socketIO from 'socket.io';
 import './phaser';
 import App from './App';
-import * as path from 'path';
+import { N_PORT, N_PATH } from '../src/constant';
 
-const port = process.env.PORT || 3000;
-const app: express.Application = express();
+const port = +process.env.PORT || 4334;
 
-app.use(express.static('dist'));
 
-app.listen(port, (err) => {
-  if (err) {
-    return console.error(err);
-  }
+class Server {
+    private app: express.Application;
+    private server: http.Server;
+    private io: SocketIO.Server;
+    private game: App;
 
-  return console.log(`server is listening on ${port}`);
-});
+    constructor() {
+      this.server = http.createServer();
 
-const game = new App();
+      this.io = socketIO(this.server, {
+        serveClient: false,
+        path:  N_PATH
+      });
+      this.io.on('connection', conn => {
+        console.log('client conected');
+      });
+      this.io.on('error', err => {
+        console.error(err);
+      });
+
+      // this.game = new App(this.io);
+      this.server.listen(port, err => {
+        if (err) console.error(err);
+
+        console.log(`Http/ws started on port ${port}`);
+      });
+    }
+}
+
+const s = new Server();

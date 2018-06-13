@@ -1,4 +1,10 @@
 
+export enum PlayerDirection {
+    Left = 'left',
+    Right = 'right',
+    None = 'none'
+}
+
 export enum PlayerStates {
     Running = 'Running',
     Idle = 'Idle',

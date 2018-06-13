@@ -9,7 +9,7 @@ module.exports = {
         filename: 'server.js'
     },
     node: {
-        'fs': 'empty'
+        'fs': 'empty',
     },
     target: 'node',
     resolve: {
