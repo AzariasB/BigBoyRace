@@ -2,7 +2,10 @@
 
 Abet
 ----
+Amelioration de la physique du jeu (inertie, saut contre les murs, ....) 5H,
+Ajout de la possibilité d'activer les objet ramassé 2H
 
+Total : 7H
 
 Boutin
 ------
@@ -10,6 +13,9 @@ Boutin
 
 Kaindoh
 -------
+- Colorisation des sprites et finalisation des sprites "accroupis". 7H
+
+Total 7H
 
 Mockels
 -------
@@ -22,6 +28,8 @@ Raffi
 Segrais
 -------
 
-- Construction d'une nouvelle map
-- Reconfection de la première map créée
-- Test des nouvelles fonctionnalités implémentées (Wall jump, slide, ...)
+- Construction d'une nouvelle map 2H30
+- Reconfection de la première map créée 2H30
+- Test des nouvelles fonctionnalités implémentées (Wall jump, slide, ...) 2H
+
+Total 7h
