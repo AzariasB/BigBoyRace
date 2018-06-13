@@ -1,6 +1,6 @@
 import * as Assets from '../assets';
 import { FiniteStateMachine } from '../StateMachine';
-import { PLAYER_ACCELERATION, PLAYER_JUMP, PLAYER_DESCELERATION, PLAYER_SPEED, PLAYER_WALLJUMP } from '../constant';
+import { PLAYER_ACCELERATION, PLAYER_FIRSTJUMP, PLAYER_DESCELERATION, PLAYER_SPEED, PLAYER_WALLJUMP } from '../constant';
 import {PlayerAnimation, PlayerStates, Config} from '../PlayerAnimation';
 import { Powerup } from './powerups/Powerup';
 import {EmptyPowerup} from './powerups/EmptyPowerup';
@@ -40,23 +40,32 @@ export class Player extends Phaser.Sprite {
         this.arcadeBody = this.body;
         this.arcadeBody.collideWorldBounds = true;
         this.arcadeBody.width /= 2;
-        this.arcadeBody.offset.x += this.arcadeBody.width / 2;
+        this.arcadeBody.offset.x += (this.arcadeBody.width / this.scale.y) / 2;
         this.anchor.set(0.5, 0.5);
+        // this.arcadeBody.offset.y = 664;
         this.arcadeBody.maxVelocity.x = 1000;
         this.arcadeBody.maxVelocity.y = 1000;
 
 
 
-        this.animations.add(PlayerAnimation.Run, [8, 9, 10, 11, 12, 13], 10, true);
-        this.animations.add(PlayerAnimation.Idle, [0, 1, 2, 3], 5, true);
-        this.animations.add(PlayerAnimation.Crouch, [4, 5, 6, 7], 5, true);
-        this.animations.add(PlayerAnimation.JumpCrouch, [28], 5, false).onComplete.add(() => {
+        this.animations.add(PlayerAnimation.Run, [0, 1, 3, 4, 5, 6, 7], 10, true);
+        this.animations.add(PlayerAnimation.Idle, [21, 22, 23, 24, 25], 5, true);
+        this.animations.add(PlayerAnimation.Crouch, [14, 15, 16, 16, 16, 15], 5, true);
+        this.animations.add(PlayerAnimation.JumpCrouch, [18], 5, false).onComplete.add(() => {
             this.animations.play(PlayerAnimation.SlideCrouch);
         });
-        this.animations.add(PlayerAnimation.SlideCrouch, [24, 25, 26], 10, true);
-        this.animations.add(PlayerAnimation.Jump, [16], 5, true);
-        this.animations.add(PlayerAnimation.Land, [22, 23], 5, true);
-        this.animations.add(PlayerAnimation.WallSliding, [93], 5, true);
+        this.animations.add(PlayerAnimation.SlideCrouch, [19], 10, true);
+        this.animations.add(PlayerAnimation.Jump, [9, 10], 15, false).onComplete.add(() => {
+            this.animations.play(PlayerAnimation.OnAir);
+        });
+        this.animations.add(PlayerAnimation.OnAir, [11], 5, false).onComplete.add(() => {
+            if (this.arcadeBody.velocity.y < 50)
+                this.animations.play(PlayerAnimation.OnAir);
+            else
+                this.animations.play(PlayerAnimation.Land);
+        });
+        this.animations.add(PlayerAnimation.Land, [12], 5, true);
+        this.animations.add(PlayerAnimation.WallSliding, [13], 5, true);
 
         this.sm = new FiniteStateMachine(this.animations);
         this.initStatemachine();
@@ -93,7 +102,7 @@ export class Player extends Phaser.Sprite {
     private goHalfWidth() {
         if (this.isHalfWidth)return;
         this.arcadeBody.height /= 2;
-        this.arcadeBody.offset.y = this.height / 2;
+        this.arcadeBody.offset.y = (this.height / this.scale.y) / 2;
         this.isHalfWidth = true;
     }
 
@@ -114,14 +123,8 @@ export class Player extends Phaser.Sprite {
     }
 
     public setJumping(jumping: boolean): void {
-        if (jumping) {
-            if (this.arcadeBody.onFloor() && this.sm.isOneOf(PlayerStates.Idle, PlayerStates.Running)) {
-                this.arcadeBody.velocity.y = -PLAYER_JUMP;
-            } else if (this.sm.is(PlayerStates.WallSliding) && this.arcadeBody.onWall()) {
-                let mult = this.arcadeBody.blocked.left ? 1 : -1;
-                this.arcadeBody.velocity.set(PLAYER_SPEED.RUNNING * mult * 2, -PLAYER_WALLJUMP);
-            }
-        }
+        let mult = this.arcadeBody.blocked.left ? 1 : -1;
+        this.arcadeBody.velocity.set(PLAYER_SPEED.RUNNING * mult * 2, -PLAYER_WALLJUMP);
     }
 
     public setCrouching(crouching: boolean): void {
@@ -196,7 +199,7 @@ export class Player extends Phaser.Sprite {
                 if (Math.abs(this.arcadeBody.velocity.x) < PLAYER_SPEED.JUMP) {
                     this.arcadeBody.velocity.x = PLAYER_SPEED.JUMP * mult;
                 }
-                else if (  Math.sign(this.arcadeBody.velocity.x) !== mult ) {
+                else if (  Math.sign(this.arcadeBody.velocity.x) !== mult && mult !== 0 ) {
                     this.arcadeBody.velocity.x += (6 + Math.abs(this.arcadeBody.velocity.x) * 0.01) * mult;
                 } else {
                     this.arcadeBody.velocity.x /= PLAYER_DESCELERATION;

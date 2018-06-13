@@ -21,8 +21,9 @@ export enum PlayerAnimation {
     WalkCrouch = 'walk_crouch',
     WallSliding = 'wall_sliding',
     Jump = 'jump',
-    Land = 'land'
-}
+    Land = 'land',
+    OnAir = 'on_air'
+ }
 
 export class AnimationConfiguration {
     public states: {[key: string]:

@@ -5,6 +5,7 @@ import BackgroundScroller from '../widgets/backgroundScroller';
 import { Network } from '../network';
 import ItemHolder from '../objects/ItemHolder';
 import { PlayerStates } from '../PlayerAnimation';
+import { PLAYER_FIRSTJUMP, PLAYER_JUMPTIME_MS, PLAYER_JUMP } from '../constant';
 
 export default class Game extends Phaser.State {
     private sfxAudiosprite: Phaser.AudioSprite = null;
@@ -17,7 +18,8 @@ export default class Game extends Phaser.State {
     private box: Box[] = [];
     private particlesGenerator: Phaser.Particles.Arcade.Emitter = null;
     private ennemy: Player = null;
-    // private spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    private jumptimer = 0;
+    private gameWorld;
 
     private isMantleColor(color: {r: number, g: number, b: number, a: number}): boolean {
         let possibles = ['143,50,50', '171,67,67', '217,87,99'];
@@ -40,7 +42,7 @@ export default class Game extends Phaser.State {
         this.particlesGenerator.minParticleScale = 0.3;
         this.particlesGenerator.maxParticleScale = 0.3;
 
-        this.tilemap = this.game.add.tilemap(Assets.Tilemaps.JungleMap2.getName(), 16, 16);
+        this.tilemap = this.game.add.tilemap(Assets.Tilemaps.JungleMapTest.getName(), 16, 16);
 
 
         let img = this.game.cache.getImage(Assets.Spritesheets.Adventurer.getName());
@@ -65,7 +67,7 @@ export default class Game extends Phaser.State {
             bg.height = this.world.height;
         }
 
-        this.player = new Player(this.game, 32, 32, Assets.Spritesheets.Adventurer.getName(), this.tilemap, this.collisionLayer);
+        this.player = new Player(this.game, 32, 32, Assets.Spritesheets.Hero.getName(), this.tilemap, this.collisionLayer);
         // this.ennemy = new Player(this.game, 32, 32, Assets.Spritesheets.HeroBlue.getName(), this.collisionLayer);
 
         this.game.add.existing(this.player);
@@ -120,8 +122,12 @@ export default class Game extends Phaser.State {
     }
 
     public render(): void {
-        this.game.debug.bodyInfo(this.player, 32, 32);
+  /*      this.game.debug.bodyInfo(this.player, 32, 32);
         this.game.debug.text(this.player.sm.currentStateName, 32, 256);
+        this.game.debug.body(this.player);
+        this.game.debug.spriteBounds(this.player, 'pink', false);
+        this.game.debug.text(this.player.animations.currentAnim.name, 32, 270);
+*/
     }
 
     public update(): void {
@@ -152,9 +158,25 @@ export default class Game extends Phaser.State {
             return !playerOverlap;
         });
 
-        this.player.setJumping(this.cursors.up.justDown);
-        this.player.setCrouching(this.cursors.down.isDown);
 
+
+        if (this.cursors.up.justDown && this.player.sm.is(PlayerStates.WallSliding)) {
+            this.player.setJumping(true);
+        }
+        else if (this.cursors.up.isDown && this.player.arcadeBody.onFloor() && this.player.sm.isOneOf(PlayerStates.Running, PlayerStates.Idle) && this.jumptimer === 0) {
+            this.jumptimer = 1;
+            this.game.time.events.add(PLAYER_JUMPTIME_MS, () => this.jumptimer = 0);
+            this.player.arcadeBody.velocity.y = - PLAYER_JUMP;
+        }
+        else if (this.cursors.up.isDown && (this.jumptimer !== 0)) {
+            this.player.body.velocity.y = - PLAYER_JUMP;
+        }
+        else if (this.jumptimer !== 0) {
+            this.jumptimer = 0;
+        }
+
+        this.player.setCrouching(this.cursors.down.isDown);
+        let ti = this.cursors.up.timeDown;
 
         if (this.cursors.left.isDown) {
             this.player.goDirection(PlayerDirection.Left);
@@ -164,6 +186,9 @@ export default class Game extends Phaser.State {
 
         if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.arcadeBody.onFloor()) {
             this.player.stop();
+        }
+        else if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.sm.is(PlayerStates.Jumping) ) {
+            this.player.direction = PlayerDirection.None;
         }
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).justDown) {
             this.player.useItem();
