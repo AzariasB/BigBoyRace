@@ -157,9 +157,9 @@ export default class Game extends Phaser.State {
         this.player.setCrouching(this.cursors.down.isDown);
 
 
-        if (this.cursors.left.justDown) {
+        if (this.cursors.left.isDown) {
             this.player.goDirection(PlayerDirection.Left);
-        } else if (this.cursors.right.justDown) {
+        } else if (this.cursors.right.isDown) {
             this.player.goDirection(PlayerDirection.Right);
         }
 
@@ -169,8 +169,7 @@ export default class Game extends Phaser.State {
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).justDown) {
             this.player.useItem();
         }
-        //console.log(this.player.sm.currentStateName + ' ' + this.player.arcadeBody.velocity.x + ' ' +  this.player.arcadeBody.velocity.y + 'gauche: ' + this.cursors.left.isDown + ' droite: ' + this.cursors.right.isDown);
+
         this.player.update();
-        // this.ennemy.update();
     }
 }
