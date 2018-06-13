@@ -8,7 +8,7 @@ export enum N_INPUT {
     LENGTH
 }
 
-export const N_PLAYERS = 1;
+export const N_PLAYERS = 2;
 export const N_PATH = '/grace';
 export const N_PORT = 9000;
 export const N_SEND_INPUTS = 15; // ms

@@ -34,9 +34,8 @@ export default class Lobby extends Phaser.State {
             this.text.text = 'Waiting for player...';
         });
 
-        Network.when('start').addOnce(() => {
-            console.log('received start');
-            this.state.start('game');
+        Network.when('start').addOnce((_, players) => {
+            this.state.start('game', null, null, players);
         });
     }
 
