@@ -7,6 +7,7 @@ import ItemHolder from '../objects/ItemHolder';
 import { N_SEND_INPUTS, N_MAX_DISTANE, N_PLAYERS } from '../constant';
 import { PlayerDirection } from '../PlayerAnimation';
 import { PlayerStates } from '../PlayerAnimation';
+import { PLAYER_FIRSTJUMP, PLAYER_JUMPTIME_MS, PLAYER_JUMP } from '../constant';
 
 export default class Game extends Phaser.State {
     private sfxAudiosprite: Phaser.AudioSprite = null;
@@ -19,7 +20,9 @@ export default class Game extends Phaser.State {
     private backgrounds: Phaser.TileSprite[] = [];
     private box: Box[] = [];
     private particlesGenerator: Phaser.Particles.Arcade.Emitter = null;
-    // private spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    private ennemy: Player = null;
+    private jumptimer = 0;
+    private gameWorld;
 
     public create(): void {
         for (let name of BackgroundScroller.BG_NAMES) {
@@ -122,11 +125,25 @@ export default class Game extends Phaser.State {
             divisor << 1;
         }
 
-        // let the server destroy the boxes
 
-        this.player.setJumping(this.cursors.up.justDown);
+
+        if (this.cursors.up.justDown && this.player.sm.is(PlayerStates.WallSliding)) {
+            this.player.setJumping(true);
+        }
+        else if (this.cursors.up.isDown && this.player.arcadeBody.onFloor() && this.player.sm.isOneOf(PlayerStates.Running, PlayerStates.Idle) && this.jumptimer === 0) {
+            this.jumptimer = 1;
+            this.game.time.events.add(PLAYER_JUMPTIME_MS, () => this.jumptimer = 0);
+            this.player.arcadeBody.velocity.y = - PLAYER_JUMP;
+        }
+        else if (this.cursors.up.isDown && (this.jumptimer !== 0)) {
+            this.player.body.velocity.y = - PLAYER_JUMP;
+        }
+        else if (this.jumptimer !== 0) {
+            this.jumptimer = 0;
+        }
+
         this.player.setCrouching(this.cursors.down.isDown);
-
+        let ti = this.cursors.up.timeDown;
 
         if (this.cursors.left.isDown) {
             this.player.goDirection(PlayerDirection.Left);
@@ -136,6 +153,9 @@ export default class Game extends Phaser.State {
 
         if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.arcadeBody.onFloor()) {
             this.player.stop();
+        }
+        else if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.sm.is(PlayerStates.Jumping) ) {
+            this.player.direction = PlayerDirection.None;
         }
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).justDown) {
             this.player.useItem();
