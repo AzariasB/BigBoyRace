@@ -6,7 +6,6 @@ export default class Game extends Phaser.State {
     private players: Player[];
     private map: Phaser.Tilemap;
     private collisionLayer: Phaser.TilemapLayer;
-    private startPosition: Phaser.Point = new Phaser.Point();
 
     update() {
         for (let p of this.players) {
@@ -19,39 +18,38 @@ export default class Game extends Phaser.State {
     }
 
 
-    init(...args: SocketIO.Socket[][]) {
-        let sockets: any[] = args[0];
+    init(...sockets: SocketIO.Socket[]) {
         this.map = this.game.add.tilemap(Assets.Tilemaps.JungleMap2.getName());
         this.map.setCollisionByExclusion([], true, 'Collision');
         this.collisionLayer = this.map.createLayer('Collision');
         this.collisionLayer.resizeWorld();
 
+        let startPos = new Phaser.Point();
         this.map.objects['Powerups'].map(o => {
             if (o.name === 'start') {
-                this.startPosition.set(o.x, o.y);
+                startPos.set(o.x, o.y);
             }
             // handle the items later
         });
 
         this.players = [];
         for (let i = 0; i < sockets.length; ++i) {
-            this.players.push(new Player(i, sockets[i], this.game, this.startPosition.x, this.startPosition.y, '', this.map, this.collisionLayer));
+            this.players.push(new Player(i, sockets[i], this.game, startPos.x, startPos.y, '', this.map, this.collisionLayer));
             sockets[i].emit('id', i);
-            sockets[i].on('inputs', (data: Int8Array) => {
+            sockets[i].on('inputs', (data) => {
                 if (data) this.players[i].handleInput(data);
             });
             this.game.add.existing(this.players[i]);
         }
 
         let timer = this.game.time.create(false);
-        timer.add(200, () => this.updateClients());
+        timer.loop(10, () => this.updateClients());
         timer.start();
     }
 
     updateClients() {
         // serialize all the players
         let data = this.players.map(p => p.serialize());
-        // console.log(data);
 
         // and send the packet to each player
         for (let p of this.players) {

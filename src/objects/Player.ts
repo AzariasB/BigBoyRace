@@ -11,8 +11,7 @@ export class Player extends Phaser.Sprite {
     private dustParticles: Phaser.Particles.Arcade.Emitter;
     private isHalfWidth: boolean = false;
     public sm: FiniteStateMachine;
-    public direction: PlayerDirection = PlayerDirection.Right;
-    private wallJumped: boolean = false;
+    public direction: PlayerDirection = PlayerDirection.None;
     private item = new EmptyPowerup(this.game, 50, 50);
 
     constructor (public readonly id: number,
@@ -40,7 +39,6 @@ export class Player extends Phaser.Sprite {
         this.arcadeBody.width /= 2;
         this.arcadeBody.offset.x += (this.arcadeBody.width / this.scale.y) / 2;
         this.anchor.set(0.5, 0.5);
-        // this.arcadeBody.offset.y = 664;
         this.arcadeBody.maxVelocity.x = 1000;
         this.arcadeBody.maxVelocity.y = 1000;
 
@@ -67,18 +65,6 @@ export class Player extends Phaser.Sprite {
 
         this.sm = new FiniteStateMachine(this.animations);
         this.initStatemachine();
-    }
-
-    public serialize(): Float32Array {
-        // return new Float32Array([this.x, this.y, this.arcadeBody.velocity.x, this.arcadeBody.velocity.y, this.fsm.currentState]);
-        return new Float32Array([]);
-    }
-
-    public deserialize(data: Float32Array): void {
-        this.x = data[0];
-        this.y = data[1];
-        this.arcadeBody.velocity.x = data[2];
-        this.arcadeBody.velocity.y = data[3];
     }
 
     private initStatemachine(): void {
@@ -148,7 +134,6 @@ export class Player extends Phaser.Sprite {
     }
 
     public stop(): void {
-        if (this.wallJumped)return;
         this.arcadeBody.velocity.x = 0;
         this.arcadeBody.acceleration.x = 0;
         this.direction = PlayerDirection.None;

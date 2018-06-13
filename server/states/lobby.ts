@@ -27,7 +27,7 @@ export default class Lobby extends Phaser.State {
             if (this.clients.length === N_PLAYERS) {
                 console.log('Starting game !');
                 this.clients.map(c => c.emit('start'));
-                this.state.start('game', null, null, this.clients);
+                this.state.start('game', null, null, ...this.clients);
             }
         });
     }

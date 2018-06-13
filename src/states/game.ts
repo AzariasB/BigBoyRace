@@ -4,7 +4,7 @@ import Box from '../objects/Box';
 import BackgroundScroller from '../widgets/backgroundScroller';
 import { Network } from '../network';
 import ItemHolder from '../objects/ItemHolder';
-import { PLAYER_FIRSTJUMP, PLAYER_JUMPTIME_MS, PLAYER_JUMP, N_MAX_DISTANE, N_PLAYERS } from '../constant';
+import { PLAYER_FIRSTJUMP, PLAYER_JUMPTIME_MS, PLAYER_JUMP, N_MAX_DISTANE, N_PLAYERS, N_INPUT } from '../constant';
 import { PlayerDirection, PlayerStates } from '../PlayerAnimation';
 
 export default class Game extends Phaser.State {
@@ -70,7 +70,7 @@ export default class Game extends Phaser.State {
 
         this.players = [];
         for (let i = 0; i < N_PLAYERS; ++i ) {
-            let p = new Player(this.players.length, this.game, startPos.x, startPos.y, Assets.Spritesheets.Adventurer.getName(), this.tilemap, this.collisionLayer);
+            let p = new Player(this.players.length, this.game, startPos.x, startPos.y, Assets.Spritesheets.Hero.getName(), this.tilemap, this.collisionLayer);
             this.players.push(p);
             this.game.add.existing(p);
             if (p.id === this.myId) {
@@ -94,25 +94,30 @@ export default class Game extends Phaser.State {
 
     private updateState(data) {
         for (let p of data) {
-            let dist = Phaser.Point.distance({x: p.x, y: p.y}, this.players[p.id].position);
-            if (dist > N_MAX_DISTANE) {
+            if (p.id === this.myId) {
+                let dist = Phaser.Point.distance({x: p.x, y: p.y}, this.players[p.id].position);
+                if (dist > N_MAX_DISTANE) {
+                    this.player.position.set(p.x, p.y);
+                    this.player.body.velocity.set(p.vx, p.vy);
+                }
+            } else {
                 this.players[p.id].position.set(p.x, p.y);
                 this.players[p.id].body.velocity.set(p.vx, p.vy);
+                this.players[p.id].update();
             }
         }
     }
 
     public update(): void {
-        Network.send('inputs', new Int8Array([
-            +this.cursors.up.isDown,
-            +this.cursors.right.isDown,
-            +this.cursors.down.isDown,
-            +this.cursors.left.isDown,
-            +this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)
-        ]));
+        let data = [];
+        data[N_INPUT.UP] = +this.cursors.up.isDown;
+        data[N_INPUT.RIGHT] = +this.cursors.right.isDown;
+        data[N_INPUT.DOWN] = +this.cursors.left.isDown;
+        data[N_INPUT.LEFT] = +this.cursors.left.isDown;
+        data[N_INPUT.ACTION] = 0;
+        Network.send('inputs', data);
         for (let p of this.players) {
-            this.game.physics.arcade.collide(this.player, this.collisionLayer);
-            p.update();
+            this.game.physics.arcade.collide(p, this.collisionLayer);
         }
         // this.game.physics.arcade.collide(this.ennemy, this.collisionLayer);
         // send player data to server
@@ -158,5 +163,7 @@ export default class Game extends Phaser.State {
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).justDown) {
             this.player.useItem();
         }
+
+        this.player.update();
     }
 }
