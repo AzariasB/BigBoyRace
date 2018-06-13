@@ -6,6 +6,7 @@ import { Network } from '../network';
 import ItemHolder from '../objects/ItemHolder';
 import { N_SEND_INPUTS } from '../constant';
 import { PlayerDirection } from '../PlayerAnimation';
+import Chat from '../widgets/chat';
 
 export default class Game extends Phaser.State {
     private sfxAudiosprite: Phaser.AudioSprite = null;
@@ -114,6 +115,10 @@ export default class Game extends Phaser.State {
 
         let itemholder = new ItemHolder(this.game, 50, 50, Assets.Atlases.AtlasesBlueSheet.getName(), Assets.Atlases.AtlasesBlueSheet.Frames.BlueButton09);
         this.game.add.existing(itemholder);
+
+        let c = new Chat(this.game);
+        c.fixedToCamera = true;
+        this.game.add.existing(c);
 
         let timer = this.game.time.create(false);
         // send input to server every 25 ms

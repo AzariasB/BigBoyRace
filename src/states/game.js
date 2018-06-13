@@ -8,6 +8,7 @@ const network_1 = require("../network");
 const ItemHolder_1 = require("../objects/ItemHolder");
 const constant_1 = require("../constant");
 const PlayerAnimation_1 = require("../PlayerAnimation");
+const chat_1 = require("../widgets/chat");
 class Game extends Phaser.State {
     constructor() {
         super(...arguments);
@@ -99,6 +100,9 @@ class Game extends Phaser.State {
         this.cursors = this.game.input.keyboard.createCursorKeys();
         let itemholder = new ItemHolder_1.default(this.game, 50, 50, Assets.Atlases.AtlasesBlueSheet.getName(), Assets.Atlases.AtlasesBlueSheet.Frames.BlueButton09);
         this.game.add.existing(itemholder);
+        let c = new chat_1.default(this.game);
+        c.fixedToCamera = true;
+        this.game.add.existing(c);
         let timer = this.game.time.create(false);
         // send input to server every 25 ms
         timer.loop(constant_1.N_SEND_INPUTS, () => {

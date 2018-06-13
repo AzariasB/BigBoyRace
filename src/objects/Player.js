@@ -4,6 +4,13 @@ const Assets = require("../assets");
 const StateMachine_1 = require("../StateMachine");
 const constant_1 = require("../constant");
 const PlayerAnimation_1 = require("../PlayerAnimation");
+const EmptyPowerup_1 = require("./powerups/EmptyPowerup");
+var PlayerDirection;
+(function (PlayerDirection) {
+    PlayerDirection["Left"] = "left";
+    PlayerDirection["Right"] = "right";
+    PlayerDirection["None"] = "none";
+})(PlayerDirection = exports.PlayerDirection || (exports.PlayerDirection = {}));
 class Player extends Phaser.Sprite {
     constructor(id, game, x, y, group, map, collisionLayer) {
         super(game, x, y, group);
@@ -11,9 +18,9 @@ class Player extends Phaser.Sprite {
         this.map = map;
         this.collisionLayer = collisionLayer;
         this.isHalfWidth = false;
-        this.direction = PlayerAnimation_1.PlayerDirection.Right;
+        this.direction = PlayerDirection.Right;
         this.wallJumped = false;
-        this.item = new EmptyPowerup(this.game, 50, 50);
+        this.item = new EmptyPowerup_1.EmptyPowerup(this.game, 50, 50);
         this.height = this.map.tileHeight * 2;
         this.width = this.map.tileWidth * 2;
         this.game.physics.arcade.enable(this);
@@ -83,7 +90,7 @@ class Player extends Phaser.Sprite {
         this.isHalfWidth = false;
     }
     goDirection(dir) {
-        let mult = dir === PlayerAnimation_1.PlayerDirection.Left ? -1 : 1;
+        let mult = dir === PlayerDirection.Left ? -1 : 1;
         if (this.direction !== dir && !this.sm.is(PlayerAnimation_1.PlayerStates.Jumping)) {
             this.arcadeBody.velocity.x = 0;
         }
@@ -97,7 +104,7 @@ class Player extends Phaser.Sprite {
             }
             else if (this.sm.is(PlayerAnimation_1.PlayerStates.WallSliding) && this.arcadeBody.onWall()) {
                 let mult = this.arcadeBody.blocked.left ? 1 : -1;
-                this.direction = PlayerAnimation_1.PlayerDirection.None;
+                this.direction = PlayerDirection.None;
                 this.arcadeBody.velocity.set(constant_1.PLAYER_SPEED.RUNNING * mult * 2.5, -constant_1.PLAYER_WALLJUMP);
                 this.wallJumped = true;
                 this.game.time.events.add(20, () => this.wallJumped = false);
@@ -121,14 +128,14 @@ class Player extends Phaser.Sprite {
     }
     useItem() {
         this.item.activate();
-        this.item = new EmptyPowerup(this.game, 50, 50);
+        this.item = new EmptyPowerup_1.EmptyPowerup(this.game, 50, 50);
     }
     stop() {
         if (this.wallJumped)
             return;
         this.arcadeBody.velocity.x = 0;
         this.arcadeBody.acceleration.x = 0;
-        this.direction = PlayerAnimation_1.PlayerDirection.None;
+        this.direction = PlayerDirection.None;
     }
     update() {
         let onFloor = this.arcadeBody.onFloor();
@@ -149,8 +156,8 @@ class Player extends Phaser.Sprite {
         // console.log(this.item);
     }
     updateVelocity() {
-        let mult = this.direction === PlayerAnimation_1.PlayerDirection.Left ? -1 :
-            this.direction === PlayerAnimation_1.PlayerDirection.Right ? 1 : 0;
+        let mult = this.direction === PlayerDirection.Left ? -1 :
+            this.direction === PlayerDirection.Right ? 1 : 0;
         switch (this.sm.currentStateName) {
             case PlayerAnimation_1.PlayerStates.Idle:
                 this.arcadeBody.velocity.x = constant_1.PLAYER_SPEED.RUNNING * mult;
