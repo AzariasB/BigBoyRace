@@ -3,8 +3,8 @@ import * as express from 'express';
 import * as http from 'http';
 import * as socketIO from 'socket.io';
 import './phaser';
-import App from './App';
-import { N_PORT, N_PATH } from '../src/constant';
+import { N_PATH } from '../src/constant';
+import { Lobby } from './lobby';
 
 const port = +process.env.PORT || 4334;
 
@@ -13,10 +13,11 @@ class Server {
     private app: express.Application;
     private server: http.Server;
     private io: SocketIO.Server;
-    private game: App;
+    private lobbies: Lobby[];
 
     constructor() {
       this.server = http.createServer();
+      this.lobbies = [];
 
       this.io = socketIO(this.server, {
         serveClient: false,
@@ -26,12 +27,20 @@ class Server {
         console.error(err);
       });
 
-      this.game = new App(this.io);
+      this.nwLobby();
+
       this.server.listen(port, err => {
         if (err) console.error(err);
 
         console.log(`Http/ws started on port ${port}`);
       });
+    }
+
+    private nwLobby() {
+      let nwL = new Lobby(this.io);
+      nwL.onFull = () => this.nwLobby();
+      nwL.onOver = (lobby) => this.lobbies = this.lobbies.filter(l => l !== lobby);
+      this.lobbies.push(nwL);
     }
 }
 

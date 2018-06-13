@@ -73,8 +73,10 @@ export class FiniteStateMachine {
     }
 
     public setCurrentState(stateName: string): FiniteStateMachine {
-        this.currentState = this.getState(stateName);
-        if (this.animationManager) this.animationManager.play(this.currentState.animation);
+        if (!this.currentState || stateName !== this.currentStateName) {
+            this.currentState = this.getState(stateName);
+            if (this.animationManager) this.animationManager.play(this.currentState.animation);
+        }
         return this;
     }
 
@@ -84,6 +86,8 @@ export class FiniteStateMachine {
     }
 
     private updateInternalState() {
+        if (!this.currentState) return;
+
         let nwState = this.currentState.checkForTransitions();
         if (nwState) {
             this.setCurrentState(nwState.name);

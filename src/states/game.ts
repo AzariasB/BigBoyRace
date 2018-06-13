@@ -18,7 +18,6 @@ export default class Game extends Phaser.State {
     private backgrounds: Phaser.TileSprite[] = [];
     private box: Box[] = [];
     private particlesGenerator: Phaser.Particles.Arcade.Emitter = null;
-    private ennemy: Player = null;
     private jumptimer = 0;
     private gameWorld;
 
@@ -89,33 +88,30 @@ export default class Game extends Phaser.State {
         this.game.add.existing(itemholder);
         this.tilemap.createLayer('Foreground');
 
-        Network.when('state').add((_, data) => this.updateState(data) );
+        Network.when('update').add((_, data) => this.updateState(data) );
+        this.game.time.events.loop(15, () => this.sendUpdate());
+    }
+
+    private sendUpdate() {
+        let data = {
+            id: this.myId,
+            player: this.player.serialize()
+        };
+        Network.send('update', data);
     }
 
     private updateState(data) {
-        for (let p of data) {
-            if (p.id === this.myId) {
-                let dist = Phaser.Point.distance({x: p.x, y: p.y}, this.players[p.id].position);
-                if (dist > N_MAX_DISTANE) {
-                    this.player.position.set(p.x, p.y);
-                    this.player.body.velocity.set(p.vx, p.vy);
-                }
-            } else {
-                this.players[p.id].position.set(p.x, p.y);
-                this.players[p.id].body.velocity.set(p.vx, p.vy);
-                this.players[p.id].update();
-            }
+        if (data.id !== this.myId) {
+            let p = data.player;
+            this.players[data.id].deserialize(p);
         }
     }
 
+    public render(): void {
+        this.game.debug.bodyInfo(this.players[1 - this.myId], 32, 32);
+    }
+
     public update(): void {
-        let data = [];
-        data[N_INPUT.UP] = +this.cursors.up.isDown;
-        data[N_INPUT.RIGHT] = +this.cursors.right.isDown;
-        data[N_INPUT.DOWN] = +this.cursors.left.isDown;
-        data[N_INPUT.LEFT] = +this.cursors.left.isDown;
-        data[N_INPUT.ACTION] = 0;
-        Network.send('inputs', data);
         for (let p of this.players) {
             this.game.physics.arcade.collide(p, this.collisionLayer);
         }

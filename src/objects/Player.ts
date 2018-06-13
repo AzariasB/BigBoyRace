@@ -67,6 +67,36 @@ export class Player extends Phaser.Sprite {
         this.initStatemachine();
     }
 
+    public serialize() {
+        return {
+            x: this.x,
+            y: this.y,
+            vx: this.arcadeBody.velocity.x,
+            vy: this.arcadeBody.velocity.y,
+            state: this.sm.currentStateName,
+            direction: this.direction,
+            isCrouchPressed: this.sm.values['isCrouchPressed']
+        };
+    }
+
+    public deserialize(data: any) {
+        this.position.set(data.x, data.y);
+        this.arcadeBody.velocity.set(data.vx, data.vy);
+        if (data.direction === PlayerDirection.None) {
+            // this.arcadeBody.velocity.x = 0;
+        } else {
+            this.scale.x = Math.abs(this.scale.x) * (data.direction === PlayerDirection.Left ? -1 : 1);
+        }
+        this.sm.setCurrentState(data.state);
+
+        this.sm.setProperties({
+            'velocityX': this.arcadeBody.velocity.x,
+            'velocityY': this.arcadeBody.velocity.y,
+            'isOnFloor': this.arcadeBody.onFloor(),
+            'isCrouchPressed': data.isCrouchPressed
+        });
+    }
+
     private initStatemachine(): void {
         const states = Config.states;
         for (let k in states) {
@@ -102,6 +132,7 @@ export class Player extends Phaser.Sprite {
         if (this.direction !== dir && this.arcadeBody.onFloor()) {
             this.arcadeBody.velocity.x = 0;
         }
+
         this.direction = dir;
         this.scale.x = Math.abs(this.scale.x) * mult;
     }
@@ -148,13 +179,13 @@ export class Player extends Phaser.Sprite {
         this.updateVelocity();
 
         let ltPos = this.collisionLayer.getTileXY(this.centerX, this.top, new Phaser.Point());
-        let topLeft = this.map.getTile(ltPos.x, ltPos.y, this.collisionLayer);
+        let topCenter = this.map.getTile(ltPos.x, ltPos.y, this.collisionLayer);
 
         this.sm.setProperties({
             'isOnFloor' : onFloor,
             'velocityX': this.arcadeBody.velocity.x,
             'velocityY': this.arcadeBody.velocity.y,
-            'isStuck': topLeft !== null,
+            'isStuck': topCenter !== null,
             'isOnWall': this.arcadeBody.onWall()
         });
     }
