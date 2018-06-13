@@ -2,7 +2,9 @@
 
 Abet
 ----
-
+- Implementaton du nouveau hero (animation, hitbox,...) 4h
+- correction des bug de physique de deplacement (saut, glissade, course...) 2h
+total : 6h
 
 Boutin
 ------
@@ -13,7 +15,8 @@ Boutin
 
 Kaindoh
 -------
-
+- Colorisation des sprites.
+- Livraison du héro.
 
 Total 7H
 
