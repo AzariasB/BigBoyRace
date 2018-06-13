@@ -119,7 +119,7 @@ export class Player extends Phaser.Sprite {
                 this.arcadeBody.velocity.y = -PLAYER_JUMP;
             } else if (this.sm.is(PlayerStates.WallSliding) && this.arcadeBody.onWall()) {
                 let mult = this.arcadeBody.blocked.left ? 1 : -1;
-                this.arcadeBody.velocity.set(PLAYER_SPEED.RUNNING * mult * 2.5, -PLAYER_WALLJUMP);
+                this.arcadeBody.velocity.set(PLAYER_SPEED.RUNNING * mult * 2, -PLAYER_WALLJUMP);
             }
         }
     }
@@ -197,7 +197,7 @@ export class Player extends Phaser.Sprite {
                     this.arcadeBody.velocity.x = PLAYER_SPEED.JUMP * mult;
                 }
                 else if (  Math.sign(this.arcadeBody.velocity.x) !== mult ) {
-                    this.arcadeBody.velocity.x += 10 * mult;
+                    this.arcadeBody.velocity.x += (6 + Math.abs(this.arcadeBody.velocity.x) * 0.01) * mult;
                 } else {
                     this.arcadeBody.velocity.x /= PLAYER_DESCELERATION;
                 }
