@@ -1,9 +1,7 @@
 import * as Assets from '../assets';
 import { FiniteStateMachine } from '../StateMachine';
-import { PLAYER_ACCELERATION, PLAYER_JUMP, PLAYER_DESCELERATION, PLAYER_SPEED, PLAYER_WALLJUMP } from '../constant';
 import {PlayerAnimation, PlayerStates, Config, PlayerDirection} from '../PlayerAnimation';
 import { PLAYER_ACCELERATION, PLAYER_FIRSTJUMP, PLAYER_DESCELERATION, PLAYER_SPEED, PLAYER_WALLJUMP } from '../constant';
-import {PlayerAnimation, PlayerStates, Config} from '../PlayerAnimation';
 import { Powerup } from './powerups/Powerup';
 import {EmptyPowerup} from './powerups/EmptyPowerup';
 

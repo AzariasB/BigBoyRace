@@ -4,10 +4,8 @@ import Box from '../objects/Box';
 import BackgroundScroller from '../widgets/backgroundScroller';
 import { Network } from '../network';
 import ItemHolder from '../objects/ItemHolder';
-import { N_SEND_INPUTS, N_MAX_DISTANE, N_PLAYERS } from '../constant';
-import { PlayerDirection } from '../PlayerAnimation';
-import { PlayerStates } from '../PlayerAnimation';
-import { PLAYER_FIRSTJUMP, PLAYER_JUMPTIME_MS, PLAYER_JUMP } from '../constant';
+import { PLAYER_FIRSTJUMP, PLAYER_JUMPTIME_MS, PLAYER_JUMP, N_MAX_DISTANE, N_PLAYERS } from '../constant';
+import { PlayerDirection, PlayerStates } from '../PlayerAnimation';
 
 export default class Game extends Phaser.State {
     private sfxAudiosprite: Phaser.AudioSprite = null;
