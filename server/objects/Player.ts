@@ -131,7 +131,7 @@ export default class Player extends Phaser.Sprite {
         this.setJumping(!!inputs[N_INPUT.UP]);
         if ( !!inputs[N_INPUT.LEFT] ) {
             this.goDirection(PlayerDirection.Left);
-        } else if ( !!this.input[N_INPUT.RIGHT]) {
+        } else if ( !!inputs[N_INPUT.RIGHT]) {
             this.goDirection(PlayerDirection.Right);
         } else {
             this.stop();

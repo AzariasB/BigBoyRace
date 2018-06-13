@@ -1,7 +1,7 @@
 
 import * as io from 'socket.io-client';
 import { Signal } from 'phaser-ce';
-import { N_PORT, N_PATH } from './constant';
+import { N_PATH } from './constant';
 
 export namespace Network {
     let m_socket: io.Client;

@@ -22,14 +22,11 @@ class Server {
         serveClient: false,
         path:  N_PATH
       });
-      this.io.on('connection', conn => {
-        console.log('client conected');
-      });
       this.io.on('error', err => {
         console.error(err);
       });
 
-      // this.game = new App(this.io);
+      this.game = new App(this.io);
       this.server.listen(port, err => {
         if (err) console.error(err);
 
