@@ -35,7 +35,11 @@ export default class Title extends Phaser.State {
             text : 'Credits',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
-        });
+        }, {callback : this.creditsClick, callbackContext : this});
+    }
+
+    private creditsClick() {
+        this.game.state.start('credits');
     }
 
     private playClick() {
