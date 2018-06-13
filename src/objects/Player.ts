@@ -14,7 +14,7 @@ export class Player extends Phaser.Sprite {
     public direction: PlayerDirection = PlayerDirection.None;
     private item = new EmptyPowerup(this.game, 50, 50);
 
-    constructor (public readonly id: number,
+    constructor (public readonly isRemote: boolean,
                     game: Phaser.Game,
                     x: number,
                     y: number,
@@ -75,26 +75,17 @@ export class Player extends Phaser.Sprite {
             vy: this.arcadeBody.velocity.y,
             state: this.sm.currentStateName,
             direction: this.direction,
-            isCrouchPressed: this.sm.values['isCrouchPressed']
         };
     }
 
     public deserialize(data: any) {
         this.position.set(data.x, data.y);
         this.arcadeBody.velocity.set(data.vx, data.vy);
-        if (data.direction === PlayerDirection.None) {
-            // this.arcadeBody.velocity.x = 0;
-        } else {
+        if (data.direction !== PlayerDirection.None) {
             this.scale.x = Math.abs(this.scale.x) * (data.direction === PlayerDirection.Left ? -1 : 1);
         }
-        this.sm.setCurrentState(data.state);
 
-        this.sm.setProperties({
-            'velocityX': this.arcadeBody.velocity.x,
-            'velocityY': this.arcadeBody.velocity.y,
-            'isOnFloor': this.arcadeBody.onFloor(),
-            'isCrouchPressed': data.isCrouchPressed
-        });
+        this.sm.setCurrentState(data.state);
     }
 
     private initStatemachine(): void {
@@ -171,23 +162,26 @@ export class Player extends Phaser.Sprite {
     }
 
     public update(): void {
+        super.update();
+
         let onFloor = this.arcadeBody.onFloor();
         this.dustParticles.x = this.x;
         this.dustParticles.y = this.y + this.height / 2;
         this.dustParticles.on = onFloor && this.arcadeBody.velocity.x !== 0;
 
-        this.updateVelocity();
+        if (!this.isRemote) {
+            this.updateVelocity();
 
-        let ltPos = this.collisionLayer.getTileXY(this.centerX, this.top, new Phaser.Point());
-        let topCenter = this.map.getTile(ltPos.x, ltPos.y, this.collisionLayer);
-
-        this.sm.setProperties({
-            'isOnFloor' : onFloor,
-            'velocityX': this.arcadeBody.velocity.x,
-            'velocityY': this.arcadeBody.velocity.y,
-            'isStuck': topCenter !== null,
-            'isOnWall': this.arcadeBody.onWall()
-        });
+            let ltPos = this.collisionLayer.getTileXY(this.centerX, this.top, new Phaser.Point());
+            let topCenter = this.map.getTile(ltPos.x, ltPos.y, this.collisionLayer);
+            this.sm.setProperties({
+                'isOnFloor' : onFloor,
+                'velocityX': this.arcadeBody.velocity.x,
+                'velocityY': this.arcadeBody.velocity.y,
+                'isStuck': topCenter !== null,
+                'isOnWall': this.arcadeBody.onWall()
+            });
+        }
     }
 
     private updateVelocity() {

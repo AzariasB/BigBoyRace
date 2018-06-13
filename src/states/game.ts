@@ -69,10 +69,10 @@ export default class Game extends Phaser.State {
 
         this.players = [];
         for (let i = 0; i < N_PLAYERS; ++i ) {
-            let p = new Player(this.players.length, this.game, startPos.x, startPos.y, Assets.Spritesheets.Hero.getName(), this.tilemap, this.collisionLayer);
+            let p = new Player(i !== this.myId, this.game, startPos.x, startPos.y, Assets.Spritesheets.Hero.getName(), this.tilemap, this.collisionLayer);
             this.players.push(p);
             this.game.add.existing(p);
-            if (p.id === this.myId) {
+            if (i === this.myId) {
                 this.player = p;
             }
         }
@@ -112,6 +112,8 @@ export default class Game extends Phaser.State {
     }
 
     public update(): void {
+        super.update(this.game);
+
         for (let p of this.players) {
             this.game.physics.arcade.collide(p, this.collisionLayer);
         }
@@ -159,7 +161,5 @@ export default class Game extends Phaser.State {
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).justDown) {
             this.player.useItem();
         }
-
-        this.player.update();
     }
 }

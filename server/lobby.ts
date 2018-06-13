@@ -25,7 +25,6 @@ export class Lobby {
     private removeSocket(socket: SocketIO.Socket) {
         this.clients = this.clients.filter(x => x !== socket);
         if (this.clients.length === 0) {
-            console.log('end of lobby');
             if (this.onOver) this.onOver(this);
         }
     }
