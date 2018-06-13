@@ -1,3 +1,4 @@
+import { PLAYER_VMAX_GRAB_WALLSLIDE } from './constant';
 
 export enum PlayerDirection {
     Left = 'left',
@@ -88,14 +89,15 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
             transitions: {
                 [PlayerStates.Running]: opts => opts.isOnFloor && opts.velocityX !== 0,
                 [PlayerStates.Idle]: opts => opts.isOnFloor && opts.velocityX === 0,
-                [PlayerStates.WallSliding]: opts => !opts.isOnFloor && opts.isOnWall && opts.velocityY > 0
+                [PlayerStates.WallSliding]: opts => !opts.isOnFloor && opts.isOnWall && opts.velocityY > -150 && opts.velocityY < PLAYER_VMAX_GRAB_WALLSLIDE
             }
         },
         [PlayerStates.WallSliding]: {
             animation:  PlayerAnimation.WallSliding,
             transitions: {
                 [PlayerStates.Jumping]: opts => !opts.isOnWall && !opts.isOnFloor,
-                [PlayerStates.Idle]: opts => opts.isOnFloor // && opts.velocityX === 0
+                [PlayerStates.Idle]: opts => opts.isOnFloor,
+                [PlayerStates.WallSliding]: opts => opts.velocityY < PLAYER_VMAX_GRAB_WALLSLIDE
             }
         }
     }

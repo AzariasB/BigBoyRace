@@ -6,6 +6,7 @@ import { Network } from '../network';
 import ItemHolder from '../objects/ItemHolder';
 import { N_SEND_INPUTS } from '../constant';
 import { PlayerDirection } from '../PlayerAnimation';
+import { PlayerStates } from '../PlayerAnimation';
 
 export default class Game extends Phaser.State {
     private sfxAudiosprite: Phaser.AudioSprite = null;
@@ -18,6 +19,7 @@ export default class Game extends Phaser.State {
     private box: Box[] = [];
     private particlesGenerator: Phaser.Particles.Arcade.Emitter = null;
     private ennemy: Player = null;
+    // private spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
     private isMantleColor(color: {r: number, g: number, b: number, a: number}): boolean {
         let possibles = ['143,50,50', '171,67,67', '217,87,99'];
@@ -89,8 +91,6 @@ export default class Game extends Phaser.State {
             }
         });
 
-        this.game.input.keyboard.createCursorKeys();
-
         this.sfxAudiosprite = this.game.add.audioSprite(Assets.Audiosprites.AudiospritesSfx.getName());
 
         // This is an example of how you can lessen the verbosity
@@ -127,6 +127,7 @@ export default class Game extends Phaser.State {
             ]));
         });
         timer.start();
+        this.tilemap.createLayer('Foreground');
     }
 
     public render(): void {
@@ -162,21 +163,23 @@ export default class Game extends Phaser.State {
             return !playerOverlap;
         });
 
-        this.player.setJumping(this.cursors.up.isDown);
+        this.player.setJumping(this.cursors.up.justDown);
         this.player.setCrouching(this.cursors.down.isDown);
 
 
-        if (this.cursors.left.justDown) {
+        if (this.cursors.left.isDown) {
             this.player.goDirection(PlayerDirection.Left);
-        } else if (this.cursors.right.justDown) {
+        } else if (this.cursors.right.isDown) {
             this.player.goDirection(PlayerDirection.Right);
         }
 
-        if (this.cursors.left.isUp && this.cursors.right.isUp) {
+        if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.arcadeBody.onFloor()) {
             this.player.stop();
+        }
+        if (this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).justDown) {
+            this.player.useItem();
         }
 
         this.player.update();
-        // this.ennemy.update();
     }
 }

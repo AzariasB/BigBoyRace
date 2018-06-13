@@ -1,7 +1,9 @@
 import * as Assets from '../assets';
 import { FiniteStateMachine } from '../StateMachine';
 import { PLAYER_ACCELERATION, PLAYER_JUMP, PLAYER_DESCELERATION, PLAYER_SPEED, PLAYER_WALLJUMP } from '../constant';
-import {PlayerAnimation, PlayerStates, Config, PlayerDirection} from '../PlayerAnimation';
+import {PlayerAnimation, PlayerStates, Config} from '../PlayerAnimation';
+import { Powerup } from './powerups/Powerup';
+import {EmptyPowerup} from './powerups/EmptyPowerup';
 
 export class Player extends Phaser.Sprite {
 
@@ -11,6 +13,7 @@ export class Player extends Phaser.Sprite {
     public sm: FiniteStateMachine;
     public direction: PlayerDirection = PlayerDirection.Right;
     private wallJumped: boolean = false;
+    private item = new EmptyPowerup(this.game, 50, 50);
 
     constructor (public readonly id: number,
                     game: Phaser.Game,
@@ -32,12 +35,15 @@ export class Player extends Phaser.Sprite {
         this.dustParticles.start(false, 100, 10);
         this.dustParticles.on = false;
 
-
         this.arcadeBody = this.body;
         this.arcadeBody.collideWorldBounds = true;
         this.arcadeBody.width /= 2;
         this.arcadeBody.offset.x += this.arcadeBody.width / 2;
         this.anchor.set(0.5, 0.5);
+        this.arcadeBody.maxVelocity.x = 1000;
+        this.arcadeBody.maxVelocity.y = 1000;
+
+
 
         this.animations.add(PlayerAnimation.Run, [8, 9, 10, 11, 12, 13], 10, true);
         this.animations.add(PlayerAnimation.Idle, [0, 1, 2, 3], 5, true);
@@ -98,23 +104,20 @@ export class Player extends Phaser.Sprite {
 
     public goDirection(dir: PlayerDirection): void {
         let mult = dir === PlayerDirection.Left ? -1 : 1;
-        if (this.direction !== dir) {
+        if (this.direction !== dir && this.arcadeBody.onFloor()) {
             this.arcadeBody.velocity.x = 0;
-            this.direction = dir;
         }
-
+        this.direction = dir;
         this.scale.x = Math.abs(this.scale.x) * mult;
     }
 
     public setJumping(jumping: boolean): void {
-        if (jumping && !this.wallJumped) {
+        if (jumping) {
             if (this.arcadeBody.onFloor() && this.sm.isOneOf(PlayerStates.Idle, PlayerStates.Running)) {
                 this.arcadeBody.velocity.y = -PLAYER_JUMP;
             } else if (this.sm.is(PlayerStates.WallSliding) && this.arcadeBody.onWall()) {
                 let mult = this.arcadeBody.blocked.left ? 1 : -1;
-                this.arcadeBody.velocity.set(PLAYER_SPEED.RUNNING * mult, -PLAYER_WALLJUMP);
-                this.wallJumped = true;
-                this.game.time.events.add(50, () => this.wallJumped = false);
+                this.arcadeBody.velocity.set(PLAYER_SPEED.RUNNING * mult * 2, -PLAYER_WALLJUMP);
             }
         }
     }
@@ -126,6 +129,19 @@ export class Player extends Phaser.Sprite {
         } else {
             this.exitHalfWidth();
         }
+    }
+
+    public setItem(powerup: Powerup) {
+        this.item = powerup;
+    }
+
+    public getItem() {
+        return this.item;
+    }
+
+    public useItem() {
+        this.item.activate();
+        this.item = new EmptyPowerup(this.game, 50, 50);
     }
 
     public stop(): void {
@@ -141,8 +157,7 @@ export class Player extends Phaser.Sprite {
         this.dustParticles.y = this.y + this.height / 2;
         this.dustParticles.on = onFloor && this.arcadeBody.velocity.x !== 0;
 
-        if (!this.wallJumped)
-            this.updateVelocity();
+        this.updateVelocity();
 
         let ltPos = this.collisionLayer.getTileXY(this.centerX, this.top, new Phaser.Point());
         let topLeft = this.map.getTile(ltPos.x, ltPos.y, this.collisionLayer);
@@ -166,7 +181,8 @@ export class Player extends Phaser.Sprite {
             case PlayerStates.Running:
                 if (Math.abs(this.arcadeBody.velocity.x) < PLAYER_SPEED.RUNNING)
                     this.arcadeBody.velocity.x = PLAYER_SPEED.RUNNING * mult;
-                this.arcadeBody.velocity.x *= PLAYER_ACCELERATION;
+                else
+                    this.arcadeBody.velocity.x *= PLAYER_ACCELERATION;
                 break;
             case PlayerStates.Crouched:
                 this.arcadeBody.velocity.x = PLAYER_SPEED.CROUCH * mult;
@@ -175,15 +191,21 @@ export class Player extends Phaser.Sprite {
                 this.arcadeBody.velocity.x /= PLAYER_DESCELERATION;
                 break;
             case PlayerStates.Jumping:
-                if (Math.abs(this.arcadeBody.velocity.x) < PLAYER_SPEED.JUMP)
+                if (Math.abs(this.arcadeBody.velocity.x) < PLAYER_SPEED.JUMP) {
                     this.arcadeBody.velocity.x = PLAYER_SPEED.JUMP * mult;
-                else
+                }
+                else if (  Math.sign(this.arcadeBody.velocity.x) !== mult ) {
+                    this.arcadeBody.velocity.x += (6 + Math.abs(this.arcadeBody.velocity.x) * 0.01) * mult;
+                } else {
                     this.arcadeBody.velocity.x /= PLAYER_DESCELERATION;
+                }
                 break;
             case PlayerStates.WallSliding:
                 if (this.arcadeBody.velocity.y > 50)
                     this.arcadeBody.velocity.y = 50;
-                this.arcadeBody.velocity.x =  mult;
+                    if (!(Math.abs(this.arcadeBody.velocity.x) > 200)) {
+                        this.arcadeBody.velocity.x =  mult;
+                   }
                 break;
         }
     }
