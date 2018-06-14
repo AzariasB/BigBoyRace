@@ -1,6 +1,7 @@
 import * as Utils from '../utils/utils';
 import * as Assets from '../assets';
 import { WORLD_GRAVITY } from '../constant';
+import { Network } from '../network';
 
 export default class Boot extends Phaser.State {
     public preload(): void {
@@ -49,18 +50,22 @@ export default class Boot extends Phaser.State {
         // game.height is the actual height of the game
         // GOOGLE_WEB_FONTS are the fonts to be loaded from Google Web Fonts
         // SOUND_EXTENSIONS_PREFERENCE is the most preferred to least preferred order to look for audio sources
-        console.log(
-            `DEBUG....................... ${DEBUG}
-           \nSCALE_MODE.................. ${SCALE_MODE}
-           \nDEFAULT_GAME_WIDTH.......... ${DEFAULT_GAME_WIDTH}
-           \nDEFAULT_GAME_HEIGHT......... ${DEFAULT_GAME_HEIGHT}
-           \nMAX_GAME_WIDTH.............. ${MAX_GAME_WIDTH}
-           \nMAX_GAME_HEIGHT............. ${MAX_GAME_HEIGHT}
-           \ngame.width.................. ${this.game.width}
-           \ngame.height................. ${this.game.height}
-           \nGOOGLE_WEB_FONTS............ ${GOOGLE_WEB_FONTS}
-           \nSOUND_EXTENSIONS_PREFERENCE. ${SOUND_EXTENSIONS_PREFERENCE}`
-        );
+        if (DEBUG) {
+            console.log(
+                `DEBUG....................... ${DEBUG}
+               \nSCALE_MODE.................. ${SCALE_MODE}
+               \nDEFAULT_GAME_WIDTH.......... ${DEFAULT_GAME_WIDTH}
+               \nDEFAULT_GAME_HEIGHT......... ${DEFAULT_GAME_HEIGHT}
+               \nMAX_GAME_WIDTH.............. ${MAX_GAME_WIDTH}
+               \nMAX_GAME_HEIGHT............. ${MAX_GAME_HEIGHT}
+               \ngame.width.................. ${this.game.width}
+               \ngame.height................. ${this.game.height}
+               \nGOOGLE_WEB_FONTS............ ${GOOGLE_WEB_FONTS}
+               \nSOUND_EXTENSIONS_PREFERENCE. ${SOUND_EXTENSIONS_PREFERENCE}`
+            );
+        }
+
+        Network.initialize();
 
         this.game.state.start('preloader');
     }

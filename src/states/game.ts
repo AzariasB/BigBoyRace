@@ -23,6 +23,12 @@ export default class Game extends Phaser.State {
     private collectedBoxes: number[];
     private currentRound: number = 1;
     private endTexts: Phaser.Text[] = [];
+    private networkTimer: Phaser.TimerEvent = null;
+
+    public init(id, mapName) {
+        this.myId = id;
+        this.tilemap = this.game.add.tilemap(mapName);
+    }
 
     public create(): void {
         this.collectedBoxes = [];
@@ -38,7 +44,6 @@ export default class Game extends Phaser.State {
         this.particlesGenerator.minParticleScale = 0.3;
         this.particlesGenerator.maxParticleScale = 0.3;
 
-        this.tilemap = this.game.add.tilemap(Assets.Tilemaps.JungleMap2.getName());
 
         this.tilemap.addTilesetImage(Assets.Images.TilesetsJungle.getName());
         this.tilemap.setCollisionByExclusion([], true, 'Collision');
@@ -74,7 +79,7 @@ export default class Game extends Phaser.State {
         this.tilemap.createLayer('Foreground');
 
         Network.when('update').add((_, data) => this.updateState(data) );
-        this.game.time.events.loop(15, () => this.sendUpdate());
+        this.networkTimer = this.game.time.events.loop(15, () => this.sendUpdate());
     }
 
     private createObjects(): Phaser.Point {
@@ -165,8 +170,10 @@ export default class Game extends Phaser.State {
         this.endTexts.push(txt, rankTt);
 
         if (this.currentRound === N_ROUNDS) {
-            this.sendUpdate();
-            Network.disconnect(); // bye bye
+            this.sendUpdate(); // last update to say you arrived
+            this.game.time.events.remove(this.networkTimer); // stop sending updates
+            Network.when('update').removeAll(); // stop listening for any incoming updates1
+            Network.send('quit');
             new TextButton(this.game, this.game.width / 2, this.game.height / 2 + rankTt.height + txt.height + 20, {
                 text: 'Menu',
                 fontSize: 20,
