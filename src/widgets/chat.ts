@@ -1,4 +1,5 @@
 import Game from '../states/game';
+import {Network} from '../network';
 
 export default class Chat {
 
@@ -27,6 +28,16 @@ export default class Chat {
         this.game.input.keyboard.callbackContext = this;
         this.game.input.keyboard.addKey(Phaser.Keyboard.ENTER).onDown.add(Chat.prototype.processEnter, this);
         this.inputBackground.fixedToCamera = true;
+        Network.when('chat').add((_, message) => this.addMessage(message));
+    }
+
+    public addMessage(message: string): void {
+        this.messages.setText(this.messages.text + '\n' + message);
+
+        let chars = this.messages.text.split('');
+        if (chars.filter(x => x === '\n').length > 5) {
+            this.messages.setText(this.messages.text.substr(chars.indexOf('\n') + 1));
+        }
     }
 
     public processEnter() {
@@ -43,11 +54,17 @@ export default class Chat {
             this.game.input.keyboard.onPressCallback = null;
             this.state.pauseCapture = false;
             if (this.inputText.text.length > 1) {
-                this.messages.setText(this.messages.text + '\n' + this.inputText.text.substr(0, this.inputText.text.length));
-                let chars = this.messages.text.split('');
-                if (chars.filter(x => x === '\n').length > 10) {
-                    this.messages.setText(this.messages.text.substr(chars.indexOf('\n') + 1));
+                let m = this.inputText.text.split('');
+                for (let i = 0, c = 1; i < m.length ; i++, c++) {
+                    if (m[i] === ' ')
+                        c = 0;
+                    if (c === 30) {
+                        m.splice(i, 0, '\n');
+                        c = 0;
+                    }
                 }
+                let message = m.join('');
+                Network.send('chat', message);
             }
             this.inputText.setText('');
             this.inputBackground.clear();
@@ -55,7 +72,8 @@ export default class Chat {
     }
 
     public updateInputText(c: string, e: KeyboardEvent) {
-        if (RegExp('[ -~]').test(c) && this.inputText.text.length < this.maxlength) {
+        if (RegExp('[ -~àâäôéèëêïîçùûüÿæœÀÂÄÔÉÈËÊÏÎŸÇÙÛÜÆŒáíñóúÁÍÑÓÚìòÌÒąćęłńśźżĄĆĘŁŃŚŹŻößÖẞ]')
+            .test(c) && this.inputText.text.length < this.maxlength) {
             this.inputText.setText(this.inputText.text + c);
         } else if (e.code === 'Backspace') {
             this.inputText.setText(this.inputText.text.substr(0, this.inputText.text.length - 1));
