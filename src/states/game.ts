@@ -21,6 +21,7 @@ export default class Game extends Phaser.State {
     private jumptimer = 0;
     private finishTrigger: Phaser.Sprite;
     private collectedBoxes: number[];
+    private currentRound: number;
 
     public create(): void {
         this.collectedBoxes = [];
@@ -131,23 +132,15 @@ export default class Game extends Phaser.State {
 
         let txt = this.game.add.text(this.game.width / 2  , this.game.height / 2 , 'Finished !', {
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
-            fontSize : 20
+            fontSize : 35
         });
         txt.anchor.set(0.5);
         let rank = this.players.filter(p => p !== this.player && p.finished).length + 1;
         let rankTt = this.game.add.text(this.game.width / 2  , this.game.height / 2 + txt.height , 'Rank : ' + this.toRank(rank), {
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
-            fontSize : 20
+            fontSize : 30
         });
         rankTt.anchor.set(0.5, 0.5);
-
-        let menuBtn = new TextButton(this.game, this.game.width / 2, this.game.height / 2 + txt.height + rankTt.height + 20, {
-            text: 'Menu',
-            fontSize: 20,
-            font: Assets.CustomWebFonts.FontsKenvectorFuture.getName()
-        }, {
-            callback: () => this.game.state.start('title')
-        });
     }
 
 
