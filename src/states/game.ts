@@ -42,7 +42,7 @@ export default class Game extends Phaser.State {
         this.particlesGenerator.minParticleScale = 0.3;
         this.particlesGenerator.maxParticleScale = 0.3;
 
-        this.tilemap = this.game.add.tilemap(Assets.Tilemaps.JungleMapTest.getName(), 16, 16);
+        this.tilemap = this.game.add.tilemap(Assets.Tilemaps.JungleMap2.getName(), 16, 16);
 
 
         let img = this.game.cache.getImage(Assets.Spritesheets.Adventurer.getName());
@@ -67,7 +67,7 @@ export default class Game extends Phaser.State {
             bg.height = this.world.height;
         }
 
-        this.player = new Player(this.game, 32, 32, Assets.Spritesheets.Hero.getName(), this.tilemap, this.collisionLayer);
+        this.player = new Player(this.game, 32, 32, Assets.Spritesheets.Hero2.getName(), this.tilemap, this.collisionLayer);
         // this.ennemy = new Player(this.game, 32, 32, Assets.Spritesheets.HeroBlue.getName(), this.collisionLayer);
 
         this.game.add.existing(this.player);
@@ -122,12 +122,12 @@ export default class Game extends Phaser.State {
     }
 
     public render(): void {
-  /*      this.game.debug.bodyInfo(this.player, 32, 32);
+      this.game.debug.bodyInfo(this.player, 32, 32);
         this.game.debug.text(this.player.sm.currentStateName, 32, 256);
         this.game.debug.body(this.player);
         this.game.debug.spriteBounds(this.player, 'pink', false);
         this.game.debug.text(this.player.animations.currentAnim.name, 32, 270);
-*/
+
     }
 
     public update(): void {
