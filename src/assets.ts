@@ -139,6 +139,16 @@ export namespace Spritesheets {
         static getMargin(): number { return 0; }
         static getSpacing(): number { return 0; }
     }
+    export class Hero2 {
+        static getName(): string { return 'hero2'; }
+
+        static getPNG(): string { return require('assets/spritesheets/hero2.[33,31,28,0,0].png'); }
+        static getFrameWidth(): number { return 33; }
+        static getFrameHeight(): number { return 31; }
+        static getFrameMax(): number { return 28; }
+        static getMargin(): number { return 0; }
+        static getSpacing(): number { return 0; }
+    }
 }
 
 export namespace Atlases {

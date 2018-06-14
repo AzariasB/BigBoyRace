@@ -51,7 +51,7 @@ export class Player extends Phaser.Sprite {
         this.animations.add(PlayerAnimation.Run, [0, 1, 3, 4, 5, 6, 7], 10, true);
         this.animations.add(PlayerAnimation.Idle, [21, 22, 23, 24, 25], 5, true);
         this.animations.add(PlayerAnimation.Crouch, [14, 15, 16, 16, 16, 15], 5, true);
-        this.animations.add(PlayerAnimation.JumpCrouch, [18], 5, false).onComplete.add(() => {
+        this.animations.add(PlayerAnimation.JumpCrouch, [18], 12, false).onComplete.add(() => {
             this.animations.play(PlayerAnimation.SlideCrouch);
         });
         this.animations.add(PlayerAnimation.SlideCrouch, [19], 10, true);
@@ -190,6 +190,9 @@ export class Player extends Phaser.Sprite {
                     this.arcadeBody.velocity.x *= PLAYER_ACCELERATION;
                 break;
             case PlayerStates.Crouched:
+                this.arcadeBody.velocity.x = PLAYER_SPEED.CROUCH * mult;
+                break;
+            case PlayerStates.CrouchWalking:
                 this.arcadeBody.velocity.x = PLAYER_SPEED.CROUCH * mult;
                 break;
             case PlayerStates.SlideCrouched:
