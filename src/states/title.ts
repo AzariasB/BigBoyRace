@@ -21,7 +21,7 @@ export default class Title extends Phaser.State {
             text : 'Build',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
-        });
+        }, {callback : this.buildClick, callbackContext : this});
         yPos += optionsB.height + 10;
 
         let helpB = new TextButton(this.game, this.game.world.centerX, yPos , {
@@ -45,6 +45,15 @@ export default class Title extends Phaser.State {
 
     private loadGame() {
         this.game.state.start('lobby');
+    }
+
+    private buildClick() {
+        this.game.camera.onFadeComplete.addOnce(this.loadBuild, this);
+        this.game.camera.fade(0x000000, 500);
+    }
+
+    private loadBuild() {
+        this.game.state.start('build');
     }
 
     private helpClick() {
