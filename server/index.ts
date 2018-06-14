@@ -2,7 +2,6 @@
 import * as express from 'express';
 import * as http from 'http';
 import * as socketIO from 'socket.io';
-import './phaser';
 import { N_PATH } from '../src/constant';
 import { Lobby } from './lobby';
 
