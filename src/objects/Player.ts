@@ -203,7 +203,7 @@ export class Player extends Phaser.Sprite {
                     this.arcadeBody.velocity.x = PLAYER_SPEED.JUMP * mult;
                 }
                 else if (  Math.sign(this.arcadeBody.velocity.x) !== mult && mult !== 0 ) {
-                    this.arcadeBody.velocity.x += (6 + Math.abs(this.arcadeBody.velocity.x) * 0.01) * mult;
+                    this.arcadeBody.velocity.x += (7 + Math.abs(this.arcadeBody.velocity.x) * 0.02) * mult;
                 } else {
                     this.arcadeBody.velocity.x /= PLAYER_DESCELERATION;
                 }
