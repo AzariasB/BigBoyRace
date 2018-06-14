@@ -23,6 +23,8 @@ export default class Game extends Phaser.State {
     private ennemy: Player = null;
     // private spacebar = this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
+    public pauseCapture: boolean = false;
+
     private isMantleColor(color: {r: number, g: number, b: number, a: number}): boolean {
         let possibles = ['143,50,50', '171,67,67', '217,87,99'];
         let joined = [color.r, color.g, color.b].join(',');
@@ -117,9 +119,7 @@ export default class Game extends Phaser.State {
         let itemholder = new ItemHolder(this.game, 50, 50, Assets.Atlases.AtlasesBlueSheet.getName(), Assets.Atlases.AtlasesBlueSheet.Frames.BlueButton09);
         this.game.add.existing(itemholder);
 
-        let c = new Chat(this.game);
-        c.fixedToCamera = true;
-        this.game.add.existing(c);
+        new Chat(this.game, this);
 
         let timer = this.game.time.create(false);
         // send input to server every 25 ms
@@ -129,7 +129,7 @@ export default class Game extends Phaser.State {
                 +this.cursors.right.isDown,
                 +this.cursors.down.isDown,
                 +this.cursors.left.isDown,
-                +this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)
+                +(this.pauseCapture ? false : this.game.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR))
             ]));
         });
         timer.start();
@@ -195,22 +195,22 @@ export default class Game extends Phaser.State {
             return !playerOverlap;
         });
 
-        this.player.setJumping(this.cursors.up.justDown);
-        this.player.setCrouching(this.cursors.down.isDown);
+            this.player.setJumping(this.cursors.up.justDown);
+            this.player.setCrouching(this.cursors.down.isDown);
 
 
-        if (this.cursors.left.isDown) {
-            this.player.goDirection(PlayerDirection.Left);
-        } else if (this.cursors.right.isDown) {
-            this.player.goDirection(PlayerDirection.Right);
-        }
+            if (this.cursors.left.isDown) {
+                this.player.goDirection(PlayerDirection.Left);
+            } else if (this.cursors.right.isDown) {
+                this.player.goDirection(PlayerDirection.Right);
+            }
 
-        if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.arcadeBody.onFloor()) {
-            this.player.stop();
-        }
-        if (this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).justDown) {
-            this.player.useItem();
-        }
+            if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.arcadeBody.onFloor()) {
+                this.player.stop();
+            }
+            if (this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).justDown && !this.pauseCapture) {
+                this.player.useItem();
+            }
 
         this.player.update();
     }
