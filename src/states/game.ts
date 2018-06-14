@@ -7,6 +7,7 @@ import ItemHolder from '../objects/ItemHolder';
 import { PLAYER_FIRSTJUMP, PLAYER_JUMPTIME_MS, PLAYER_JUMP, N_MAX_DISTANE, N_PLAYERS, N_INPUT } from '../constant';
 import { PlayerDirection, PlayerStates } from '../PlayerAnimation';
 import TextButton from '../widgets/TextButton';
+import Chat from '../widgets/chat';
 
 export default class Game extends Phaser.State {
     private myId: number;
@@ -22,6 +23,8 @@ export default class Game extends Phaser.State {
     private finishTrigger: Phaser.Sprite;
     private collectedBoxes: number[];
     private currentRound: number;
+
+    public pauseCapture: boolean = false;
 
     public create(): void {
         this.collectedBoxes = [];
@@ -99,6 +102,8 @@ export default class Game extends Phaser.State {
 
         Network.when('update').add((_, data) => this.updateState(data) );
         this.game.time.events.loop(15, () => this.sendUpdate());
+
+        new Chat(this.game, this);
     }
 
     private sendUpdate() {
@@ -164,39 +169,41 @@ export default class Game extends Phaser.State {
         }
 
 
+        if ( !this.pauseCapture) {
 
-        if (this.cursors.up.justDown && this.player.sm.is(PlayerStates.WallSliding)) {
-            this.player.setJumping(true);
-        }
-        else if (this.cursors.up.isDown && this.player.arcadeBody.onFloor() && this.player.sm.isOneOf(PlayerStates.Running, PlayerStates.Idle) && this.jumptimer === 0) {
-            this.jumptimer = 1;
-            this.game.time.events.add(PLAYER_JUMPTIME_MS, () => this.jumptimer = 0);
-            this.player.arcadeBody.velocity.y = - PLAYER_JUMP;
-        }
-        else if (this.cursors.up.isDown && (this.jumptimer !== 0)) {
-            this.player.body.velocity.y = - PLAYER_JUMP;
-        }
-        else if (this.jumptimer !== 0) {
-            this.jumptimer = 0;
-        }
+            if (this.cursors.up.justDown && this.player.sm.is(PlayerStates.WallSliding)) {
+                this.player.setJumping(true);
+            }
+            else if (this.cursors.up.isDown && this.player.arcadeBody.onFloor() && this.player.sm.isOneOf(PlayerStates.Running, PlayerStates.Idle) && this.jumptimer === 0) {
+                this.jumptimer = 1;
+                this.game.time.events.add(PLAYER_JUMPTIME_MS, () => this.jumptimer = 0);
+                this.player.arcadeBody.velocity.y = -PLAYER_JUMP;
+            }
+            else if (this.cursors.up.isDown && (this.jumptimer !== 0)) {
+                this.player.body.velocity.y = -PLAYER_JUMP;
+            }
+            else if (this.jumptimer !== 0) {
+                this.jumptimer = 0;
+            }
 
-        this.player.setCrouching(this.cursors.down.isDown);
-        let ti = this.cursors.up.timeDown;
+            this.player.setCrouching(this.cursors.down.isDown);
+            let ti = this.cursors.up.timeDown;
 
-        if (this.cursors.left.isDown) {
-            this.player.goDirection(PlayerDirection.Left);
-        } else if (this.cursors.right.isDown) {
-            this.player.goDirection(PlayerDirection.Right);
-        }
+            if (this.cursors.left.isDown) {
+                this.player.goDirection(PlayerDirection.Left);
+            } else if (this.cursors.right.isDown) {
+                this.player.goDirection(PlayerDirection.Right);
+            }
 
-        if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.arcadeBody.onFloor()) {
-            this.player.stop();
-        }
-        else if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.sm.is(PlayerStates.Jumping) ) {
-            this.player.direction = PlayerDirection.None;
-        }
-        if (this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).justDown) {
-            this.player.useItem();
+            if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.arcadeBody.onFloor()) {
+                this.player.stop();
+            }
+            else if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.sm.is(PlayerStates.Jumping)) {
+                this.player.direction = PlayerDirection.None;
+            }
+            if (this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).justDown) {
+                this.player.useItem();
+            }
         }
     }
 }

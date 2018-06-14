@@ -32,7 +32,10 @@ export class Lobby {
     private startGame() {
         this.isFull = true;
         if (this.onFull) this.onFull();
-        this.clients.map(c => c.on('update', (data) => this.broadcast('update', data)));
+        this.clients.map(c => {
+            c.on('chat', (data) => this.broadcast('chat', data));
+            c.on('update', (data) => this.broadcast('update', data));
+        });
         this.broadcast('start');
     }
 
