@@ -15,6 +15,7 @@ import * as Utils from './utils/utils';
 import * as Assets from './assets';
 import Help from './states/help';
 import { Network } from './network';
+import Build from "./states/build";
 
 class App extends Phaser.Game {
 
@@ -25,6 +26,7 @@ class App extends Phaser.Game {
         this.state.add('title', Title);
         this.state.add('game', Game);
         this.state.add('lobby', Lobby);
+        this.state.add('build', Build);
         this.state.add('help', Help);
         this.state.add('credits', Credits);
 

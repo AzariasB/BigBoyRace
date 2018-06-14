@@ -21,10 +21,10 @@ export default class Title extends Phaser.State {
         yPos += tb.height + 10;
 
         let optionsB = new TextButton(this.game, this.game.world.centerX, yPos , {
-            text : 'Join',
+            text : 'Build',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
-        }, {callback: () => this.joinClick()});
+        }, {callback : this.buildClick, callbackContext : this});
         yPos += optionsB.height + 10;
 
         let helpB = new TextButton(this.game, this.game.world.centerX, yPos , {
@@ -42,10 +42,8 @@ export default class Title extends Phaser.State {
     }
 
     private playClick() {
-        this.game.camera.onFadeComplete.addOnce(() => {
-            this.game.state.start('lobby', true, false, true, Assets.Tilemaps.JungleMap2.getName(), 1);
-        });
-        this.game.camera.fade(0x000000, 100);
+        this.game.camera.onFadeComplete.addOnce(this.loadGame, this);
+        this.game.camera.fade(0x000000, 500);
     }
 
     private joinClick() {
@@ -58,14 +56,23 @@ export default class Title extends Phaser.State {
 
     }
 
+    private buildClick() {
+        this.game.camera.onFadeComplete.addOnce(this.loadBuild, this);
+        this.game.camera.fade(0x000000, 500);
+    }
+
+    private loadBuild() {
+        this.game.state.start('build');
+    }
+
     private helpClick() {
-        this.game.camera.onFadeComplete.addOnce(() => this.game.state.start('help'));
-        this.game.camera.fade(0x000000, 100);
+        this.game.camera.onFadeComplete.addOnce(this.loadHelp, this);
+        this.game.camera.fade(0x000000, 500);
     }
 
     private creditsClick() {
-        this.game.camera.onFadeComplete.addOnce(() => this.game.state.start('credits'));
-        this.game.camera.fade(0x000000, 100);
+        this.game.camera.onFadeComplete.addOnce(this.loadCredits, this);
+        this.game.camera.fade(0x000000, 500);
     }
 
 }
