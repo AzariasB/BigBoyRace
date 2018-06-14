@@ -6,8 +6,8 @@ export const PLAYER_SPEED = {
     CROUCH : 80,
     JUMP : 100
 };
-export const PLAYER_ACCELERATION = 1.005;
-export const PLAYER_DESCELERATION = 1.007;
+export const PLAYER_ACCELERATION = 1.01 ;
+export const PLAYER_DESCELERATION = 1.014 ;
 
 export const PLAYER_FIRSTJUMP = 800;
 export const PLAYER_JUMP = 250;
