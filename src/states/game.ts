@@ -198,11 +198,12 @@ export default class Game extends Phaser.State {
             divisor << 1;
         }
 
+        let trulyjustdown = this.cursors.up.justDown;
 
-        if (this.cursors.up.justDown && this.player.sm.is(PlayerStates.WallSliding)) {
+        if (trulyjustdown && this.player.sm.is(PlayerStates.WallSliding) && this.player.arcadeBody.onWall()) {
             this.player.setJumping(true);
         }
-        else if (this.cursors.up.isDown && this.player.arcadeBody.onFloor() && this.player.sm.isOneOf(PlayerStates.Running, PlayerStates.Idle) && this.jumptimer === 0) {
+        else if (trulyjustdown && this.player.arcadeBody.onFloor() && this.player.sm.isOneOf(PlayerStates.Running, PlayerStates.Idle) && this.jumptimer === 0) {
             this.jumptimer = 1;
             this.game.time.events.add(PLAYER_JUMPTIME_MS, () => this.jumptimer = 0);
             this.player.arcadeBody.velocity.y = - PLAYER_JUMP;

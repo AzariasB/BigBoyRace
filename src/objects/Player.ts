@@ -222,7 +222,7 @@ export class Player extends Phaser.Sprite {
                     this.arcadeBody.velocity.x = PLAYER_SPEED.JUMP * mult;
                 }
                 else if (  Math.sign(this.arcadeBody.velocity.x) !== mult && mult !== 0 ) {
-                    this.arcadeBody.velocity.x += (7 + Math.abs(this.arcadeBody.velocity.x) * 0.02) * mult;
+                    this.arcadeBody.velocity.x += (15 + Math.abs(this.arcadeBody.velocity.x) * 0.05) * mult;
                 } else {
                     this.arcadeBody.velocity.x /= PLAYER_DESCELERATION;
                 }
@@ -230,7 +230,7 @@ export class Player extends Phaser.Sprite {
             case PlayerStates.WallSliding:
                 if (this.arcadeBody.velocity.y > 50)
                     this.arcadeBody.velocity.y = 50;
-                    if (!(Math.abs(this.arcadeBody.velocity.x) > 200)) {
+                    if (Math.abs(this.arcadeBody.velocity.x) < 100) {
                         this.arcadeBody.velocity.x =  mult;
                    }
                 break;
