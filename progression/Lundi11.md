@@ -10,10 +10,12 @@ temps total : 6H
 
 Boutin
 ------
-- Implémentation de la nouvelle machine à états
-- Correction du bug d'offset de la carte
-- Reconfiguration de la machine à état
-- 
+- Implémentation de la nouvelle machine à états: 2h00
+- Correction du bug d'offset de la carte: 1h00
+- Reconfiguration de la machine à état: 3h00
+- Implémentation du serveur en typescript: 3h00
+
+Total: 9h00
 
 Kaindoh
 -------
