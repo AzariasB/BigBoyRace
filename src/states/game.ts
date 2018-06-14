@@ -77,7 +77,7 @@ export default class Game extends Phaser.State {
 
         this.players = [];
         for (let i = 0; i < N_PLAYERS; ++i ) {
-            let p = new Player(i !== this.myId, this.game, startPos.x, startPos.y, Assets.Spritesheets.Hero.getName(), this.tilemap, this.collisionLayer);
+            let p = new Player(i !== this.myId, this.game, startPos.x, startPos.y, Assets.Spritesheets.Hero2.getName(), this.tilemap, this.collisionLayer);
             this.players.push(p);
             this.game.add.existing(p);
             if (i === this.myId) {
