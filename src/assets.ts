@@ -475,6 +475,10 @@ export namespace Tilemaps {
         static getName(): string { return 'JungleSonic'; }
         static getJSON(): string { return require('assets/tilemaps/JungleSonic.json'); }
     }
+    export class LabiMap {
+        static getName(): string { return 'LabiMap'; }
+        static getJSON(): string { return require('assets/tilemaps/LabiMap.json'); }
+    }
 }
 
 export namespace JSON {
