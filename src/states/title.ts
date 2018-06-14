@@ -18,7 +18,7 @@ export default class Title extends Phaser.State {
         yPos += tb.height + 10;
 
         let optionsB = new TextButton(this.game, this.game.world.centerX, yPos , {
-            text : 'Scoreboard',
+            text : 'Build',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
         });
@@ -40,7 +40,7 @@ export default class Title extends Phaser.State {
 
     private playClick() {
         this.game.camera.onFadeComplete.addOnce(this.loadGame, this);
-        this.game.camera.fade(0x000000, 1000);
+        this.game.camera.fade(0x000000, 500);
     }
 
     private loadGame() {
@@ -49,7 +49,7 @@ export default class Title extends Phaser.State {
 
     private helpClick() {
         this.game.camera.onFadeComplete.addOnce(this.loadHelp, this);
-        this.game.camera.fade(0x000000, 1000);
+        this.game.camera.fade(0x000000, 500);
     }
 
     private loadHelp() {
@@ -58,7 +58,7 @@ export default class Title extends Phaser.State {
 
     private creditsClick() {
         this.game.camera.onFadeComplete.addOnce(this.loadCredits, this);
-        this.game.camera.fade(0x000000, 1000);
+        this.game.camera.fade(0x000000, 500);
     }
 
     private loadCredits() {
