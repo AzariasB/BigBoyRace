@@ -6,6 +6,7 @@ export default class Preloader extends Phaser.State {
     private preloadFrameSprite: Phaser.Sprite = null;
 
     public preload(): void {
+        this.game.time.advancedTiming = true;
         // Setup your loading screen and preload sprite (if you want a loading progress indicator) here
 
         this.preloadBarSprite = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, Assets.Atlases.AtlasesPreloadSpritesArray.getName(), Assets.Atlases.AtlasesPreloadSpritesArray.Frames.PreloadBar);
@@ -34,6 +35,6 @@ export default class Preloader extends Phaser.State {
     }
 
     private loadTitle(): void {
-        this.game.state.start('lobby');
+        this.game.state.start('title');
     }
 }

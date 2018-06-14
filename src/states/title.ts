@@ -18,7 +18,7 @@ export default class Title extends Phaser.State {
         yPos += tb.height + 10;
 
         let optionsB = new TextButton(this.game, this.game.world.centerX, yPos , {
-            text : 'Options',
+            text : 'Scoreboard',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
         });
@@ -28,14 +28,14 @@ export default class Title extends Phaser.State {
             text : 'Help',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
-        });
+        }, {callback : this.helpClick, callbackContext : this});
         yPos += helpB.height + 10;
 
         new TextButton(this.game, this.game.world.centerX, yPos, {
             text : 'Credits',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
-        });
+        }, {callback : this.creditsClick, callbackContext : this});
     }
 
     private playClick() {
@@ -45,6 +45,24 @@ export default class Title extends Phaser.State {
 
     private loadGame() {
         this.game.state.start('lobby');
+    }
+
+    private helpClick() {
+        this.game.camera.onFadeComplete.addOnce(this.loadHelp, this);
+        this.game.camera.fade(0x000000, 1000);
+    }
+
+    private loadHelp() {
+        this.game.state.start('help');
+    }
+
+    private creditsClick() {
+        this.game.camera.onFadeComplete.addOnce(this.loadCredits, this);
+        this.game.camera.fade(0x000000, 1000);
+    }
+
+    private loadCredits() {
+        this.game.state.start('credits');
     }
 
 }

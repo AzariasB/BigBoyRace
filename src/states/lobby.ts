@@ -10,7 +10,7 @@ export default class Lobby extends Phaser.State {
 
     public create(): void {
         new BackgroundScroller(this.game);
-        // Network.initialize();
+        Network.initialize();
 
         this.text = this.game.add.text(this.game.world.centerX, this.game.world.centerY, 'Connecting ...', {
             font : CustomWebFonts.FontsKenvectorFuture.getName(),
@@ -28,20 +28,19 @@ export default class Lobby extends Phaser.State {
 
         this.text.anchor.set(0.5, 0.5);
 
-        /*
-        Network.onReceiveOnce('connected', () => {
+
+        Network.when('id').addOnce((_, id) => {
+            this.game.state.states['game'].myId = id;
             this.text.text = 'Waiting for player...';
         });
 
-        Network.onReceiveOnce('start', () => {
-            console.log('received start');
+        Network.when('start').addOnce(() => {
             this.state.start('game');
-        });*/
-        this.state.start('game');
+        });
     }
 
     private cancelConnection(): void {
-        // Network.disconnect();
+        Network.disconnect();
         this.state.start('title');
     }
 }

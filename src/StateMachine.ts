@@ -3,7 +3,7 @@ export class State {
 
     private _transitions: Transition[];
 
-    constructor(public fsm: FiniteStateMachine, public name: string, public animation: string) {
+    constructor(public fsm: FiniteStateMachine, public name: string, public animation: string = '') {
         this._transitions = [];
     }
 
@@ -67,23 +67,27 @@ export class FiniteStateMachine {
         return this.currentState.name;
     }
 
-    constructor(private animationManager: Phaser.AnimationManager) {
+    constructor(private animationManager: Phaser.AnimationManager = null) {
         this._states = {};
         this.values = {};
     }
 
     public setCurrentState(stateName: string): FiniteStateMachine {
-        this.currentState = this.getState(stateName);
-        this.animationManager.play(this.currentState.animation);
+        if (!this.currentState || stateName !== this.currentStateName) {
+            this.currentState = this.getState(stateName);
+            if (this.animationManager) this.animationManager.play(this.currentState.animation);
+        }
         return this;
     }
 
-    public addState(stateName: string, stateAnim: string): FiniteStateMachine {
+    public addState(stateName: string, stateAnim?: string): FiniteStateMachine {
         this._states[stateName] = new State(this, stateName, stateAnim);
         return this;
     }
 
     private updateInternalState() {
+        if (!this.currentState) return;
+
         let nwState = this.currentState.checkForTransitions();
         if (nwState) {
             this.setCurrentState(nwState.name);
