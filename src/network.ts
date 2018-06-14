@@ -30,7 +30,7 @@ export namespace Network {
         m_socket = io({path: N_PATH});
     }
 
-    export function send(key: string, data: Int8Array) {
+    export function send(key: string, data: any) {
         m_socket.emit(key, data);
     }
 }

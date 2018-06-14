@@ -35,7 +35,6 @@ export default class Lobby extends Phaser.State {
         });
 
         Network.when('start').addOnce(() => {
-            console.log('received start');
             this.state.start('game');
         });
     }
