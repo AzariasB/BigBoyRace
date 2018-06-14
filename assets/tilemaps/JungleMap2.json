@@ -49,7 +49,7 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":36,
+                 "x":32,
                  "y":64
                 }, 
                 {
@@ -160,7 +160,7 @@
  "nextobjectid":11,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.1.4",
+ "tiledversion":"1.1.3",
  "tileheight":16,
  "tilesets":[
         {
@@ -178,6 +178,6 @@
         }],
  "tilewidth":16,
  "type":"map",
- "version":1,
+ "version":1.2,
  "width":96
 }

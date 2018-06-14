@@ -31,6 +31,6 @@ export namespace Network {
     }
 
     export function send(key: string, data: any) {
-        m_socket.emit(key, data);
+        if (m_socket) m_socket.emit(key, data);
     }
 }

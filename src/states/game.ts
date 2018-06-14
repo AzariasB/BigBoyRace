@@ -4,7 +4,7 @@ import Box from '../objects/Box';
 import BackgroundScroller from '../widgets/backgroundScroller';
 import { Network } from '../network';
 import ItemHolder from '../objects/ItemHolder';
-import { PLAYER_FIRSTJUMP, PLAYER_JUMPTIME_MS, PLAYER_JUMP, N_MAX_DISTANE, N_PLAYERS, N_INPUT } from '../constant';
+import { PLAYER_FIRSTJUMP, PLAYER_JUMPTIME_MS, PLAYER_JUMP, N_MAX_DISTANE, N_PLAYERS, N_INPUT, N_ROUNDS } from '../constant';
 import { PlayerDirection, PlayerStates } from '../PlayerAnimation';
 import TextButton from '../widgets/TextButton';
 
@@ -21,7 +21,8 @@ export default class Game extends Phaser.State {
     private jumptimer = 0;
     private finishTrigger: Phaser.Sprite;
     private collectedBoxes: number[];
-    private currentRound: number;
+    private currentRound: number = 1;
+    private endTexts: Phaser.Text[] = [];
 
     public create(): void {
         this.collectedBoxes = [];
@@ -44,37 +45,14 @@ export default class Game extends Phaser.State {
         this.tilemap.createLayer('Background');
         this.collisionLayer = this.tilemap.createLayer('Collision');
         this.collisionLayer.resizeWorld();
+        this.game.state.start('title');
+
         for (let bg of this.backgrounds) {
             bg.width = this.world.width;
             bg.height = this.world.height;
         }
 
-        // this.player.setTexture(bitmap.texture);
-        // this.player.jump();
-        // this.game.add.existing(this.ennemy);
-
-        let startPos: Phaser.Point = new Phaser.Point();
-        this.tilemap.objects['Powerups'].map(o => {
-            if (o.name === 'item') {
-                console.log(o);
-                let nwBox  = new Box(this.game, o.x + this.tilemap.tileWidth / 2, o.y + this.tilemap.tileHeight / 2, Assets.Images.ImagesBox.getName());
-                this.boxes[Phaser.Math.random(0, 100)] = nwBox;
-                nwBox.body.allowGravity = false;
-                nwBox.height = this.tilemap.tileHeight;
-                nwBox.width = this.tilemap.tileWidth;
-                this.game.add.existing(nwBox);
-
-            } else if (o.name === 'start') {
-                startPos.set(o.x, o.y);
-            } else if (o.name === 'finish') {
-                this.finishTrigger = this.game.add.sprite(o.x, o.y);
-                this.game.physics.enable(this.finishTrigger);
-                let arcade: Phaser.Physics.Arcade.Body = this.finishTrigger.body;
-                arcade.allowGravity = false;
-                arcade.gravity.set(0, 0);
-                arcade.setSize(o.width, o.height);
-            }
-        });
+        let startPos: Phaser.Point = this.createObjects();
 
         this.players = [];
         for (let i = 0; i < N_PLAYERS; ++i ) {
@@ -87,18 +65,47 @@ export default class Game extends Phaser.State {
         }
         this.player.bringToTop();
 
-
-        this.game.sound.play(Assets.Audio.AudioMusic.getName(), 0.2, true);
+        // this.game.sound.play(Assets.Audio.AudioMusic.getName(), 0.2, true);
         this.game.camera.follow(this.player);
 
         this.cursors = this.game.input.keyboard.createCursorKeys();
 
-        let itemholder = new ItemHolder(this.game, 50, 50, Assets.Atlases.AtlasesBlueSheet.getName(), Assets.Atlases.AtlasesBlueSheet.Frames.BlueButton09);
+        let itemholder = new ItemHolder(this.game, 50, 50, Assets.Atlases.AtlasesBlueSheet.getName(), Assets.Atlases.AtlasesBlueSheet.Frames.BlueButton08);
         this.game.add.existing(itemholder);
         this.tilemap.createLayer('Foreground');
 
         Network.when('update').add((_, data) => this.updateState(data) );
         this.game.time.events.loop(15, () => this.sendUpdate());
+    }
+
+    private createObjects(): Phaser.Point {
+        Object.keys(this.boxes).map(k => this.boxes[k].destroy());
+
+        let pos = new Phaser.Point();
+        let id = 0;
+        this.tilemap.objects['Powerups'].map(o => {
+            if (o.name === 'item') {
+                let nwBox  = new Box(this.game, o.x + this.tilemap.tileWidth / 2, o.y + this.tilemap.tileHeight / 2, Assets.Images.ImagesBox.getName());
+                this.boxes[id] = nwBox;
+                nwBox.body.allowGravity = false;
+                nwBox.height = this.tilemap.tileHeight;
+                nwBox.width = this.tilemap.tileWidth;
+                this.game.add.existing(nwBox);
+
+            } else if (o.name === 'start') {
+                console.log(o);
+                pos.set(o.x, o.y);
+            } else if (o.name === 'finish') {
+                this.finishTrigger = this.game.add.sprite(o.x, o.y);
+                this.game.physics.enable(this.finishTrigger);
+                let arcade: Phaser.Physics.Arcade.Body = this.finishTrigger.body;
+                arcade.allowGravity = false;
+                arcade.gravity.set(0, 0);
+                arcade.setSize(o.width, o.height);
+            }
+            ++id;
+        });
+        return pos;
     }
 
     private sendUpdate() {
@@ -109,8 +116,22 @@ export default class Game extends Phaser.State {
         Network.send('update', data);
     }
 
+    private restart() {
+        this.currentRound++;
+        this.endTexts.map(t => t.destroy());
+        this.endTexts = [];
+        let start = this.createObjects();
+        this.players.map(p =>  {
+            p.position.copyFrom(start);
+            p.updateTransform();
+            p.finished = false;
+        });
+    }
+
     private updateState(data) {
-        if (data.id !== this.myId) {
+        if (data.restart) return this.restart();
+
+        if (data.id !== undefined && data.id !== this.myId) {
             let p = data.player;
             this.players[data.id].deserialize(p);
         }
@@ -128,6 +149,7 @@ export default class Game extends Phaser.State {
 
     private finished() {
         this.finishTrigger.destroy();
+        this.finishTrigger = null;
         this.player.finished = true;
 
         let txt = this.game.add.text(this.game.width / 2  , this.game.height / 2 , 'Finished !', {
@@ -141,28 +163,40 @@ export default class Game extends Phaser.State {
             fontSize : 30
         });
         rankTt.anchor.set(0.5, 0.5);
+        this.endTexts.push(txt, rankTt);
+
+        if (this.currentRound === N_ROUNDS) {
+            Network.disconnect(); // bye bye
+            new TextButton(this.game, this.game.width / 2, this.game.height / 2 + rankTt.height + txt.height + 20, {
+                text: 'Menu',
+                fontSize: 20,
+                font: Assets.CustomWebFonts.FontsKenvectorFuture.getName()
+            }, { callback: () => this.game.state.start('title')});
+        } else if (rank === this.players.length) {
+            this.game.time.events.add(1000, () => {
+                Network.send('update', {restart: true});
+            });
+        }
     }
 
 
     public update(): void {
-        super.update(this.game);
-
         for (let p of this.players) {
             this.game.physics.arcade.collide(p, this.collisionLayer);
         }
 
+        if (this.player.finished) return;
+        super.update(this.game);
+
         if (this.game.physics.arcade.overlap(this.player, this.finishTrigger)) {
             this.finished();
         }
-
-        // send player data to server
 
         let divisor = 4;
         for (let bg of this.backgrounds) {
             bg.x = this.game.camera.x / divisor;
             divisor << 1;
         }
-
 
 
         if (this.cursors.up.justDown && this.player.sm.is(PlayerStates.WallSliding)) {
