@@ -29,7 +29,6 @@ export class Lobby {
         socket.on('disconnect', () => this.removeSocket(socket));
         socket.on('quit', () => this.removeSocket(socket));
 
-        console.log('welcoming new client');
         socket.emit('welcome', {
             id: this.clients.length,
             lobbyId: this.id,

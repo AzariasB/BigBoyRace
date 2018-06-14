@@ -74,7 +74,6 @@ class Server {
     }
 
     private createLobby(map: string, playersNumber: number, creator: SocketIO.Socket) {
-      console.log('creating lobby');
       let id = this.nextLobbyId();
       let nwL = new Lobby(id, map, playersNumber);
       nwL.addSocket(creator);
