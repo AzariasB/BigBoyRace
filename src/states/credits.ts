@@ -42,6 +42,11 @@ export default class Credits extends Phaser.State {
     }
 
     private returnClick() {
+        this.game.camera.onFadeComplete.addOnce(this.loadReturn, this);
+        this.game.camera.fade(0x000000, 1000);
+    }
+
+    private loadReturn() {
         this.game.state.start('title');
     }
 
