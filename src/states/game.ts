@@ -4,7 +4,7 @@ import Box from '../objects/Box';
 import BackgroundScroller from '../widgets/backgroundScroller';
 import { Network } from '../network';
 import ItemHolder from '../objects/ItemHolder';
-import { PLAYER_FIRSTJUMP, PLAYER_JUMPTIME_MS, PLAYER_JUMP, N_MAX_DISTANE, N_PLAYERS, N_INPUT, N_ROUNDS } from '../constant';
+import { PLAYER_FIRSTJUMP, PLAYER_JUMPTIME_MS, PLAYER_JUMP, N_ROUNDS, N_SEND_INPUTS } from '../constant';
 import { PlayerDirection, PlayerStates } from '../PlayerAnimation';
 import TextButton from '../widgets/TextButton';
 
@@ -25,31 +25,21 @@ export default class Game extends Phaser.State {
     private endTexts: Phaser.Text[] = [];
     private networkTimer: Phaser.TimerEvent = null;
 
-    public init(id, mapName) {
+    public init(id, mapName, players) {
         this.myId = id;
         this.tilemap = this.game.add.tilemap(mapName);
-    }
-
-    public create(): void {
         this.collectedBoxes = [];
         for (let name of BackgroundScroller.BG_NAMES) {
             let bg = this.game.add.tileSprite(0, 0, this.game.world.width, this.game.height, name);
             bg.scale.set(2, 2);
             this.backgrounds.push(bg);
         }
-
-        this.particlesGenerator = this.game.add.emitter(0, 0, 100);
-        this.particlesGenerator.setAlpha(1, 0, 900);
-        this.particlesGenerator.makeParticles(Assets.Images.ImagesBox.getName());
-        this.particlesGenerator.minParticleScale = 0.3;
-        this.particlesGenerator.maxParticleScale = 0.3;
-
-
         this.tilemap.addTilesetImage(Assets.Images.TilesetsJungle.getName());
         this.tilemap.setCollisionByExclusion([], true, 'Collision');
         this.tilemap.createLayer('Background');
         this.collisionLayer = this.tilemap.createLayer('Collision');
         this.collisionLayer.resizeWorld();
+
 
         for (let bg of this.backgrounds) {
             bg.width = this.world.width;
@@ -57,10 +47,9 @@ export default class Game extends Phaser.State {
         }
 
         let startPos: Phaser.Point = this.createObjects();
-
         this.players = [];
-        for (let i = 0; i < N_PLAYERS; ++i ) {
-            let p = new Player(i !== this.myId, this.game, startPos.x, startPos.y, Assets.Spritesheets.Hero2.getName(), this.tilemap, this.collisionLayer);
+        for (let i = 0; i < players; ++i ) {
+            let p = new Player(i !== this.myId, this.game, startPos.x, startPos.y, this.getSpriteName(i), this.tilemap, this.collisionLayer);
             this.players.push(p);
             this.game.add.existing(p);
             if (i === this.myId) {
@@ -68,6 +57,27 @@ export default class Game extends Phaser.State {
             }
         }
         this.player.bringToTop();
+    }
+
+    public getSpriteName(id: number) {
+        let colorSprites = [
+            Assets.Spritesheets.HeroBlue,
+            Assets.Spritesheets.HeroGreen,
+            Assets.Spritesheets.HeroRed,
+            Assets.Spritesheets.HeroViolet
+        ];
+
+        if (id > colorSprites.length) return Assets.Spritesheets.Hero.getName();
+        return colorSprites[id].getName();
+    }
+
+    public create(): void {
+        this.particlesGenerator = this.game.add.emitter(0, 0, 100);
+        this.particlesGenerator.setAlpha(1, 0, 900);
+        this.particlesGenerator.makeParticles(Assets.Images.ImagesBox.getName());
+        this.particlesGenerator.minParticleScale = 0.3;
+        this.particlesGenerator.maxParticleScale = 0.3;
+
 
         // this.game.sound.play(Assets.Audio.AudioMusic.getName(), 0.2, true);
         this.game.camera.follow(this.player);
@@ -79,7 +89,7 @@ export default class Game extends Phaser.State {
         this.tilemap.createLayer('Foreground');
 
         Network.when('update').add((_, data) => this.updateState(data) );
-        this.networkTimer = this.game.time.events.loop(15, () => this.sendUpdate());
+        this.networkTimer = this.game.time.events.loop(N_SEND_INPUTS, () => this.sendUpdate());
     }
 
     private createObjects(): Phaser.Point {
@@ -97,7 +107,6 @@ export default class Game extends Phaser.State {
                 this.game.add.existing(nwBox);
 
             } else if (o.name === 'start') {
-                console.log(o);
                 pos.set(o.x, o.y);
             } else if (o.name === 'finish') {
                 this.finishTrigger = this.game.add.sprite(o.x, o.y);

@@ -1,18 +1,6 @@
 // Network contants
-export enum N_INPUT {
-    UP,
-    RIGHT,
-    DOWN,
-    LEFT,
-    ACTION,
-    LENGTH
-}
-
-export const N_PLAYERS = 2;
 export const N_PATH = '/grace';
-export const N_PORT = 9000;
 export const N_SEND_INPUTS = 15; // ms
-export const N_MAX_DISTANE = 200;
 export const N_ROUNDS = 2;
 
 // Player related constants

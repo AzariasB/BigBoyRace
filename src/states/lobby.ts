@@ -10,8 +10,8 @@ export default class Lobby extends Phaser.State {
 
     private text: Phaser.Text;
 
-    public create(): void {
-        let mapName, playerId;
+    public init(selectedCreating: boolean, selectedMapOrLobby: string|number, selectedPlayers?: number): void {
+        let mapName, playerId, playersNumber;
         new BackgroundScroller(this.game);
 
         this.text = this.game.add.text(this.game.world.centerX, this.game.world.centerY, 'Connecting ...', {
@@ -34,30 +34,26 @@ export default class Lobby extends Phaser.State {
         Network.when('welcome').addOnce((_, data) => {
             playerId = data.id;
             mapName = data.map;
-
+            playersNumber = data.playersNumber;
             this.text.text = 'Waiting for players...';
         });
 
         Network.when('start').addOnce(() => {
-            this.state.start('game', true, false, playerId, mapName);
+            this.state.start('game', true, false, playerId, mapName, playersNumber);
         });
 
-        Network.acknowledge('lobbies', null, (lobbies) => {
-            console.log(lobbies);
-            if (lobbies.length > 0) {
-                console.log('Lobby found, joining');
-                Network.send('join', lobbies[0].id);
-            } else {
-                console.log('Lobbies not found, creating one');
-                Network.send('create', {
-                    map: Assets.Tilemaps.JungleMap2.getName(),
-                    players: 2
-                });
-            }
-        });
+        if (selectedCreating) {
+            Network.send('create', {
+                map: selectedMapOrLobby,
+                players: selectedPlayers
+            });
+        } else {
+            Network.send('join', selectedMapOrLobby);
+        }
     }
 
     private cancelConnection(): void {
+        Network.send('quit');
         this.state.start('title');
     }
 }
