@@ -69,6 +69,16 @@ export namespace Images {
 }
 
 export namespace Spritesheets {
+    export class Flags {
+        static getName(): string { return 'flags'; }
+
+        static getPNG(): string { return require('assets/spritesheets/flags.[16,16,8,0,0].png'); }
+        static getFrameWidth(): number { return 16; }
+        static getFrameHeight(): number { return 16; }
+        static getFrameMax(): number { return 8; }
+        static getMargin(): number { return 0; }
+        static getSpacing(): number { return 0; }
+    }
     export class HeroBlue {
         static getName(): string { return 'hero_blue'; }
 
@@ -167,6 +177,56 @@ export namespace Atlases {
             BlueSliderRight = 'blue_sliderRight.png',
             BlueSliderUp = 'blue_sliderUp.png',
             BlueTick = 'blue_tick.png',
+        }
+    }
+    export class AtlasesGreySheet {
+        static getName(): string { return 'greySheet'; }
+
+        static getPNG(): string { return require('assets/atlases/greySheet.png'); }
+
+        static getXML(): string { return require('assets/atlases/greySheet.xml'); }
+    }
+    export namespace AtlasesGreySheet {
+        export enum Frames {
+            GreyArrowDownGrey = 'grey_arrowDownGrey.png',
+            GreyArrowDownWhite = 'grey_arrowDownWhite.png',
+            GreyArrowUpGrey = 'grey_arrowUpGrey.png',
+            GreyArrowUpWhite = 'grey_arrowUpWhite.png',
+            GreyBox = 'grey_box.png',
+            GreyBoxCheckmark = 'grey_boxCheckmark.png',
+            GreyBoxCross = 'grey_boxCross.png',
+            GreyBoxTick = 'grey_boxTick.png',
+            GreyButton00 = 'grey_button00.png',
+            GreyButton01 = 'grey_button01.png',
+            GreyButton02 = 'grey_button02.png',
+            GreyButton03 = 'grey_button03.png',
+            GreyButton04 = 'grey_button04.png',
+            GreyButton05 = 'grey_button05.png',
+            GreyButton06 = 'grey_button06.png',
+            GreyButton07 = 'grey_button07.png',
+            GreyButton08 = 'grey_button08.png',
+            GreyButton09 = 'grey_button09.png',
+            GreyButton10 = 'grey_button10.png',
+            GreyButton11 = 'grey_button11.png',
+            GreyButton12 = 'grey_button12.png',
+            GreyButton13 = 'grey_button13.png',
+            GreyButton14 = 'grey_button14.png',
+            GreyButton15 = 'grey_button15.png',
+            GreyCheckmarkGrey = 'grey_checkmarkGrey.png',
+            GreyCheckmarkWhite = 'grey_checkmarkWhite.png',
+            GreyCircle = 'grey_circle.png',
+            GreyCrossGrey = 'grey_crossGrey.png',
+            GreyCrossWhite = 'grey_crossWhite.png',
+            GreyPanel = 'grey_panel.png',
+            GreySliderDown = 'grey_sliderDown.png',
+            GreySliderEnd = 'grey_sliderEnd.png',
+            GreySliderHorizontal = 'grey_sliderHorizontal.png',
+            GreySliderLeft = 'grey_sliderLeft.png',
+            GreySliderRight = 'grey_sliderRight.png',
+            GreySliderUp = 'grey_sliderUp.png',
+            GreySliderVertical = 'grey_sliderVertical.png',
+            GreyTickGrey = 'grey_tickGrey.png',
+            GreyTickWhite = 'grey_tickWhite.png',
         }
     }
     export class AtlasesPreloadSpritesArray {

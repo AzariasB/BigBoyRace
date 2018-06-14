@@ -43,7 +43,7 @@ export default class Title extends Phaser.State {
 
     private playClick() {
         this.game.camera.onFadeComplete.addOnce(() => {
-            this.game.state.start('lobby', true, false, true, Assets.Tilemaps.JungleMap2.getName(), 2);
+            this.game.state.start('lobby', true, false, true, Assets.Tilemaps.JungleMap2.getName(), 1);
         });
         this.game.camera.fade(0x000000, 100);
     }

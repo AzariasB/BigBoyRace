@@ -32,7 +32,7 @@ export default class Credits extends Phaser.State {
             n++;
         }
 
-        yPos += 100
+        yPos += 100;
         let tb = new TextButton(this.game, this.game.world.centerX, yPos, {
             text : 'Return',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),

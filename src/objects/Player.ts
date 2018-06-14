@@ -89,6 +89,7 @@ export class Player extends Phaser.Sprite {
         }
 
         this.sm.setCurrentState(data.state);
+        if (this.finished) this.stop();
     }
 
     private initStatemachine(): void {
@@ -122,8 +123,6 @@ export class Player extends Phaser.Sprite {
     }
 
     public goDirection(dir: PlayerDirection): void {
-        if (this.finished) return;
-
         let mult = dir === PlayerDirection.Left ? -1 : 1;
         if (this.direction !== dir && this.arcadeBody.onFloor()) {
             this.arcadeBody.velocity.x = 0;
@@ -134,8 +133,6 @@ export class Player extends Phaser.Sprite {
     }
 
     public setJumping(jumping: boolean): void {
-        if (this.finished) return;
-
         let mult = this.arcadeBody.blocked.left ? 1 : -1;
         this.arcadeBody.velocity.set(PLAYER_SPEED.RUNNING * mult * 2, -PLAYER_WALLJUMP);
     }
@@ -165,8 +162,6 @@ export class Player extends Phaser.Sprite {
     }
 
     public stop(): void {
-        if (this.finished) return;
-
         this.arcadeBody.velocity.x = 0;
         this.arcadeBody.acceleration.x = 0;
         this.direction = PlayerDirection.None;
@@ -180,7 +175,7 @@ export class Player extends Phaser.Sprite {
         this.dustParticles.y = this.y + this.height / 2;
         this.dustParticles.on = onFloor && this.arcadeBody.velocity.x !== 0;
 
-        if (!this.isRemote && !this.finished) {
+        if (!this.isRemote) {
             this.updateVelocity();
 
             let ltPos = this.collisionLayer.getTileXY(this.centerX, this.top, new Phaser.Point());

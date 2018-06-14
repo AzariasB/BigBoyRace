@@ -13,7 +13,7 @@ import Lobby from './states/lobby';
 import Credits from './states/credits';
 import * as Utils from './utils/utils';
 import * as Assets from './assets';
-import Help from "./states/help";
+import Help from './states/help';
 import { Network } from './network';
 
 class App extends Phaser.Game {

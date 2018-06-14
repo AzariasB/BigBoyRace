@@ -17,6 +17,7 @@ export default class Game extends Phaser.State {
     private cursors: Phaser.CursorKeys = null;
     private backgrounds: Phaser.TileSprite[] = [];
     private boxes: {[key: number]: Box} = {};
+    private flags: Phaser.Group;
     private particlesGenerator: Phaser.Particles.Arcade.Emitter = null;
     private jumptimer = 0;
     private finishTrigger: Phaser.Sprite;
@@ -46,7 +47,9 @@ export default class Game extends Phaser.State {
             bg.height = this.world.height;
         }
 
+        this.flags = this.game.add.physicsGroup();
         let startPos: Phaser.Point = this.createObjects();
+
         this.players = [];
         for (let i = 0; i < players; ++i ) {
             let p = new Player(i !== this.myId, this.game, startPos.x, startPos.y, this.getSpriteName(i), this.tilemap, this.collisionLayer);
@@ -71,6 +74,18 @@ export default class Game extends Phaser.State {
         return colorSprites[id].getName();
     }
 
+    public getTint(id: number) {
+        let tints = [
+            0x303A7F, // blue
+            0x367F33, // green
+            0xFF0007, // red
+            0x3E457F // violet
+        ];
+
+        if (id > tints.length) return 0xffffff;
+        return tints[id];
+    }
+
     public create(): void {
         this.particlesGenerator = this.game.add.emitter(0, 0, 100);
         this.particlesGenerator.setAlpha(1, 0, 900);
@@ -84,9 +99,15 @@ export default class Game extends Phaser.State {
 
         this.cursors = this.game.input.keyboard.createCursorKeys();
 
-        let itemholder = new ItemHolder(this.game, 50, 50, Assets.Atlases.AtlasesBlueSheet.getName(), Assets.Atlases.AtlasesBlueSheet.Frames.BlueButton08);
-        this.game.add.existing(itemholder);
+        let itemholder = new ItemHolder(this.game, this.game.width / 2, 50,
+            Assets.Atlases.AtlasesGreySheet.getName(),
+            Assets.Atlases.AtlasesGreySheet.Frames.GreyButton11
+        );
+        itemholder.anchor.set(0.5, 0.5);
+        itemholder.tint = this.getTint(this.myId);
         this.tilemap.createLayer('Foreground');
+
+        this.game.add.existing(itemholder);
 
         Network.when('update').add((_, data) => this.updateState(data) );
         this.networkTimer = this.game.time.events.loop(N_SEND_INPUTS, () => this.sendUpdate());
@@ -94,6 +115,7 @@ export default class Game extends Phaser.State {
 
     private createObjects(): Phaser.Point {
         Object.keys(this.boxes).map(k => this.boxes[k].destroy());
+        let firstTime = this.flags.length === 0;
 
         let pos = new Phaser.Point();
         let id = 0;
@@ -108,6 +130,10 @@ export default class Game extends Phaser.State {
 
             } else if (o.name === 'start') {
                 pos.set(o.x, o.y);
+                if (firstTime) {
+                    let startFlag = this.game.add.sprite(o.x, o.y, Assets.Spritesheets.Flags.getName(), null, this.flags);
+                    startFlag.animations.add('start', [0, 1, 2, 3]).play(5, true);
+                }
             } else if (o.name === 'finish') {
                 this.finishTrigger = this.game.add.sprite(o.x, o.y);
                 this.game.physics.enable(this.finishTrigger);
@@ -115,6 +141,11 @@ export default class Game extends Phaser.State {
                 arcade.allowGravity = false;
                 arcade.gravity.set(0, 0);
                 arcade.setSize(o.width, o.height);
+
+                if (firstTime) {
+                    let arrivalFlag = this.game.add.sprite(o.x, o.y, Assets.Spritesheets.Flags.getName(), null, this.flags);
+                    arrivalFlag.animations.add('finish', [4, 5, 6, 7], 5, true).play();
+                }
             }
             ++id;
         });
@@ -134,8 +165,9 @@ export default class Game extends Phaser.State {
         this.endTexts.map(t => t.destroy());
         this.endTexts = [];
         let start = this.createObjects();
-        this.players.map(p =>  {
+        this.players.map((p, i) =>  {
             p.position.copyFrom(start);
+            p.loadTexture(this.getSpriteName(i));
             p.updateTransform();
             p.finished = false;
         });
@@ -164,6 +196,7 @@ export default class Game extends Phaser.State {
         this.finishTrigger.destroy();
         this.finishTrigger = null;
         this.player.finished = true;
+        this.player.loadTexture(Assets.Spritesheets.HeroGold.getName());
 
         let txt = this.game.add.text(this.game.width / 2  , this.game.height / 2 , 'Finished !', {
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
@@ -200,6 +233,7 @@ export default class Game extends Phaser.State {
         for (let p of this.players) {
             this.game.physics.arcade.collide(p, this.collisionLayer);
         }
+        this.game.physics.arcade.collide(this.collisionLayer, this.flags);
 
         if (this.player.finished) return;
         super.update(this.game);
