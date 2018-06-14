@@ -33,10 +33,36 @@ export class Lobby {
         this.isFull = true;
         if (this.onFull) this.onFull();
         this.clients.map(c => {
-            c.on('chat', (data) => this.broadcast('chat', data));
+            c.on('chat', (data) => this.broadcast('chat', this.getColor(c) + ' : ' + data));
             c.on('update', (data) => this.broadcast('update', data));
         });
         this.broadcast('start');
+    }
+
+    private getColor(c: SocketIO.Socket){
+        let index = this.clients.indexOf(c);
+        let color = '';
+        switch (index) {
+            case 1:
+                color = 'Blue';
+                break;
+            case 2:
+                color = 'Red';
+                break;
+            case 3:
+                color = 'Green';
+                break;
+            case 4:
+                color = 'Yellow';
+                break;
+            case 5:
+                color = 'Purple';
+                break;
+            default:
+                color = 'White';
+                break;
+        }
+        return color;
     }
 
     private broadcast(key: string, data?: any) {
