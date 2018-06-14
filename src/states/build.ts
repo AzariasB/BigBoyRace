@@ -33,7 +33,7 @@ export default class Build extends Phaser.State {
         let nbPlayerMax = 6;
         while (n < nbPlayerMax + 1) {
             tb = new TextButton(this.game, this.game.width * n / (nbPlayerMax + 2) , yPos, {
-                text: n,
+                text: n + '',
                 font: Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
                 fontSize: 20
             }, {
@@ -57,7 +57,7 @@ export default class Build extends Phaser.State {
         let nbMap = 5;
         while (n < nbMap) {
             tb = new TextButton(this.game, this.game.width * (n + 1) / (nbMap + 1), yPos, {
-                text: n,
+                text: n + '',
                 font: Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
                 fontSize: 20
             }, {

@@ -97,15 +97,8 @@ export default class Help extends Phaser.State {
             n += 2;
         }
 
-            this.game.add.text(xPosText, yPos, txt, {
-                font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
-                fontSize : 20,
-            });
-            yPos += 60;
-        });
-
         yPos += 50;
-        let tb = new TextButton(this.game, this.game.width * 1 / 5, this.game.height / 2, {
+        new TextButton(this.game, this.game.width * 1 / 5, this.game.height / 2, {
             text : 'Return',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
