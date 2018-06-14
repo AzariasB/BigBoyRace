@@ -58,7 +58,7 @@ export default class Game extends Phaser.State {
                 console.log(o);
                 let nwBox  = new Box(this.game, o.x + this.tilemap.tileWidth / 2, o.y + this.tilemap.tileHeight / 2, Assets.Images.ImagesBox.getName());
                 this.boxes[Phaser.Math.random(0, 100)] = nwBox;
-                nwBox.body.gravity.set(0);
+                nwBox.body.allowGravity = false;
                 nwBox.height = this.tilemap.tileHeight;
                 nwBox.width = this.tilemap.tileWidth;
                 this.game.add.existing(nwBox);
