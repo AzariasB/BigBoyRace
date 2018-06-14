@@ -6,10 +6,11 @@ import * as Assets from '../assets';
 
 export default class Title extends Phaser.State {
 
+
     public create(): void {
-        new BackgroundScroller(this.game);
         this.world.setBounds(0, 0, this.game.width, this.game.height);
 
+        new BackgroundScroller(this.game);
         let yPos = 150;
         let tb = new TextButton(this.game, this.game.world.centerX, yPos, {
             text : 'Play !',
@@ -37,13 +38,6 @@ export default class Title extends Phaser.State {
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
         }, {callback : this.creditsClick, callbackContext : this});
-    }
-
-    resumed() {
-        console.log(this.world.width, this.world.height);
-        console.log(this.game.width, this.game.height);
-        console.log(this.camera.width, this.camera.height);
-        this.game.world.resize(this.game.width, this.game.height);
     }
 
     private playClick() {

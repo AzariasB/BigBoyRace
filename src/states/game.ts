@@ -45,7 +45,6 @@ export default class Game extends Phaser.State {
         this.tilemap.createLayer('Background');
         this.collisionLayer = this.tilemap.createLayer('Collision');
         this.collisionLayer.resizeWorld();
-        this.game.state.start('title');
 
         for (let bg of this.backgrounds) {
             bg.width = this.world.width;
@@ -166,6 +165,7 @@ export default class Game extends Phaser.State {
         this.endTexts.push(txt, rankTt);
 
         if (this.currentRound === N_ROUNDS) {
+            this.sendUpdate();
             Network.disconnect(); // bye bye
             new TextButton(this.game, this.game.width / 2, this.game.height / 2 + rankTt.height + txt.height + 20, {
                 text: 'Menu',
