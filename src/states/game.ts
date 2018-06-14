@@ -6,9 +6,9 @@ import { Network } from '../network';
 import ItemHolder from '../objects/ItemHolder';
 import { PLAYER_FIRSTJUMP, PLAYER_JUMPTIME_MS, PLAYER_JUMP, N_MAX_DISTANE, N_PLAYERS, N_INPUT } from '../constant';
 import { PlayerDirection, PlayerStates } from '../PlayerAnimation';
+import TextButton from '../widgets/TextButton';
 
 export default class Game extends Phaser.State {
-    private sfxAudiosprite: Phaser.AudioSprite = null;
     private myId: number;
     private players: Player[];
     private player: Player;
@@ -16,19 +16,19 @@ export default class Game extends Phaser.State {
     private collisionLayer: Phaser.TilemapLayer = null;
     private cursors: Phaser.CursorKeys = null;
     private backgrounds: Phaser.TileSprite[] = [];
-    private box: Box[] = [];
+    private boxes: {[key: number]: Box} = {};
     private particlesGenerator: Phaser.Particles.Arcade.Emitter = null;
     private jumptimer = 0;
-    private gameWorld;
+    private finishTrigger: Phaser.Sprite;
+    private collectedBoxes: number[];
 
     public create(): void {
+        this.collectedBoxes = [];
         for (let name of BackgroundScroller.BG_NAMES) {
             let bg = this.game.add.tileSprite(0, 0, this.game.world.width, this.game.height, name);
             bg.scale.set(2, 2);
             this.backgrounds.push(bg);
         }
-
-        // Network.onReceive('update', (_, data) => this.ennemy.deserialize(data) );
 
         this.particlesGenerator = this.game.add.emitter(0, 0, 100);
         this.particlesGenerator.setAlpha(1, 0, 900);
@@ -55,15 +55,23 @@ export default class Game extends Phaser.State {
         let startPos: Phaser.Point = new Phaser.Point();
         this.tilemap.objects['Powerups'].map(o => {
             if (o.name === 'item') {
-                let nwBox;
-                this.box.push(nwBox = new Box(this.game, o.x + this.tilemap.tileWidth / 2, o.y + this.tilemap.tileHeight / 2, Assets.Images.ImagesBox.getName()));
-                nwBox.body.gravity = 0;
+                console.log(o);
+                let nwBox  = new Box(this.game, o.x + this.tilemap.tileWidth / 2, o.y + this.tilemap.tileHeight / 2, Assets.Images.ImagesBox.getName());
+                this.boxes[Phaser.Math.random(0, 100)] = nwBox;
+                nwBox.body.gravity.set(0);
                 nwBox.height = this.tilemap.tileHeight;
                 nwBox.width = this.tilemap.tileWidth;
                 this.game.add.existing(nwBox);
 
             } else if (o.name === 'start') {
                 startPos.set(o.x, o.y);
+            } else if (o.name === 'finish') {
+                this.finishTrigger = this.game.add.sprite(o.x, o.y);
+                this.game.physics.enable(this.finishTrigger);
+                let arcade: Phaser.Physics.Arcade.Body = this.finishTrigger.body;
+                arcade.allowGravity = false;
+                arcade.gravity.set(0, 0);
+                arcade.setSize(o.width, o.height);
             }
         });
 
@@ -107,9 +115,41 @@ export default class Game extends Phaser.State {
         }
     }
 
-    public render(): void {
-        this.game.debug.bodyInfo(this.players[1 - this.myId], 32, 32);
+    private toRank(num: number): string {
+        let unit = num % 10;
+        switch (unit) {
+            case 1: return num + 'st';
+            case 2: return num + 'nd';
+            case 4: return num + 'rd';
+            default: return num + 'th';
+        }
     }
+
+    private finished() {
+        this.finishTrigger.destroy();
+        this.player.finished = true;
+
+        let txt = this.game.add.text(this.game.width / 2  , this.game.height / 2 , 'Finished !', {
+            font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
+            fontSize : 20
+        });
+        txt.anchor.set(0.5);
+        let rank = this.players.filter(p => p !== this.player && p.finished).length + 1;
+        let rankTt = this.game.add.text(this.game.width / 2  , this.game.height / 2 + txt.height , 'Rank : ' + this.toRank(rank), {
+            font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
+            fontSize : 20
+        });
+        rankTt.anchor.set(0.5, 0.5);
+
+        let menuBtn = new TextButton(this.game, this.game.width / 2, this.game.height / 2 + txt.height + rankTt.height + 20, {
+            text: 'Menu',
+            fontSize: 20,
+            font: Assets.CustomWebFonts.FontsKenvectorFuture.getName()
+        }, {
+            callback: () => this.game.state.start('title')
+        });
+    }
+
 
     public update(): void {
         super.update(this.game);
@@ -117,7 +157,11 @@ export default class Game extends Phaser.State {
         for (let p of this.players) {
             this.game.physics.arcade.collide(p, this.collisionLayer);
         }
-        // this.game.physics.arcade.collide(this.ennemy, this.collisionLayer);
+
+        if (this.game.physics.arcade.overlap(this.player, this.finishTrigger)) {
+            this.finished();
+        }
+
         // send player data to server
 
         let divisor = 4;

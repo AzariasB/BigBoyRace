@@ -13,6 +13,7 @@ export class Player extends Phaser.Sprite {
     public sm: FiniteStateMachine;
     public direction: PlayerDirection = PlayerDirection.None;
     private item = new EmptyPowerup(this.game, 50, 50);
+    public finished: boolean = false;
 
     constructor (public readonly isRemote: boolean,
                     game: Phaser.Game,
@@ -75,11 +76,13 @@ export class Player extends Phaser.Sprite {
             vy: this.arcadeBody.velocity.y,
             state: this.sm.currentStateName,
             direction: this.direction,
+            finished: this.finished
         };
     }
 
     public deserialize(data: any) {
         this.position.set(data.x, data.y);
+        this.finished = data.finished;
         this.arcadeBody.velocity.set(data.vx, data.vy);
         if (data.direction !== PlayerDirection.None) {
             this.scale.x = Math.abs(this.scale.x) * (data.direction === PlayerDirection.Left ? -1 : 1);
@@ -119,6 +122,8 @@ export class Player extends Phaser.Sprite {
     }
 
     public goDirection(dir: PlayerDirection): void {
+        if (this.finished) return;
+
         let mult = dir === PlayerDirection.Left ? -1 : 1;
         if (this.direction !== dir && this.arcadeBody.onFloor()) {
             this.arcadeBody.velocity.x = 0;
@@ -129,11 +134,15 @@ export class Player extends Phaser.Sprite {
     }
 
     public setJumping(jumping: boolean): void {
+        if (this.finished) return;
+
         let mult = this.arcadeBody.blocked.left ? 1 : -1;
         this.arcadeBody.velocity.set(PLAYER_SPEED.RUNNING * mult * 2, -PLAYER_WALLJUMP);
     }
 
     public setCrouching(crouching: boolean): void {
+        if (this.finished) return;
+
         this.sm.setProperty('isCrouchPressed', crouching);
         if (crouching && this.sm.isOneOf(PlayerStates.Crouched, PlayerStates.CrouchWalking, PlayerStates.SlideCrouched)) {
             this.goHalfWidth();
@@ -156,6 +165,8 @@ export class Player extends Phaser.Sprite {
     }
 
     public stop(): void {
+        if (this.finished) return;
+
         this.arcadeBody.velocity.x = 0;
         this.arcadeBody.acceleration.x = 0;
         this.direction = PlayerDirection.None;
@@ -169,7 +180,7 @@ export class Player extends Phaser.Sprite {
         this.dustParticles.y = this.y + this.height / 2;
         this.dustParticles.on = onFloor && this.arcadeBody.velocity.x !== 0;
 
-        if (!this.isRemote) {
+        if (!this.isRemote && !this.finished) {
             this.updateVelocity();
 
             let ltPos = this.collisionLayer.getTileXY(this.centerX, this.top, new Phaser.Point());

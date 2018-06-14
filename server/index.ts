@@ -15,7 +15,9 @@ class Server {
     private lobbies: Lobby[];
 
     constructor() {
-      this.server = http.createServer();
+      this.app = express();
+      this.app.use(express.static('dist'));
+      this.server = http.createServer(this.app);
       this.lobbies = [];
 
       this.io = socketIO(this.server, {
