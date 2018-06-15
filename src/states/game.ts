@@ -82,11 +82,11 @@ export default class Game extends Phaser.State {
 
         this.cursors = this.game.input.keyboard.createCursorKeys();
 
-        let itemholder = new ItemHolder(this.game, this.game.width / 2, 50,
+        let itemholder = new ItemHolder(this.game, 10, 10,
             Assets.Atlases.AtlasesGreySheet.getName(),
             Assets.Atlases.AtlasesGreySheet.Frames.GreyButton11
         );
-        itemholder.anchor.set(0.5, 0.5);
+        itemholder.anchor.set(0, 0);
         itemholder.tint = getTint(this.myId);
         this.tilemap.createLayer('Foreground');
 
