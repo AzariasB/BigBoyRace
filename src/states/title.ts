@@ -1,15 +1,21 @@
 
-import Game from './game';
 import TextButton, { ButtonOptions } from '../widgets/TextButton';
 import BackgroundScroller, { } from '../widgets/backgroundScroller';
 import * as Assets from '../assets';
-import { Network } from '../network';
+import { Carousel, CarouselType } from '../widgets/carousel';
 
 export default class Title extends Phaser.State {
 
 
     public create(): void {
         this.world.setBounds(0, 0, this.game.width, this.game.height);
+
+        let carousel = new Carousel(this.game,
+            this.game.world.centerX,
+            this.game.world.centerY,
+            CarouselType.Small,
+            ['1', '2', '4']
+        );
 
         new BackgroundScroller(this.game);
         let yPos = 150;
@@ -39,6 +45,7 @@ export default class Title extends Phaser.State {
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
         }, {callback : () => this.creditsClick()});
+        this.game.add.existing(carousel);
     }
 
     private playClick() {
