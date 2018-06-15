@@ -7,6 +7,7 @@ import ItemHolder from '../objects/ItemHolder';
 import { PLAYER_FIRSTJUMP, PLAYER_JUMPTIME_MS, PLAYER_JUMP, N_ROUNDS, N_SEND_INPUTS } from '../constant';
 import { PlayerDirection, PlayerStates } from '../PlayerAnimation';
 import TextButton from '../widgets/TextButton';
+import Chat from '../widgets/chat';
 
 export default class Game extends Phaser.State {
     private myId: number;
@@ -25,6 +26,7 @@ export default class Game extends Phaser.State {
     private currentRound: number = 1;
     private endTexts: Phaser.Text[] = [];
     private networkTimer: Phaser.TimerEvent = null;
+    public pauseCapture: boolean = false;
 
     public init(id, mapName, players) {
         this.myId = id;
@@ -111,6 +113,7 @@ export default class Game extends Phaser.State {
 
         Network.when('update').add((_, data) => this.updateState(data) );
         this.networkTimer = this.game.time.events.loop(N_SEND_INPUTS, () => this.sendUpdate());
+        new Chat(this.game, this);
     }
 
     private createObjects(): Phaser.Point {
@@ -150,6 +153,7 @@ export default class Game extends Phaser.State {
             ++id;
         });
         return pos;
+
     }
 
     private sendUpdate() {
@@ -248,6 +252,9 @@ export default class Game extends Phaser.State {
             divisor << 1;
         }
 
+        if (this.pauseCapture) return;
+
+
         let trulyjustdown = this.cursors.up.justDown;
 
         if (trulyjustdown && this.player.sm.is(PlayerStates.WallSliding) && this.player.arcadeBody.onWall()) {
@@ -265,6 +272,7 @@ export default class Game extends Phaser.State {
             this.jumptimer = 0;
         }
 
+
         this.player.setCrouching(this.cursors.down.isDown);
         let ti = this.cursors.up.timeDown;
 
@@ -277,7 +285,7 @@ export default class Game extends Phaser.State {
         if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.arcadeBody.onFloor()) {
             this.player.stop();
         }
-        else if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.sm.is(PlayerStates.Jumping) ) {
+        else if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.sm.is(PlayerStates.Jumping)) {
             this.player.direction = PlayerDirection.None;
         }
         if (this.game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR).justDown) {
