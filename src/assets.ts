@@ -1,6 +1,21 @@
 /* AUTO GENERATED FILE. DO NOT MODIFY. YOU WILL LOSE YOUR CHANGES ON BUILD. */
 
 export namespace Images {
+    export class ImagesArrow {
+        static getName(): string { return 'arrow'; }
+
+        static getPNG(): string { return require('assets/images/arrow.png'); }
+    }
+    export class ImagesBackgroundTemplate {
+        static getName(): string { return 'background_template'; }
+
+        static getPNG(): string { return require('assets/images/background_template.png'); }
+    }
+    export class ImagesBoost {
+        static getName(): string { return 'boost'; }
+
+        static getPNG(): string { return require('assets/images/boost.png'); }
+    }
     export class ImagesBox {
         static getName(): string { return 'box'; }
 

@@ -1,6 +1,7 @@
 import Game from '../states/game';
 import { Player } from './Player';
 import * as Assets from '../assets';
+import { PlayerDirection } from '../PlayerAnimation';
 
 export enum EffectName {
     glue = 'glue',
@@ -24,6 +25,20 @@ export class EffectArea extends Phaser.Sprite {
             case EffectName.glue:
                 break;
             case EffectName.boost:
+                this.height = 4;
+                this.dustParticles = this.game.add.emitter( this.position.x - this.width / 2, this.top - 20, 2000);
+                this.dustParticles.makeParticles(Assets.Images.ImagesBoost.getName());
+                this.dustParticles.minParticleSpeed.setTo(1, 1);
+                this.dustParticles.maxParticleSpeed.setTo(200, 1);
+                this.dustParticles.gravity.y = -800;
+                this.dustParticles.maxRotation = 0;
+                this.dustParticles.minRotation = 0;
+                this.dustParticles.start(false, 4000, 15);
+                this.dustParticles.frequency = 20;
+                this.dustParticles.minParticleScale = this.dustParticles.maxParticleScale = 0.1;
+
+                this.dustParticles.lifespan = 700;
+                this.game.add.tween(this.dustParticles).to({y: this.bottom + 30 }, 200, 'Linear', true, 0, -1, true );
                 break;
             case EffectName.ice:
                 this.height = 4;
@@ -67,6 +82,7 @@ export class EffectArea extends Phaser.Sprite {
             case EffectName.glue:
                 break;
             case EffectName.boost:
+                this.dustParticles.y = this.top - 60;
                 break;
             case EffectName.ice:
                 this.dustParticles.y = ( this.top - 60 );
