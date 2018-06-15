@@ -19,7 +19,8 @@ export class Player extends Phaser.Sprite {
     public sm: FiniteStateMachine;
     public direction: PlayerDirection = PlayerDirection.Right;
     private wallJumped: boolean = false;
-    private item = new EmptyPowerup(this.game, 50, 50);
+    private item: Powerup = new EmptyPowerup(this.game, 50, 50);
+    public onEffect: boolean;
 
     constructor (game: Phaser.Game, x: number, y: number,
                     group: string,
@@ -66,6 +67,7 @@ export class Player extends Phaser.Sprite {
         });
         this.animations.add(PlayerAnimation.Land, [12], 5, true);
         this.animations.add(PlayerAnimation.WallSliding, [13], 5, true);
+        this.animations.add(PlayerAnimation.WalkCrouch, [28, 29, 30, 31, 32], 10, true);
 
         this.sm = new FiniteStateMachine(this.animations);
         this.initStatemachine();
@@ -115,7 +117,7 @@ export class Player extends Phaser.Sprite {
 
     public goDirection(dir: PlayerDirection): void {
         let mult = dir === PlayerDirection.Left ? -1 : 1;
-        if (this.direction !== dir && this.arcadeBody.onFloor()) {
+        if (this.direction !== dir && this.arcadeBody.onFloor() && !this.onEffect) {
             this.arcadeBody.velocity.x = 0;
         }
         this.direction = dir;
@@ -138,6 +140,7 @@ export class Player extends Phaser.Sprite {
 
     public setItem(powerup: Powerup) {
         this.item = powerup;
+        this.game.add.existing(this.getItem());
     }
 
     public getItem() {
@@ -145,7 +148,8 @@ export class Player extends Phaser.Sprite {
     }
 
     public useItem() {
-        this.item.activate();
+        this.item.activate(this);
+        this.item.destroy(true);
         this.item = new EmptyPowerup(this.game, 50, 50);
     }
 
@@ -161,8 +165,10 @@ export class Player extends Phaser.Sprite {
         this.dustParticles.x = this.x;
         this.dustParticles.y = this.y + this.height / 2;
         this.dustParticles.on = onFloor && this.arcadeBody.velocity.x !== 0;
+        if (!this.onEffect) {
+            this.updateVelocity();
+        }
 
-        this.updateVelocity();
 
         let ltPos = this.collisionLayer.getTileXY(this.centerX, this.top, new Phaser.Point());
         let topLeft = this.map.getTile(ltPos.x, ltPos.y, this.collisionLayer);

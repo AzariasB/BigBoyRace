@@ -19,7 +19,7 @@ export default class Game extends Phaser.State {
     private particlesGenerator: Phaser.Particles.Arcade.Emitter = null;
     private ennemy: Player = null;
     private jumptimer = 0;
-    private gameWorld;
+    private itemsOnMap: any[] = [];
 
     private isMantleColor(color: {r: number, g: number, b: number, a: number}): boolean {
         let possibles = ['143,50,50', '171,67,67', '217,87,99'];
@@ -28,6 +28,7 @@ export default class Game extends Phaser.State {
     }
 
     public create(): void {
+
         for (let name of BackgroundScroller.BG_NAMES) {
             let bg = this.game.add.tileSprite(0, 0, this.game.world.width, this.game.height, name);
             bg.scale.set(2, 2);
@@ -67,7 +68,7 @@ export default class Game extends Phaser.State {
             bg.height = this.world.height;
         }
 
-        this.player = new Player(this.game, 32, 32, Assets.Spritesheets.Hero2.getName(), this.tilemap, this.collisionLayer);
+        this.player = new Player(this.game, 32, 32, Assets.Spritesheets.Hero3.getName(), this.tilemap, this.collisionLayer);
         // this.ennemy = new Player(this.game, 32, 32, Assets.Spritesheets.HeroBlue.getName(), this.collisionLayer);
 
         this.game.add.existing(this.player);
@@ -122,18 +123,31 @@ export default class Game extends Phaser.State {
     }
 
     public render(): void {
-       /* this.game.debug.bodyInfo(this.player, 32, 32);
+       this.game.debug.bodyInfo(this.player, 32, 32);
         this.game.debug.text(this.player.sm.currentStateName, 32, 256);
         this.game.debug.body(this.player);
         this.game.debug.spriteBounds(this.player, 'pink', false);
-        this.game.debug.text(this.player.animations.currentAnim.name, 32, 270);*/
+        this.game.debug.text(this.player.animations.currentAnim.name, 32, 270);
 
+    }
+    public addItemOnMap(item) {
+        this.game.add.existing(item);
+        this.itemsOnMap.push(item);
     }
 
     public update(): void {
         this.game.physics.arcade.collide(this.player, this.collisionLayer);
         // this.game.physics.arcade.collide(this.ennemy, this.collisionLayer);
         // send player data to server
+        for (let item of this.itemsOnMap) {
+            this.game.physics.arcade.collide(item, this.collisionLayer);
+            if (this.game.physics.arcade.overlap(this.player, item) && this.player.arcadeBody.onFloor()) {
+                    item.Effect(this.player);
+                    this.player.onEffect = true;
+            }
+            else
+                this.player.onEffect = false;
+        }
 
         let divisor = 4;
         for (let bg of this.backgrounds) {
@@ -184,7 +198,7 @@ export default class Game extends Phaser.State {
             this.player.goDirection(PlayerDirection.Right);
         }
 
-        if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.arcadeBody.onFloor()) {
+        if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.arcadeBody.onFloor() && !this.player.onEffect) {
             this.player.stop();
         }
         else if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.sm.is(PlayerStates.Jumping) ) {

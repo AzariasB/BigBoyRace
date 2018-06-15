@@ -7,5 +7,7 @@ export class EmptyPowerup extends Powerup {
     public  activate(): void {
         console.log('activate emptypowerup');
     }
+    public effect(): void {
+    }
 
 }
