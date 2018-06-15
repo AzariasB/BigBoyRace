@@ -1,5 +1,5 @@
 import Game from '../states/game';
-import { Player, PlayerDirection } from './Player';
+import { Player } from './Player';
 import * as Assets from '../assets';
 
 export enum EffectName {

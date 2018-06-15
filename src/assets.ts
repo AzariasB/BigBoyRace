@@ -76,8 +76,8 @@ export namespace Images {
 
         static getPNG(): string { return require('assets/spritesheets/LivraisonJabetROLL.png'); }
     }
-    export class TilesetsJungleTileset {
-        static getName(): string { return 'jungle tileset'; }
+    export class TilesetsJungle {
+        static getName(): string { return 'Jungle'; }
 
         static getPNG(): string { return require('assets/tilesets/Jungle.png'); }
     }

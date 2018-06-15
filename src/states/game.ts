@@ -31,7 +31,7 @@ export default class Game extends Phaser.State {
     public init(id, mapName, players) {
         this.myId = id;
         this.tilemap = this.game.add.tilemap(mapName);
-        this.collectedBoxes = [];
+
         for (let name of BackgroundScroller.BG_NAMES) {
             let bg = this.game.add.tileSprite(0, 0, this.game.world.width, this.game.height, name);
             bg.scale.set(2, 2);
