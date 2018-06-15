@@ -24,7 +24,7 @@ export default class Title extends Phaser.State {
             text : 'Build',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
-        }, {callback : () => this.buildClick()});
+        }, {callback : () => this.joinClick()});
         yPos += optionsB.height + 10;
 
         let helpB = new TextButton(this.game, this.game.world.centerX, yPos , {
@@ -42,15 +42,15 @@ export default class Title extends Phaser.State {
     }
 
     private playClick() {
-        this.game.camera.onFadeComplete.addOnce(() => this.state.start('lobby', true, false, true, Assets.Tilemaps.JungleMap2.getName(), 1));
+        this.game.camera.onFadeComplete.addOnce(() => {
+            this.state.start('joining');
+        });
         this.game.camera.fade(0x000000, 500);
     }
 
     private joinClick() {
         this.game.camera.onFadeComplete.addOnce(() => {
-           Network.acknowledge('lobbies', null, (lobbies) => {
-                this.game.state.start('lobby', true, false, false, lobbies[0].id);
-           });
+            this.state.start('lobby', true, false, true, Assets.Tilemaps.JungleMap2.getName(), 2);
         });
         this.game.camera.fade(0x000000, 100);
 

@@ -60,7 +60,6 @@ export class Lobby {
     }
 
     private countdown(value: number) {
-        console.log('Broadcasting ' + value);
         this.broadcast('countdown', value);
 
         if (value === 0) return this.redirectUpdate();

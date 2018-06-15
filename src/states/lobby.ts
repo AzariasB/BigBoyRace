@@ -3,8 +3,6 @@ import { Network } from '../network';
 import {CustomWebFonts} from '../assets';
 import BackgroundScroller from '../widgets/backgroundScroller';
 import TextButton from '../widgets/TextButton';
-import * as Assets from '../assets';
-import Game from './game';
 
 export default class Lobby extends Phaser.State {
 
@@ -36,6 +34,11 @@ export default class Lobby extends Phaser.State {
             mapName = data.map;
             playersNumber = data.playersNumber;
             this.text.text = 'Waiting for players...';
+
+            this.game.add.text(this.world.centerX, 10, 'Lobby ' + data.lobbyId, {
+                font: CustomWebFonts.FontsKenvectorFuture.getName(),
+                fontSize: 20
+            }).anchor.set(0.5, 0);
         });
 
         Network.when('start').addOnce(() => {
