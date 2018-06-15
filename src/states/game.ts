@@ -9,6 +9,7 @@ import { PlayerDirection, PlayerStates } from '../PlayerAnimation';
 import TextButton from '../widgets/TextButton';
 import Chat from '../widgets/chat';
 import { getTint, getSpriteName } from '../utils/colorUtils';
+import { Powerup } from '../objects/powerups/Powerup';
 
 export default class Game extends Phaser.State {
     private totalRounds;
@@ -261,7 +262,7 @@ export default class Game extends Phaser.State {
         this.currentRound++;
     }
     public addItemOnMap(item) {
-        this.game.add.existing(item);
+        this.collidables.add(item);
     }
 
 
@@ -272,10 +273,14 @@ export default class Game extends Phaser.State {
         if (this.player.finished) return;
         super.update(this.game);
 
-        this.game.physics.arcade.overlap(this.player, this.collidables, (p, item: Box) => {
-            item.collect(p);
-            Network.send('update', {'boxTaken' : item.id});
-        }, (_, sprite) => sprite instanceof Box);
+        this.game.physics.arcade.overlap(this.player, this.collidables, (p: Player, item) => {
+            if (item instanceof Box) {
+                item.collect(p);
+                Network.send('update', {'boxTaken' : item.id});
+            } else if (item instanceof Powerup && p.arcadeBody.onFloor()) {
+                item.effect(p);
+            }
+        });
 
         if (this.game.physics.arcade.overlap(this.player, this.finishTrigger)) this.finished();
 
