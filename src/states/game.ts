@@ -91,7 +91,8 @@ export default class Game extends Phaser.State {
 
 
         // this.game.sound.play(Assets.Audio.AudioMusic.getName(), 0.2, true);
-        this.game.camera.follow(this.player);
+        this.camera.focusOn(this.player);
+        this.camera.follow(this.player, Phaser.Camera.FOLLOW_PLATFORMER);
 
         this.cursors = this.game.input.keyboard.createCursorKeys();
 
@@ -105,7 +106,8 @@ export default class Game extends Phaser.State {
 
         this.game.add.existing(itemholder);
 
-        this.countdownText = this.game.add.text(this.game.width / 2, this.game.height / 2, '3', {
+
+        this.countdownText = this.game.add.text(this.centerX, this.centerY, '3', {
             fontSize: 30,
             font: Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
         });
@@ -136,7 +138,6 @@ export default class Game extends Phaser.State {
         );
     }
 
-
     private beginGame() {
         this.isCountingDown = false;
         Network.when('update').add((_, data) => this.updateState(data) );
@@ -163,12 +164,8 @@ export default class Game extends Phaser.State {
                     startFlag.animations.add('start', [0, 1, 2, 3]).play(5, true);
                 }
             } else if (o.name === 'finish') {
-                this.finishTrigger = this.game.add.sprite(o.x, o.y);
-                this.game.physics.enable(this.finishTrigger);
-                let arcade: Phaser.Physics.Arcade.Body = this.finishTrigger.body;
-                arcade.allowGravity = false;
-                arcade.gravity.set(0, 0);
-                arcade.setSize(o.width, o.height);
+                this.finishTrigger = this.game.add.sprite(o.x, o.y, null, null, this.collidables);
+                this.finishTrigger.body.setSize(o.width, o.height);
 
                 if (firstTime) {
                     let arrivalFlag = this.game.add.sprite(o.x, o.y, Assets.Spritesheets.Flags.getName(), null, this.collidables);
@@ -227,29 +224,40 @@ export default class Game extends Phaser.State {
         }
     }
 
+    get centerX() {
+        return this.camera.x + this.camera.width / 2;
+    }
+
+    get centerY() {
+        return this.camera.y + this.camera.height / 2;
+    }
+
     private finished() {
         this.finishTrigger.destroy();
         this.finishTrigger = null;
+        this.player.stop();
+        this.player.update();
         this.player.finished = true;
 
-        let txt = this.game.add.text(this.game.width / 2  , this.game.height / 2 , 'Finished !', {
+        let txt = this.game.add.text(this.centerX, this.centerY , 'Finished !', {
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 35
         });
         txt.anchor.set(0.5);
         let rank = this.players.filter(p => p !== this.player && p.finished).length + 1;
-        let rankTt = this.game.add.text(this.game.width / 2  , this.game.height / 2 + txt.height , 'Rank : ' + this.toRank(rank), {
+        let rankTt = this.game.add.text(this.centerX  , this.centerY + txt.height , 'Rank : ' + this.toRank(rank), {
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 30
         });
         rankTt.anchor.set(0.5, 0.5);
         this.endTexts.push(txt, rankTt);
         if (this.currentRound === this.totalRounds) {
+
             this.sendUpdate(); // last update to say you arrived
             this.game.time.events.remove(this.networkTimer); // stop sending updates
             Network.when('update').removeAll(); // stop listening for any incoming updates1
             Network.send('quit');
-            this.game.add.existing(new TextButton(this.game, this.game.width / 2, this.game.height / 2 + rankTt.height + txt.height + 20, {
+            this.game.add.existing(new TextButton(this.game, this.centerX, this.centerY + txt.height + rankTt.height + 20, {
                 text: 'Menu',
                 fontSize: 20,
                 font: Assets.CustomWebFonts.FontsKenvectorFuture.getName()
@@ -261,10 +269,10 @@ export default class Game extends Phaser.State {
         }
         this.currentRound++;
     }
+
     public addItemOnMap(item) {
         this.collidables.add(item);
     }
-
 
     public update(): void {
         this.game.physics.arcade.collide(this.collisionLayer, this.collidables);

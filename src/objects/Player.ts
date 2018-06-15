@@ -174,14 +174,14 @@ export class Player extends Phaser.Sprite {
 
     public update(): void {
         super.update();
-
         let onFloor = this.arcadeBody.onFloor();
         this.dustParticles.x = this.x;
         this.dustParticles.y = this.y + this.height / 2;
         this.dustParticles.on = onFloor && this.arcadeBody.velocity.x !== 0;
 
-        if (!this.isRemote && !this.onEffect) {
-            this.updateVelocity();
+        if (!this.isRemote && !this.onEffect && (!this.finished || !this.sm.is(PlayerStates.Idle))) {
+            if (this.finished) this.arcadeBody.velocity.x = 0;
+            else this.updateVelocity();
 
             let ltPos = this.collisionLayer.getTileXY(this.centerX, this.top, new Phaser.Point());
             let topCenter = this.map.getTile(ltPos.x, ltPos.y, this.collisionLayer);
