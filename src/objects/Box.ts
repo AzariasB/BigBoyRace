@@ -8,7 +8,7 @@ import { BoostArea} from './powerups/BoostArea';
 
 export default class Box extends Phaser.Sprite {
 
-    private isCollected: boolean;
+    private isCollected: boolean = false;
 
     constructor (public readonly id: number,
         game: Phaser.Game,
@@ -36,13 +36,14 @@ export default class Box extends Phaser.Sprite {
     }
 
     public collect(target: Player = null): void {
+        if (this.isCollected) return;
         this.isCollected = true;
 
         if (target !== null) {
             let item = new BoostArea(this.game.state.states['game'], 50, 50);
             target.setItem(item);
         }
-        let body: Phaser.Physics.Arcade.Body = this.body;
-        body.destroy();
+
+        this.body.destroy();
     }
 }
