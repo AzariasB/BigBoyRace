@@ -26,6 +26,11 @@ export namespace Images {
 
         static getPNG(): string { return require('assets/images/glue.png'); }
     }
+    export class ImagesIcleblock {
+        static getName(): string { return 'icleblock'; }
+
+        static getPNG(): string { return require('assets/images/icleblock.png'); }
+    }
     export class ImagesPlx1 {
         static getName(): string { return 'plx-1'; }
 
@@ -60,6 +65,16 @@ export namespace Images {
         static getName(): string { return 'sky'; }
 
         static getPNG(): string { return require('assets/images/sky.png'); }
+    }
+    export class ImagesSnowflake {
+        static getName(): string { return 'snowflake'; }
+
+        static getPNG(): string { return require('assets/images/snowflake.png'); }
+    }
+    export class SpritesheetsLivraisonJabetROLL {
+        static getName(): string { return 'LivraisonJabetROLL'; }
+
+        static getPNG(): string { return require('assets/spritesheets/LivraisonJabetROLL.png'); }
     }
     export class TilesetsJungle {
         static getName(): string { return 'Jungle'; }
@@ -156,6 +171,16 @@ export namespace Spritesheets {
         static getFrameWidth(): number { return 33; }
         static getFrameHeight(): number { return 31; }
         static getFrameMax(): number { return 28; }
+        static getMargin(): number { return 0; }
+        static getSpacing(): number { return 0; }
+    }
+    export class Hero3 {
+        static getName(): string { return 'hero3'; }
+
+        static getPNG(): string { return require('assets/spritesheets/hero3.[33,31,35,0,0].png'); }
+        static getFrameWidth(): number { return 33; }
+        static getFrameHeight(): number { return 31; }
+        static getFrameMax(): number { return 35; }
         static getMargin(): number { return 0; }
         static getSpacing(): number { return 0; }
     }

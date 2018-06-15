@@ -1,7 +1,9 @@
 import * as Assets from '../assets';
 import { Boost } from './powerups/Boost';
 import { GlueArea } from './powerups/GlueArea';
+import { IceArea } from './powerups/IceArea';
 import { Player } from './Player';
+import { BoostArea} from './powerups/BoostArea';
 
 
 export default class Box extends Phaser.Sprite {
@@ -18,7 +20,6 @@ export default class Box extends Phaser.Sprite {
     update() {
         super.update();
         if (this.isCollected) {
-            this.game.add.existing(this.target.getItem());
             this.rotation += Math.PI / 20;
             this.alpha -= 1 * this.game.time.elapsed / 1000;
             this.scale.divide(1.01, 1.01);
@@ -29,7 +30,8 @@ export default class Box extends Phaser.Sprite {
     public collect(target: Player): void {
         this.target = target;
         this.isCollected = true;
-        this.target.setItem(new GlueArea(this.game, 50, 50));
+        let item = new BoostArea(this.game.state.states['game'], 50, 50);
+        this.target.setItem(item);
         let body: Phaser.Physics.Arcade.Body = this.body;
         body.destroy();
     }

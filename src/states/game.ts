@@ -24,11 +24,11 @@ export default class Game extends Phaser.State {
     private particlesGenerator: Phaser.Particles.Arcade.Emitter = null;
     private jumptimer = 0;
     private finishTrigger: Phaser.Sprite;
-    private collectedBoxes: number[];
     private currentRound: number = 1;
     private endTexts: Phaser.Text[] = [];
     private networkTimer: Phaser.TimerEvent = null;
     public pauseCapture: boolean = false;
+    private itemsOnMap: any[] = [];
     private isCountingDown: boolean = true;
     private countdownText: Phaser.Text = null;
 
@@ -37,7 +37,6 @@ export default class Game extends Phaser.State {
         this.tilemap = this.game.add.tilemap(mapName);
         this.totalRounds = maxRounds;
         this.currentRound =  1;
-        this.collectedBoxes = [];
         for (let name of BackgroundScroller.BG_NAMES) {
             let bg = this.game.add.tileSprite(0, 0, this.game.world.width, this.game.height, name);
             bg.scale.set(2, 2);
@@ -239,9 +238,25 @@ export default class Game extends Phaser.State {
         }
         this.currentRound++;
     }
+    public addItemOnMap(item) {
+        this.game.add.existing(item);
+        this.itemsOnMap.push(item);
+    }
 
 
     public update(): void {
+        this.game.physics.arcade.collide(this.player, this.collisionLayer);
+        // this.game.physics.arcade.collide(this.ennemy, this.collisionLayer);
+        // send player data to server
+        for (let item of this.itemsOnMap) {
+            this.game.physics.arcade.collide(item, this.collisionLayer);
+            if (this.game.physics.arcade.overlap(this.player, item) && this.player.arcadeBody.onFloor()) {
+                    item.Effect(this.player);
+                    this.player.onEffect = true;
+            }
+            else
+                this.player.onEffect = false;
+        }
         for (let p of this.players) {
             this.game.physics.arcade.collide(p, this.collisionLayer);
         }
@@ -290,7 +305,7 @@ export default class Game extends Phaser.State {
             this.player.goDirection(PlayerDirection.Right);
         }
 
-        if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.arcadeBody.onFloor()) {
+        if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.arcadeBody.onFloor() && !this.player.onEffect) {
             this.player.stop();
         }
         else if (this.cursors.left.isUp && this.cursors.right.isUp && this.player.sm.is(PlayerStates.Jumping)) {
