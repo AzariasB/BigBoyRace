@@ -20,7 +20,7 @@ export default class Game extends Phaser.State {
     private cursors: Phaser.CursorKeys = null;
     private backgrounds: Phaser.TileSprite[] = [];
     private boxes: {[key: number]: Box} = {};
-    private flags: Phaser.Group;
+    private collidables: Phaser.Group;
     private particlesGenerator: Phaser.Particles.Arcade.Emitter = null;
     private jumptimer = 0;
     private finishTrigger: Phaser.Sprite;
@@ -28,7 +28,7 @@ export default class Game extends Phaser.State {
     private endTexts: Phaser.Text[] = [];
     private networkTimer: Phaser.TimerEvent = null;
     public pauseCapture: boolean = false;
-    private itemsOnMap: any[] = [];
+    private itemsOnMap: Phaser.Group;
     private isCountingDown: boolean = true;
     private countdownText: Phaser.Text = null;
 
@@ -36,6 +36,7 @@ export default class Game extends Phaser.State {
         this.myId = id;
         this.tilemap = this.game.add.tilemap(mapName);
         this.totalRounds = maxRounds;
+        this.currentRound =  1;
         for (let name of BackgroundScroller.BG_NAMES) {
             let bg = this.game.add.tileSprite(0, 0, this.game.world.width, this.game.height, name);
             bg.scale.set(2, 2);
@@ -49,18 +50,17 @@ export default class Game extends Phaser.State {
         this.collisionLayer = this.tilemap.createLayer('Collision');
         this.collisionLayer.resizeWorld();
 
-
         for (let bg of this.backgrounds) {
             bg.width = this.world.width;
             bg.height = this.world.height;
         }
 
-        this.flags = this.game.add.physicsGroup();
+        this.collidables = this.game.add.physicsGroup();
+        this.players = [];
         let startPos: Phaser.Point = this.createObjects();
 
-        this.players = [];
         for (let i = 0; i < players; ++i ) {
-            let p = new Player(i !== this.myId, this.game, startPos.x, startPos.y, getSpriteName(i), this.tilemap, this.collisionLayer);
+            let p = this.createPlayer(i, startPos);
             this.players.push(p);
             this.game.add.existing(p);
             if (i === this.myId) {
@@ -68,6 +68,17 @@ export default class Game extends Phaser.State {
             }
         }
         this.player.bringToTop();
+    }
+
+    private createPlayer(id: number, pos: Phaser.Point) {
+        return new Player(id !== this.myId,
+                this.game,
+                pos.x,
+                pos.y,
+                getSpriteName(id),
+                this.tilemap,
+                this.collisionLayer
+        );
     }
 
     public create(): void {
@@ -113,6 +124,18 @@ export default class Game extends Phaser.State {
         }
     }
 
+    private createBox(id: number, x: number, y: number) {
+        return new Box(
+            id,
+            this.game,
+            x + this.tilemap.tileWidth / 2,
+            y + this.tilemap.tileHeight / 2,
+            Assets.Images.ImagesBox.getName(),
+            (box) => delete this.boxes[box.id]
+        );
+    }
+
+
     private beginGame() {
         this.isCountingDown = false;
         Network.when('update').add((_, data) => this.updateState(data) );
@@ -121,23 +144,21 @@ export default class Game extends Phaser.State {
 
     private createObjects(): Phaser.Point {
         Object.keys(this.boxes).map(k => this.boxes[k].destroy());
-        let firstTime = this.flags.length === 0;
+        let firstTime = this.currentRound === 1;
 
         let pos = new Phaser.Point();
         let id = 0;
         this.tilemap.objects['Powerups'].map(o => {
             if (o.name === 'item') {
-                let nwBox  = new Box(this.game, o.x + this.tilemap.tileWidth / 2, o.y + this.tilemap.tileHeight / 2, Assets.Images.ImagesBox.getName());
+                let nwBox  = this.createBox(id, o.x, o.y);
                 this.boxes[id] = nwBox;
-                nwBox.body.allowGravity = false;
                 nwBox.height = this.tilemap.tileHeight;
                 nwBox.width = this.tilemap.tileWidth;
-                this.game.add.existing(nwBox);
-
+                this.collidables.add(nwBox);
             } else if (o.name === 'start') {
                 pos.set(o.x, o.y);
                 if (firstTime) {
-                    let startFlag = this.game.add.sprite(o.x, o.y, Assets.Spritesheets.Flags.getName(), null, this.flags);
+                    let startFlag = this.game.add.sprite(o.x, o.y, Assets.Spritesheets.Flags.getName(), null, this.collidables);
                     startFlag.animations.add('start', [0, 1, 2, 3]).play(5, true);
                 }
             } else if (o.name === 'finish') {
@@ -149,7 +170,7 @@ export default class Game extends Phaser.State {
                 arcade.setSize(o.width, o.height);
 
                 if (firstTime) {
-                    let arrivalFlag = this.game.add.sprite(o.x, o.y, Assets.Spritesheets.Flags.getName(), null, this.flags);
+                    let arrivalFlag = this.game.add.sprite(o.x, o.y, Assets.Spritesheets.Flags.getName(), null, this.collidables);
                     arrivalFlag.animations.add('finish', [4, 5, 6, 7], 5, true).play();
                 }
             }
@@ -190,6 +211,8 @@ export default class Game extends Phaser.State {
                 let p = data.player;
                 this.players[data.id].deserialize(p);
             }
+        } else if (data.boxTaken && this.boxes[data.boxTaken]) {
+            this.boxes[data.boxTaken].collect();
         }
     }
 
@@ -204,7 +227,6 @@ export default class Game extends Phaser.State {
     }
 
     private finished() {
-        this.currentRound++;
         this.finishTrigger.destroy();
         this.finishTrigger = null;
         this.player.finished = true;
@@ -221,53 +243,41 @@ export default class Game extends Phaser.State {
         });
         rankTt.anchor.set(0.5, 0.5);
         this.endTexts.push(txt, rankTt);
-
         if (this.currentRound === this.totalRounds) {
             this.sendUpdate(); // last update to say you arrived
             this.game.time.events.remove(this.networkTimer); // stop sending updates
             Network.when('update').removeAll(); // stop listening for any incoming updates1
             Network.send('quit');
-            new TextButton(this.game, this.game.width / 2, this.game.height / 2 + rankTt.height + txt.height + 20, {
+            this.game.add.existing(new TextButton(this.game, this.game.width / 2, this.game.height / 2 + rankTt.height + txt.height + 20, {
                 text: 'Menu',
                 fontSize: 20,
                 font: Assets.CustomWebFonts.FontsKenvectorFuture.getName()
-            }, { callback: () => this.game.state.start('title')});
+            }, { callback: () => this.game.state.start('title')}));
         } else if (rank === this.players.length) {
             this.game.time.events.add(1000, () => {
                 Network.send('update', {restart: true});
             });
         }
+        this.currentRound++;
     }
     public addItemOnMap(item) {
         this.game.add.existing(item);
-        this.itemsOnMap.push(item);
     }
 
 
     public update(): void {
-        this.game.physics.arcade.collide(this.player, this.collisionLayer);
-        // this.game.physics.arcade.collide(this.ennemy, this.collisionLayer);
-        // send player data to server
-        for (let item of this.itemsOnMap) {
-            this.game.physics.arcade.collide(item, this.collisionLayer);
-            if (this.game.physics.arcade.overlap(this.player, item) && this.player.arcadeBody.onFloor()) {
-                    item.Effect(this.player);
-                    this.player.onEffect = true;
-            }
-            else
-                this.player.onEffect = false;
-        }
-        for (let p of this.players) {
-            this.game.physics.arcade.collide(p, this.collisionLayer);
-        }
-        this.game.physics.arcade.collide(this.collisionLayer, this.flags);
+        this.game.physics.arcade.collide(this.collisionLayer, this.collidables);
+        this.game.physics.arcade.collide(this.players, this.collisionLayer);
 
         if (this.player.finished) return;
         super.update(this.game);
 
-        if (this.game.physics.arcade.overlap(this.player, this.finishTrigger)) {
-            this.finished();
-        }
+        this.game.physics.arcade.overlap(this.player, this.collidables, (p, item: Box) => {
+            item.collect(p);
+            Network.send('update', {'boxTaken' : item.id});
+        }, (_, sprite) => sprite instanceof Box);
+
+        if (this.game.physics.arcade.overlap(this.player, this.finishTrigger)) this.finished();
 
         let divisor = 4;
         for (let bg of this.backgrounds) {
@@ -297,8 +307,6 @@ export default class Game extends Phaser.State {
 
 
         this.player.setCrouching(this.cursors.down.isDown);
-        let ti = this.cursors.up.timeDown;
-
         if (this.cursors.left.isDown) {
             this.player.goDirection(PlayerDirection.Left);
         } else if (this.cursors.right.isDown) {

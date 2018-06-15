@@ -16,11 +16,11 @@ export default class Joining extends Phaser.State {
             fontSize: 30
         }).anchor.set(0.5, 0);
 
-        new TextButton(this.game, 100, 30, {
+        this.game.add.existing(new TextButton(this.game, 100, 30, {
             text: 'Menu',
             font: Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize: 20
-        }, {callback: () => this.state.start('title')});
+        }, {callback: () => this.state.start('title')}));
 
         Network.acknowledge('lobbies', null, lobbies => this.showLobbies(lobbies));
     }
@@ -43,10 +43,10 @@ export default class Joining extends Phaser.State {
         colum += Math.floor(index / Joining.MAX_ROWS);
         index -= Joining.MAX_ROWS * colum;
 
-        new TextButton(this.game, (colum + 1) * 250, (index + 3) * 60, {
+        this.game.add.existing(new TextButton(this.game, (colum + 1) * 250, (index + 3) * 60, {
             text: 'Lobby ' + lobyData.id,
             font: Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize: 20
-        }, {callback: () => this.state.start('lobby', true, false, false, lobyData.id)});
+        }, {callback: () => this.state.start('lobby', true, false, false, lobyData.id)}));
     }
 }
