@@ -305,14 +305,6 @@ export namespace BitmapFonts {
 }
 
 export namespace Tilemaps {
-    export class Decors1 {
-        static getName(): string { return 'decors1'; }
-        static getJSON(): string { return require('assets/tilemaps/decors1.json'); }
-    }
-    export class DefaultMap {
-        static getName(): string { return 'defaultMap'; }
-        static getJSON(): string { return require('assets/tilemaps/defaultMap.json'); }
-    }
     export class JungleMap {
         static getName(): string { return 'JungleMap'; }
         static getJSON(): string { return require('assets/tilemaps/JungleMap.json'); }
@@ -320,14 +312,6 @@ export namespace Tilemaps {
     export class JungleMap2 {
         static getName(): string { return 'JungleMap2'; }
         static getJSON(): string { return require('assets/tilemaps/JungleMap2.json'); }
-    }
-    export class JungleMapTest {
-        static getName(): string { return 'JungleMapTest'; }
-        static getJSON(): string { return require('assets/tilemaps/JungleMapTest.json'); }
-    }
-    export class JungleMapTest1 {
-        static getName(): string { return 'JungleMapTest1'; }
-        static getJSON(): string { return require('assets/tilemaps/JungleMapTest1.json'); }
     }
     export class JungleSonic {
         static getName(): string { return 'JungleSonic'; }
