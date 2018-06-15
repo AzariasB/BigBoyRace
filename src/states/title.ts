@@ -14,14 +14,14 @@ export default class Title extends Phaser.State {
         new BackgroundScroller(this.game);
         let yPos = 150;
         let tb = new TextButton(this.game, this.game.world.centerX, yPos, {
-            text : 'Play !',
+            text : 'Join',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
         }, {callback : () => this.playClick()});
         yPos += tb.height + 10;
 
         let optionsB = new TextButton(this.game, this.game.world.centerX, yPos , {
-            text : 'Build',
+            text : 'Create',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
         }, {callback : () => this.joinClick()});
@@ -38,7 +38,7 @@ export default class Title extends Phaser.State {
             text : 'Credits',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
-        }, {callback : () => this.helpClick()});
+        }, {callback : () => this.creditsClick()});
     }
 
     private playClick() {
@@ -57,12 +57,8 @@ export default class Title extends Phaser.State {
     }
 
     private buildClick() {
-        this.game.camera.onFadeComplete.addOnce(this.loadBuild, this);
+        this.game.camera.onFadeComplete.addOnce(() => this.state.start('build'), this);
         this.game.camera.fade(0x000000, 500);
-    }
-
-    private loadBuild() {
-        this.game.state.start('build');
     }
 
     private helpClick() {

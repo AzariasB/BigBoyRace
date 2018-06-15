@@ -10,12 +10,16 @@ import {Atlases} from '../assets';
 
 export default class Build extends Phaser.State {
 
+    private players: string = '2';
+    private myMap: string = 'JungleMap2';
+
     public create(): void {
         new BackgroundScroller(this.game);
 
         let xPos = this.game.width / 2;
         let yPos = 30;
         let text, tb;
+        let nbPlayer, mapChosen;
         text = this.game.add.text(xPos, yPos, 'Make your party !', {
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 30,
@@ -27,13 +31,12 @@ export default class Build extends Phaser.State {
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 25,
         });
-        yPos += text.height + 50;
+        yPos += text.height + 30;
 
-        let n = 2;
         let nbPlayerMax = 6;
-        while (n < nbPlayerMax + 1) {
-            tb = new TextButton(this.game, this.game.width * n / (nbPlayerMax + 2) , yPos, {
-                text: n + '',
+        for (let i = 2; i < nbPlayerMax + 1; ++i) {
+            tb = new TextButton(this.game, this.game.width * i / (nbPlayerMax + 2) , yPos, {
+                text: i + '',
                 font: Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
                 fontSize: 20
             }, {
@@ -41,41 +44,57 @@ export default class Build extends Phaser.State {
                     over: Atlases.AtlasesBlueSheet.Frames.BlueButton11,
                     out: Atlases.AtlasesBlueSheet.Frames.BlueButton09,
                     down: Atlases.AtlasesBlueSheet.Frames.BlueButton10,
-                    up: Atlases.AtlasesBlueSheet.Frames.BlueButton09
+                    callback : () =>  this.nbPlayer(i)
             });
-            n++;
         }
-        yPos += tb.height + 50;
+        yPos += tb.height + 30;
 
         text = this.game.add.text(this.game.width * 1 / 5, yPos, 'On which map ?', {
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 25,
         });
-        yPos += text.height + 50;
+        yPos += text.height + 30;
 
-        n = 0;
-        let nbMap = 5;
-        while (n < nbMap) {
-            tb = new TextButton(this.game, this.game.width * (n + 1) / (nbMap + 1), yPos, {
-                text: n + '',
+        let nbMap = 0;
+        let i = 0;
+        for (let map in Assets.Tilemaps) { nbMap++; }
+
+        for (let map in Assets.Tilemaps) {
+            tb = new TextButton(this.game, this.game.width * (i + 1) / (nbMap + 1), yPos, {
+                text: map,
                 font: Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
                 fontSize: 20
             }, {
-                key: Atlases.AtlasesBlueSheet.getName(),
-                over: Atlases.AtlasesBlueSheet.Frames.BlueButton11,
-                out: Atlases.AtlasesBlueSheet.Frames.BlueButton09,
-                down: Atlases.AtlasesBlueSheet.Frames.BlueButton10,
-                up: Atlases.AtlasesBlueSheet.Frames.BlueButton09
+                callback : () =>  this.mapChosen(map)
             });
-            n++;
+            i++;
         }
         yPos += tb.height + 50;
 
-        tb = new TextButton(this.game, this.game.width / 2, yPos, {
-            text : 'Return',
+        tb = new TextButton(this.game, this.game.width * 3 / 8, yPos, {
+            text : 'Validate',
+            font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
+            fontSize : 20
+        }, {callback : this.validateClick, callbackContext : this});
+
+        tb = new TextButton(this.game, this.game.width * 5 / 8, yPos, {
+            text : 'Cancel',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
         }, {callback : this.returnClick, callbackContext : this});
+    }
+
+    private nbPlayer(nb) {
+        this.players = nb;
+    }
+
+    private mapChosen(map) {
+        this.myMap = map;
+    }
+
+    private validateClick() {
+        this.game.camera.onFadeComplete.addOnce(() => this.state.start('lobby', true, false, true, this.myMap, +this.players));
+        this.game.camera.fade(0x000000, 500);
     }
 
     private returnClick() {
