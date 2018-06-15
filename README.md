@@ -5,6 +5,10 @@ Jeux en ligne multijoueur, écrit en typescript et en javascript, en utilisant p
 
 Installation
 ============
+Installations des dépendances de canvas :
+```
+# apt-get install libcairo2-dev libjpeg-dev libpango1.0-dev libgif-dev build-essential g++
+```
 
 Pour installer :
 ```
@@ -14,10 +18,10 @@ npm install
 Execution
 =========
 
-Pour éxecuter le programme :
+Pour executer le programme :
 ```
 node server/index.js
-``
+```
 lance le serveur (qui permet à deux joueurs de se connecter en même temps)
 
 ```

@@ -2,14 +2,14 @@
   "name": "phaser-npm-webpack-typescript-starter-project",
   "productName": "phaser-npm-webpack-typescript-starter-project",
   "version": "1.8.7",
-  "main": "electron-main.js",
   "scripts": {
-    "webpack:dev": "webpack --config webpack.dev.config.js --progress --colors",
-    "webpack:dist": "webpack --config webpack.dist.config.js --progress --colors",
-    "build:dev": "echo-cli 'Building DEV ...' && npm run webpack:dev && echo-cli 'Build Complete ✔'",
-    "build:dist": "echo-cli 'Building DIST ...' && npm run webpack:dist && echo-cli 'Build Complete ✔'",
-    "server:dev": "webpack-dev-server --config webpack.dev.config.js --open",
-    "server:dist": "webpack-dev-server --config webpack.dist.config.js --open",
+    "client:webpack:dev": "webpack --config webpack.dev.config.js --progress --colors",
+    "client:webpack:dist": "webpack --config webpack.dist.config.js --progress --colors",
+    "client:build:dev": "echo-cli 'Building DEV ...' && npm run client:webpack:dev && echo-cli 'Build Complete ✔'",
+    "client:build:dist": "echo-cli 'Building DIST ...' && npm run client:webpack:dist && echo-cli 'Build Complete ✔'",
+    "client:dev": "webpack-dev-server --config webpack.dev.config.js --open",
+    "client:dist": "webpack-dev-server --config webpack.dist.config.js --open",
+    "server:dev": "tsc -p server/tsconfig.json --watch & nodemon server/dist/server",
     "setupGameSize": "node ./scripts/setupGameSize.js",
     "assets:dev": "node ./scripts/generateAssetsClass.js --dev",
     "assets": "node ./scripts/generateAssetsClass.js",
@@ -17,10 +17,14 @@
     "checkDepsVersions": "npm-check --skip-unused -u"
   },
   "dependencies": {
+    "@types/express": "^4.16.0",
     "@types/node": "latest",
     "@types/socket.io": "^1.4.34",
+    "@types/uws": "^0.13.2",
     "@types/webfontloader": "1.6.29",
+    "@types/ws": "^5.1.2",
     "ajv": "^6.5.0",
+    "canvas": "^1.6.11",
     "clean-webpack-plugin": "0.1.17",
     "commander": "2.13.0",
     "copy-webpack-plugin": "4.3.1",
@@ -29,6 +33,8 @@
     "express": "^4.16.3",
     "file-loader": "1.1.6",
     "html-webpack-plugin": "2.30.1",
+    "jsdom": "^11.11.0",
+    "nodemon": "^1.17.5",
     "npm-check": "5.5.2",
     "phaser-ce": "latest",
     "pngjs-image": "0.11.7",
@@ -40,11 +46,16 @@
     "typescript": "latest",
     "typestate": "latest",
     "uglifyjs-webpack-plugin": "1.1.6",
+    "uws": "^10.148.0",
     "webfontloader": "1.6.28",
     "webpack": "3.10.0",
     "webpack-dev-server": "2.11.1",
     "webpack-synchronizable-shell-plugin": "0.0.6",
     "ws": "^5.2.0",
-    "xml2js": "0.4.19"
+    "xml2js": "0.4.19",
+    "xmlhttprequest": "^1.8.0"
+  },
+  "devDependencies": {
+    "node-loader": "^0.6.0"
   }
 }

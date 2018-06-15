@@ -1,4 +1,10 @@
-import { PLAYER_VMAX_GRAB_WALLSLIDE } from './constant';
+import { PLAYER_VMAX_GRAB_WALLSLIDE, PLAYER_SPEED } from './constant';
+
+export enum PlayerDirection {
+    Left = 'left',
+    Right = 'right',
+    None = 'none'
+}
 
 export enum PlayerStates {
     Running = 'Running',
@@ -21,8 +27,9 @@ export enum PlayerAnimation {
     WalkCrouch = 'walk_crouch',
     WallSliding = 'wall_sliding',
     Jump = 'jump',
-    Land = 'land'
-}
+    Land = 'land',
+    OnAir = 'on_air'
+ }
 
 export class AnimationConfiguration {
     public states: {[key: string]:
@@ -58,7 +65,7 @@ const Config: AnimationConfiguration = new AnimationConfiguration({
         [PlayerStates.SlideCrouched]: {
             animation: PlayerAnimation.JumpCrouch,
             transitions: {
-                [PlayerStates.Crouched]: opts => opts.velocityX === 0,
+                [PlayerStates.Crouched]: opts => Math.abs(opts.velocityX) <= PLAYER_SPEED.CROUCH,
                 [PlayerStates.Running]: opts => opts.velocityX !== 0 && !opts.isStuck && !opts.isCrouchPressed
                 // could add a state to go from sliding to iddle ?
             }

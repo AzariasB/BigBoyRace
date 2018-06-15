@@ -1,5 +1,4 @@
 
-import Game from './game';
 import TextButton, { ButtonOptions } from '../widgets/TextButton';
 import BackgroundScroller, { } from '../widgets/backgroundScroller';
 import * as Assets from '../assets';
@@ -9,6 +8,20 @@ import {__String} from 'typescript';
 import {Atlases} from '../assets';
 
 export default class Help extends Phaser.State {
+
+    private createButton(x: number, y: number, text: string) {
+        new TextButton(this.game, x, y + 10, {
+            text: text,
+            font: Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
+            fontSize: 25
+        }, {
+            key: Atlases.AtlasesBlueSheet.getName(),
+            over: Atlases.AtlasesBlueSheet.Frames.BlueButton11,
+            out: Atlases.AtlasesBlueSheet.Frames.BlueButton09,
+            down: Atlases.AtlasesBlueSheet.Frames.BlueButton10,
+            up: Atlases.AtlasesBlueSheet.Frames.BlueButton09
+        });
+    }
 
     public create(): void {
         new BackgroundScroller(this.game);
@@ -85,7 +98,7 @@ export default class Help extends Phaser.State {
         }
 
         yPos += 50;
-        let tb = new TextButton(this.game, this.game.width * 1 / 5, this.game.height / 2, {
+        new TextButton(this.game, this.game.width * 1 / 5, this.game.height / 2, {
             text : 'Return',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20

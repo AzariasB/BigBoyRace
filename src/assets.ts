@@ -1,11 +1,6 @@
 /* AUTO GENERATED FILE. DO NOT MODIFY. YOU WILL LOSE YOUR CHANGES ON BUILD. */
 
 export namespace Images {
-    export class ImagesBackgroundTemplate {
-        static getName(): string { return 'background_template'; }
-
-        static getPNG(): string { return require('assets/images/background_template.png'); }
-    }
     export class ImagesBox {
         static getName(): string { return 'box'; }
 
@@ -56,11 +51,6 @@ export namespace Images {
 
         static getPNG(): string { return require('assets/images/plx-5.png'); }
     }
-    export class ImagesSea {
-        static getName(): string { return 'sea'; }
-
-        static getPNG(): string { return require('assets/images/sea.png'); }
-    }
     export class ImagesShield {
         static getName(): string { return 'shield'; }
 
@@ -71,61 +61,81 @@ export namespace Images {
 
         static getPNG(): string { return require('assets/images/sky.png'); }
     }
-    export class TilesetsJungleTileset {
-        static getName(): string { return 'jungle tileset'; }
+    export class TilesetsJungle {
+        static getName(): string { return 'Jungle'; }
 
-        static getPNG(): string { return require('assets/tilesets/jungle tileset.png'); }
+        static getPNG(): string { return require('assets/tilesets/Jungle.png'); }
     }
 }
 
 export namespace Spritesheets {
-    export class Adventurer {
-        static getName(): string { return 'adventurer'; }
+    export class Flags {
+        static getName(): string { return 'flags'; }
 
-        static getPNG(): string { return require('assets/spritesheets/adventurer.[50,37,96,0,0].png'); }
-        static getFrameWidth(): number { return 50; }
-        static getFrameHeight(): number { return 37; }
-        static getFrameMax(): number { return 96; }
+        static getPNG(): string { return require('assets/spritesheets/flags.[16,16,8,0,0].png'); }
+        static getFrameWidth(): number { return 16; }
+        static getFrameHeight(): number { return 16; }
+        static getFrameMax(): number { return 8; }
         static getMargin(): number { return 0; }
         static getSpacing(): number { return 0; }
     }
     export class HeroBlue {
         static getName(): string { return 'hero_blue'; }
 
-        static getPNG(): string { return require('assets/spritesheets/hero_blue.[44,48,40,0,2].png'); }
-        static getFrameWidth(): number { return 44; }
-        static getFrameHeight(): number { return 48; }
-        static getFrameMax(): number { return 40; }
+        static getPNG(): string { return require('assets/spritesheets/hero_blue.[33,31,28,0,0].png'); }
+        static getFrameWidth(): number { return 33; }
+        static getFrameHeight(): number { return 31; }
+        static getFrameMax(): number { return 28; }
         static getMargin(): number { return 0; }
-        static getSpacing(): number { return 2; }
+        static getSpacing(): number { return 0; }
+    }
+    export class HeroGold {
+        static getName(): string { return 'hero_gold'; }
+
+        static getPNG(): string { return require('assets/spritesheets/hero_gold.[33,31,28,0,0].png'); }
+        static getFrameWidth(): number { return 33; }
+        static getFrameHeight(): number { return 31; }
+        static getFrameMax(): number { return 28; }
+        static getMargin(): number { return 0; }
+        static getSpacing(): number { return 0; }
     }
     export class HeroGreen {
         static getName(): string { return 'hero_green'; }
 
-        static getPNG(): string { return require('assets/spritesheets/hero_green.[44,48,40,0,2].png'); }
-        static getFrameWidth(): number { return 44; }
-        static getFrameHeight(): number { return 48; }
-        static getFrameMax(): number { return 40; }
-        static getMargin(): number { return 0; }
-        static getSpacing(): number { return 2; }
-    }
-    export class HeroGrey {
-        static getName(): string { return 'hero_grey'; }
-
-        static getPNG(): string { return require('assets/spritesheets/hero_grey.[46,50,32,0,0].png'); }
-        static getFrameWidth(): number { return 46; }
-        static getFrameHeight(): number { return 50; }
-        static getFrameMax(): number { return 32; }
+        static getPNG(): string { return require('assets/spritesheets/hero_green.[33,31,28,0,0].png'); }
+        static getFrameWidth(): number { return 33; }
+        static getFrameHeight(): number { return 31; }
+        static getFrameMax(): number { return 28; }
         static getMargin(): number { return 0; }
         static getSpacing(): number { return 0; }
     }
     export class HeroRed {
         static getName(): string { return 'hero_red'; }
 
-        static getPNG(): string { return require('assets/spritesheets/hero_red.[46,50,32,0,0].png'); }
-        static getFrameWidth(): number { return 46; }
-        static getFrameHeight(): number { return 50; }
-        static getFrameMax(): number { return 32; }
+        static getPNG(): string { return require('assets/spritesheets/hero_red.[33,31,28,0,0] .png'); }
+        static getFrameWidth(): number { return 33; }
+        static getFrameHeight(): number { return 31; }
+        static getFrameMax(): number { return 28; }
+        static getMargin(): number { return 0; }
+        static getSpacing(): number { return 0; }
+    }
+    export class HeroViolet {
+        static getName(): string { return 'hero_violet'; }
+
+        static getPNG(): string { return require('assets/spritesheets/hero_violet.[33,31,28,0,0].png'); }
+        static getFrameWidth(): number { return 33; }
+        static getFrameHeight(): number { return 31; }
+        static getFrameMax(): number { return 28; }
+        static getMargin(): number { return 0; }
+        static getSpacing(): number { return 0; }
+    }
+    export class Hero {
+        static getName(): string { return 'hero'; }
+
+        static getPNG(): string { return require('assets/spritesheets/hero.[33,31,28,0,0].png'); }
+        static getFrameWidth(): number { return 33; }
+        static getFrameHeight(): number { return 31; }
+        static getFrameMax(): number { return 28; }
         static getMargin(): number { return 0; }
         static getSpacing(): number { return 0; }
     }
@@ -167,43 +177,6 @@ export namespace Atlases {
             BlueSliderRight = 'blue_sliderRight.png',
             BlueSliderUp = 'blue_sliderUp.png',
             BlueTick = 'blue_tick.png',
-        }
-    }
-    export class AtlasesGreenSheet {
-        static getName(): string { return 'greenSheet'; }
-
-        static getPNG(): string { return require('assets/atlases/greenSheet.png'); }
-
-        static getXML(): string { return require('assets/atlases/greenSheet.xml'); }
-    }
-    export namespace AtlasesGreenSheet {
-        export enum Frames {
-            GreenBoxCheckmark = 'green_boxCheckmark.png',
-            GreenBoxCross = 'green_boxCross.png',
-            GreenBoxTick = 'green_boxTick.png',
-            GreenButton00 = 'green_button00.png',
-            GreenButton01 = 'green_button01.png',
-            GreenButton02 = 'green_button02.png',
-            GreenButton03 = 'green_button03.png',
-            GreenButton04 = 'green_button04.png',
-            GreenButton05 = 'green_button05.png',
-            GreenButton06 = 'green_button06.png',
-            GreenButton07 = 'green_button07.png',
-            GreenButton08 = 'green_button08.png',
-            GreenButton09 = 'green_button09.png',
-            GreenButton10 = 'green_button10.png',
-            GreenButton11 = 'green_button11.png',
-            GreenButton12 = 'green_button12.png',
-            GreenButton13 = 'green_button13.png',
-            GreenCheckmark = 'green_checkmark.png',
-            GreenCircle = 'green_circle.png',
-            GreenCross = 'green_cross.png',
-            GreenPanel = 'green_panel.png',
-            GreenSliderDown = 'green_sliderDown.png',
-            GreenSliderLeft = 'green_sliderLeft.png',
-            GreenSliderRight = 'green_sliderRight.png',
-            GreenSliderUp = 'green_sliderUp.png',
-            GreenTick = 'green_tick.png',
         }
     }
     export class AtlasesGreySheet {
@@ -295,80 +268,6 @@ export namespace Atlases {
             PreloadFrame = 'preload_frame.png',
         }
     }
-    export class AtlasesRedSheet {
-        static getName(): string { return 'redSheet'; }
-
-        static getPNG(): string { return require('assets/atlases/redSheet.png'); }
-
-        static getXML(): string { return require('assets/atlases/redSheet.xml'); }
-    }
-    export namespace AtlasesRedSheet {
-        export enum Frames {
-            RedBoxCheckmark = 'red_boxCheckmark.png',
-            RedBoxCross = 'red_boxCross.png',
-            RedBoxTick = 'red_boxTick.png',
-            RedButton00 = 'red_button00.png',
-            RedButton01 = 'red_button01.png',
-            RedButton02 = 'red_button02.png',
-            RedButton03 = 'red_button03.png',
-            RedButton04 = 'red_button04.png',
-            RedButton05 = 'red_button05.png',
-            RedButton06 = 'red_button06.png',
-            RedButton07 = 'red_button07.png',
-            RedButton08 = 'red_button08.png',
-            RedButton09 = 'red_button09.png',
-            RedButton10 = 'red_button10.png',
-            RedButton11 = 'red_button11.png',
-            RedButton12 = 'red_button12.png',
-            RedButton13 = 'red_button13.png',
-            RedCheckmark = 'red_checkmark.png',
-            RedCircle = 'red_circle.png',
-            RedCross = 'red_cross.png',
-            RedPanel = 'red_panel.png',
-            RedSliderDown = 'red_sliderDown.png',
-            RedSliderLeft = 'red_sliderLeft.png',
-            RedSliderRight = 'red_sliderRight.png',
-            RedSliderUp = 'red_sliderUp.png',
-            RedTick = 'red_tick.png',
-        }
-    }
-    export class AtlasesYellowSheet {
-        static getName(): string { return 'yellowSheet'; }
-
-        static getPNG(): string { return require('assets/atlases/yellowSheet.png'); }
-
-        static getXML(): string { return require('assets/atlases/yellowSheet.xml'); }
-    }
-    export namespace AtlasesYellowSheet {
-        export enum Frames {
-            YellowBoxCheckmark = 'yellow_boxCheckmark.png',
-            YellowBoxCross = 'yellow_boxCross.png',
-            YellowBoxTick = 'yellow_boxTick.png',
-            YellowButton00 = 'yellow_button00.png',
-            YellowButton01 = 'yellow_button01.png',
-            YellowButton02 = 'yellow_button02.png',
-            YellowButton03 = 'yellow_button03.png',
-            YellowButton04 = 'yellow_button04.png',
-            YellowButton05 = 'yellow_button05.png',
-            YellowButton06 = 'yellow_button06.png',
-            YellowButton07 = 'yellow_button07.png',
-            YellowButton08 = 'yellow_button08.png',
-            YellowButton09 = 'yellow_button09.png',
-            YellowButton10 = 'yellow_button10.png',
-            YellowButton11 = 'yellow_button11.png',
-            YellowButton12 = 'yellow_button12.png',
-            YellowButton13 = 'yellow_button13.png',
-            YellowCheckmark = 'yellow_checkmark.png',
-            YellowCircle = 'yellow_circle.png',
-            YellowCross = 'yellow_cross.png',
-            YellowPanel = 'yellow_panel.png',
-            YellowSliderDown = 'yellow_sliderDown.png',
-            YellowSliderLeft = 'yellow_sliderLeft.png',
-            YellowSliderRight = 'yellow_sliderRight.png',
-            YellowSliderUp = 'yellow_sliderUp.png',
-            YellowTick = 'yellow_tick.png',
-        }
-    }
 }
 
 export namespace Audio {
@@ -383,28 +282,7 @@ export namespace Audio {
 }
 
 export namespace Audiosprites {
-    export class AudiospritesSfx {
-        static getName(): string { return 'sfx'; }
-
-        static getAC3(): string { return require('assets/audiosprites/sfx.ac3'); }
-        static getJSON(): string { return require('assets/audiosprites/sfx.json'); }
-        static getM4A(): string { return require('assets/audiosprites/sfx.m4a'); }
-        static getMP3(): string { return require('assets/audiosprites/sfx.mp3'); }
-        static getOGG(): string { return require('assets/audiosprites/sfx.ogg'); }
-    }
-    export namespace AudiospritesSfx {
-        export enum Sprites {
-            Laser1 = 'laser1',
-            Laser2 = 'laser2',
-            Laser3 = 'laser3',
-            Laser4 = 'laser4',
-            Laser5 = 'laser5',
-            Laser6 = 'laser6',
-            Laser7 = 'laser7',
-            Laser8 = 'laser8',
-            Laser9 = 'laser9',
-        }
-    }
+    class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}
 }
 
 export namespace GoogleWebFonts {
@@ -443,6 +321,10 @@ export namespace Tilemaps {
         static getName(): string { return 'JungleMap2'; }
         static getJSON(): string { return require('assets/tilemaps/JungleMap2.json'); }
     }
+    export class JungleMapTest {
+        static getName(): string { return 'JungleMapTest'; }
+        static getJSON(): string { return require('assets/tilemaps/JungleMapTest.json'); }
+    }
     export class JungleMapTest1 {
         static getName(): string { return 'JungleMapTest1'; }
         static getJSON(): string { return require('assets/tilemaps/JungleMapTest1.json'); }
@@ -451,9 +333,9 @@ export namespace Tilemaps {
         static getName(): string { return 'JungleSonic'; }
         static getJSON(): string { return require('assets/tilemaps/JungleSonic.json'); }
     }
-    export class JungleTry {
-        static getName(): string { return 'JungleTry'; }
-        static getJSON(): string { return require('assets/tilemaps/JungleTry.json'); }
+    export class LabiMap {
+        static getName(): string { return 'LabiMap'; }
+        static getJSON(): string { return require('assets/tilemaps/LabiMap.json'); }
     }
 }
 
@@ -470,16 +352,7 @@ export namespace Text {
 }
 
 export namespace Scripts {
-    export class ScriptsBlurX {
-        static getName(): string { return 'BlurX'; }
-
-        static getJS(): string { return require('assets/scripts/BlurX.js'); }
-    }
-    export class ScriptsBlurY {
-        static getName(): string { return 'BlurY'; }
-
-        static getJS(): string { return require('assets/scripts/BlurY.js'); }
-    }
+    class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}
 }
 export namespace Shaders {
     export class ShadersPixelate {
