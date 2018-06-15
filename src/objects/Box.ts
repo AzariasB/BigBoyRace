@@ -40,7 +40,7 @@ export default class Box extends Phaser.Sprite {
         this.isCollected = true;
 
         if (target !== null) {
-            let item = new BoostArea(this.game.state.states['game'], 50, 50);
+            let item = new GlueArea(this.game.state.states['game'], 50, 50);
             target.setItem(item);
         }
 

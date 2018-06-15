@@ -96,7 +96,7 @@ export default class Game extends Phaser.State {
 
         this.cursors = this.game.input.keyboard.createCursorKeys();
 
-        let itemholder = new ItemHolder(this.game, 10, 10,
+        let itemholder = new ItemHolder(this.game, 12, 12,
             Assets.Atlases.AtlasesGreySheet.getName(),
             Assets.Atlases.AtlasesGreySheet.Frames.GreyButton11
         );
