@@ -20,10 +20,11 @@ export class Player extends Phaser.Sprite {
                     game: Phaser.Game,
                     x: number,
                     y: number,
-                    group: string,
+                    spriteName: string,
                     private  map: Phaser.Tilemap,
-                    private collisionLayer: Phaser.TilemapLayer) {
-        super(game, x, y, group);
+                    private collisionLayer: Phaser.TilemapLayer
+                ) {
+        super(game, x, y, spriteName);
 
         this.height = this.map.tileHeight * 2;
         this.width = this.map.tileWidth * 2;
