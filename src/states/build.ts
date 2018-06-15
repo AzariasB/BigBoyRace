@@ -3,7 +3,7 @@ import TextButton, { ButtonOptions } from '../widgets/TextButton';
 import BackgroundScroller, { } from '../widgets/backgroundScroller';
 import * as Assets from '../assets';
 import { Carousel, CarouselType } from '../widgets/carousel';
-import { N_MAX_PLAYERS, N_MAX_ROUNDS } from '../constant';
+import { N_MAX_PLAYERS, N_MAX_ROUNDS, N_MIN_PLAYERS, N_MIN_ROUNDS } from '../constant';
 
 export default class Build extends Phaser.State {
 
@@ -28,7 +28,7 @@ export default class Build extends Phaser.State {
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 25,
         });
-        let playerChoices = Array.from({length: N_MAX_PLAYERS - 1}, (_, i) => (i + 2) + '');
+        let playerChoices = Array.from({length: N_MAX_PLAYERS - 1}, (_, i) => (i + N_MIN_PLAYERS) + '');
 
         this.game.add.existing(this.playersCarousel = new Carousel(
             this.game,
@@ -63,7 +63,7 @@ export default class Build extends Phaser.State {
             fontSize: 25
         });
 
-        let roundChoices = Array.from({length: N_MAX_ROUNDS}, (_, i) => '' + (i + 1));
+        let roundChoices = Array.from({length: N_MAX_ROUNDS}, (_, i) => '' + (i + N_MIN_ROUNDS));
         this.game.add.existing(this.roundCarousel = new Carousel(
             this.game,
             xPos + text.width / 2 - 10,

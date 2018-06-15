@@ -33,7 +33,6 @@ export default class Lobby extends Phaser.State {
 
 
         Network.when('welcome').addOnce((_, data) => {
-            console.log(data);
             playerId = data.id;
             mapName = data.config.map;
             playersNumber = data.config.playersNumber;
