@@ -203,6 +203,7 @@ export default class Game extends Phaser.State {
     }
 
     private finished() {
+        this.currentRound++;
         this.finishTrigger.destroy();
         this.finishTrigger = null;
         this.player.finished = true;

@@ -24,7 +24,7 @@ export default class Title extends Phaser.State {
             text : 'Create',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
-        }, {callback : () => this.joinClick()});
+        }, {callback : () => this.buildClick()});
         yPos += optionsB.height + 10;
 
         let helpB = new TextButton(this.game, this.game.world.centerX, yPos , {
