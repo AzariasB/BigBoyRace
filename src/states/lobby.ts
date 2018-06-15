@@ -20,14 +20,14 @@ export default class Lobby extends Phaser.State {
             fontSize : 20
         });
 
-        new TextButton(this.game, this.game.world.centerX, this.game.world.height * 3 / 4, {
+        this.game.add.existing(new TextButton(this.game, this.game.world.centerX, this.game.world.height * 3 / 4, {
             text : 'Cancel',
             font : CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
         }, {
             callback : this.cancelConnection,
             callbackContext : this
-        });
+        }));
 
         this.text.anchor.set(0.5, 0.5);
 

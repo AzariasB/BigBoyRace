@@ -248,11 +248,11 @@ export default class Game extends Phaser.State {
             this.game.time.events.remove(this.networkTimer); // stop sending updates
             Network.when('update').removeAll(); // stop listening for any incoming updates1
             Network.send('quit');
-            new TextButton(this.game, this.game.width / 2, this.game.height / 2 + rankTt.height + txt.height + 20, {
+            this.game.add.existing(new TextButton(this.game, this.game.width / 2, this.game.height / 2 + rankTt.height + txt.height + 20, {
                 text: 'Menu',
                 fontSize: 20,
                 font: Assets.CustomWebFonts.FontsKenvectorFuture.getName()
-            }, { callback: () => this.game.state.start('title')});
+            }, { callback: () => this.game.state.start('title')}));
         } else if (rank === this.players.length) {
             this.game.time.events.add(1000, () => {
                 Network.send('update', {restart: true});

@@ -23,26 +23,42 @@ interface TextOptions extends PhaserTextStyle {
     text: string;
 }
 
-export default class TextButton {
+export default class TextButton extends Phaser.Group {
 
     private button: Phaser.Button;
     private text: Phaser.Text;
 
 
-    constructor (private game: Phaser.Game, x: number, y: number, text: TextOptions, options: ButtonOptions = {}) {
+    constructor (game: Phaser.Game, x: number, y: number, text: TextOptions, options: ButtonOptions = {}) {
+        super(game);
 
         Object.keys(defaultButton).map(k => {
             if (!options[k])options[k] = defaultButton[k];
         });
 
-        this.button = this.game.add.button(x, y, options.key, options.callback, options.callbackContext, options.over, options.out, options.down, options.up);
+        this.button = this.add(new Phaser.Button(
+            game,
+            x,
+            y,
+            options.key,
+            options.callback,
+            options.callbackContext,
+            options.over,
+            options.out,
+            options.down,
+            options.up
+        ));
         this.button.anchor.set(0.5, 0.5);
 
-        this.text = this.game.add.text(this.button.x, this.button.y, text.text, text);
+        this.text = this.add(new Phaser.Text(
+            game,
+            x,
+            y,
+            text.text,
+            text
+        ));
         this.text.anchor.set(0.5, 0.5);
-    }
 
-    get height() {
-        return this.button.height;
+
     }
 }
