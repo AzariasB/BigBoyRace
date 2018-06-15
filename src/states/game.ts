@@ -27,6 +27,8 @@ export default class Game extends Phaser.State {
     private endTexts: Phaser.Text[] = [];
     private networkTimer: Phaser.TimerEvent = null;
     public pauseCapture: boolean = false;
+    private isCountingDown: boolean = true;
+    private countdownText: Phaser.Text = null;
 
     public init(id, mapName, players) {
         this.myId = id;
@@ -37,6 +39,8 @@ export default class Game extends Phaser.State {
             bg.scale.set(2, 2);
             this.backgrounds.push(bg);
         }
+
+        this.isCountingDown = true;
         this.tilemap.addTilesetImage(Assets.Images.TilesetsJungle.getName());
         this.tilemap.setCollisionByExclusion([], true, 'Collision');
         this.tilemap.createLayer('Background');
@@ -111,9 +115,30 @@ export default class Game extends Phaser.State {
 
         this.game.add.existing(itemholder);
 
+        this.countdownText = this.game.add.text(this.game.width / 2, this.game.height / 2, '3', {
+            fontSize: 30,
+            font: Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
+        });
+        this.countdownText.anchor.set(0.5, 0.5);
+        Network.when('countdown').addOnce((_, value) => this.countdown(value));
+        new Chat(this.game, this);
+    }
+
+    private countdown(value: number) {
+        if (value === 0) {
+            this.countdownText.text = 'Go !';
+            this.time.events.add(1000, () => this.countdownText.destroy());
+            this.beginGame();
+        } else {
+            Network.when('countdown').addOnce((_, value) => this.countdown(value));
+            this.countdownText.text = value + '';
+        }
+    }
+
+    private beginGame() {
+        this.isCountingDown = false;
         Network.when('update').add((_, data) => this.updateState(data) );
         this.networkTimer = this.game.time.events.loop(N_SEND_INPUTS, () => this.sendUpdate());
-        new Chat(this.game, this);
     }
 
     private createObjects(): Phaser.Point {
@@ -252,7 +277,7 @@ export default class Game extends Phaser.State {
             divisor << 1;
         }
 
-        if (this.pauseCapture) return;
+        if (this.pauseCapture || this.isCountingDown) return;
 
 
         let trulyjustdown = this.cursors.up.justDown;

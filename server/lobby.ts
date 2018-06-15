@@ -1,6 +1,5 @@
 
 export class Lobby {
-
     public onFull: Function;
     public onOver: Function;
     private clients: SocketIO.Socket[];
@@ -52,11 +51,26 @@ export class Lobby {
     private startGame() {
         this.isFull = true;
         if (this.onFull) this.onFull();
+        this.broadcast('start');
+
         this.clients.map(c => {
             c.on('chat', (data) => this.broadcast('chat', this.getColor(c) + ' : ' + data));
+            this.countdown(3);
+        });
+    }
+
+    private countdown(value: number) {
+        console.log('Broadcasting ' + value);
+        this.broadcast('countdown', value);
+
+        if (value === 0) return this.redirectUpdate();
+        setTimeout(() => this.countdown(value - 1), 1000);
+    }
+
+    private redirectUpdate() {
+        this.clients.map(c => {
             c.on('update', (data) => this.broadcast('update', data));
         });
-        this.broadcast('start');
     }
 
     private remaining() {
