@@ -2,7 +2,8 @@
 
 Abet
 ----
-
+Création des objets activable, permmetant de créer des zone affectant tous les joueurs passant dans celles ci.
+Total : 6H
 
 Boutin
 ------
@@ -32,6 +33,7 @@ Total : 6h00
 
 Raffi
 -----
+- Création du tableau des score qui apparait en fin de partie  : 6h
 
 
 
