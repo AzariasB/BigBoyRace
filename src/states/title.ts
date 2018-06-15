@@ -1,9 +1,8 @@
 
-import Game from './game';
 import TextButton, { ButtonOptions } from '../widgets/TextButton';
 import BackgroundScroller, { } from '../widgets/backgroundScroller';
 import * as Assets from '../assets';
-import { Network } from '../network';
+import { Carousel, CarouselType } from '../widgets/carousel';
 
 export default class Title extends Phaser.State {
 
@@ -14,14 +13,14 @@ export default class Title extends Phaser.State {
         new BackgroundScroller(this.game);
         let yPos = 150;
         let tb = new TextButton(this.game, this.game.world.centerX, yPos, {
-            text : 'Play !',
+            text : 'Join',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
         }, {callback : () => this.playClick()});
         yPos += tb.height + 10;
 
         let optionsB = new TextButton(this.game, this.game.world.centerX, yPos , {
-            text : 'Build',
+            text : 'Create',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
         }, {callback : () => this.buildClick()});
@@ -38,31 +37,27 @@ export default class Title extends Phaser.State {
             text : 'Credits',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
-        }, {callback : () => this.helpClick()});
+        }, {callback : () => this.creditsClick()});
     }
 
     private playClick() {
-        this.game.camera.onFadeComplete.addOnce(() => this.state.start('lobby', true, false, true, Assets.Tilemaps.JungleMap2.getName(), 1));
+        this.game.camera.onFadeComplete.addOnce(() => {
+            this.state.start('joining');
+        });
         this.game.camera.fade(0x000000, 500);
     }
 
     private joinClick() {
         this.game.camera.onFadeComplete.addOnce(() => {
-           Network.acknowledge('lobbies', null, (lobbies) => {
-                this.game.state.start('lobby', true, false, false, lobbies[0].id);
-           });
+            this.state.start('lobby', true, false, true, Assets.Tilemaps.JungleMap2.getName(), 2);
         });
         this.game.camera.fade(0x000000, 100);
 
     }
 
     private buildClick() {
-        this.game.camera.onFadeComplete.addOnce(this.loadBuild, this);
+        this.game.camera.onFadeComplete.addOnce(() => this.state.start('build'), this);
         this.game.camera.fade(0x000000, 500);
-    }
-
-    private loadBuild() {
-        this.game.state.start('build');
     }
 
     private helpClick() {

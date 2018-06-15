@@ -87,10 +87,20 @@ export namespace Spritesheets {
     export class Flags {
         static getName(): string { return 'flags'; }
 
-        static getPNG(): string { return require('assets/spritesheets/flags.[16,16,8,0,0].png'); }
-        static getFrameWidth(): number { return 16; }
-        static getFrameHeight(): number { return 16; }
+        static getPNG(): string { return require('assets/spritesheets/flags.[32,32,8,0,0].png'); }
+        static getFrameWidth(): number { return 32; }
+        static getFrameHeight(): number { return 32; }
         static getFrameMax(): number { return 8; }
+        static getMargin(): number { return 0; }
+        static getSpacing(): number { return 0; }
+    }
+    export class HeroBlack {
+        static getName(): string { return 'hero_black'; }
+
+        static getPNG(): string { return require('assets/spritesheets/hero_black.[33,31,28,0,0].png'); }
+        static getFrameWidth(): number { return 33; }
+        static getFrameHeight(): number { return 31; }
+        static getFrameMax(): number { return 28; }
         static getMargin(): number { return 0; }
         static getSpacing(): number { return 0; }
     }
@@ -104,20 +114,20 @@ export namespace Spritesheets {
         static getMargin(): number { return 0; }
         static getSpacing(): number { return 0; }
     }
-    export class HeroGold {
-        static getName(): string { return 'hero_gold'; }
+    export class HeroGreen {
+        static getName(): string { return 'hero_green'; }
 
-        static getPNG(): string { return require('assets/spritesheets/hero_gold.[33,31,28,0,0].png'); }
+        static getPNG(): string { return require('assets/spritesheets/hero_green.[33,31,28,0,0].png'); }
         static getFrameWidth(): number { return 33; }
         static getFrameHeight(): number { return 31; }
         static getFrameMax(): number { return 28; }
         static getMargin(): number { return 0; }
         static getSpacing(): number { return 0; }
     }
-    export class HeroGreen {
-        static getName(): string { return 'hero_green'; }
+    export class HeroOrange {
+        static getName(): string { return 'hero_orange'; }
 
-        static getPNG(): string { return require('assets/spritesheets/hero_green.[33,31,28,0,0].png'); }
+        static getPNG(): string { return require('assets/spritesheets/hero_orange.[33,31,28,0,0].png'); }
         static getFrameWidth(): number { return 33; }
         static getFrameHeight(): number { return 31; }
         static getFrameMax(): number { return 28; }
@@ -138,6 +148,16 @@ export namespace Spritesheets {
         static getName(): string { return 'hero_violet'; }
 
         static getPNG(): string { return require('assets/spritesheets/hero_violet.[33,31,28,0,0].png'); }
+        static getFrameWidth(): number { return 33; }
+        static getFrameHeight(): number { return 31; }
+        static getFrameMax(): number { return 28; }
+        static getMargin(): number { return 0; }
+        static getSpacing(): number { return 0; }
+    }
+    export class HeroYellow {
+        static getName(): string { return 'hero_yellow'; }
+
+        static getPNG(): string { return require('assets/spritesheets/hero_yellow.[33,31,28,0,0].png'); }
         static getFrameWidth(): number { return 33; }
         static getFrameHeight(): number { return 31; }
         static getFrameMax(): number { return 28; }
@@ -330,14 +350,6 @@ export namespace BitmapFonts {
 }
 
 export namespace Tilemaps {
-    export class Decors1 {
-        static getName(): string { return 'decors1'; }
-        static getJSON(): string { return require('assets/tilemaps/decors1.json'); }
-    }
-    export class DefaultMap {
-        static getName(): string { return 'defaultMap'; }
-        static getJSON(): string { return require('assets/tilemaps/defaultMap.json'); }
-    }
     export class JungleMap {
         static getName(): string { return 'JungleMap'; }
         static getJSON(): string { return require('assets/tilemaps/JungleMap.json'); }
@@ -345,14 +357,6 @@ export namespace Tilemaps {
     export class JungleMap2 {
         static getName(): string { return 'JungleMap2'; }
         static getJSON(): string { return require('assets/tilemaps/JungleMap2.json'); }
-    }
-    export class JungleMapTest {
-        static getName(): string { return 'JungleMapTest'; }
-        static getJSON(): string { return require('assets/tilemaps/JungleMapTest.json'); }
-    }
-    export class JungleMapTest1 {
-        static getName(): string { return 'JungleMapTest1'; }
-        static getJSON(): string { return require('assets/tilemaps/JungleMapTest1.json'); }
     }
     export class JungleSonic {
         static getName(): string { return 'JungleSonic'; }
