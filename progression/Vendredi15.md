@@ -6,8 +6,14 @@ Abet
 
 Boutin
 ------
+- Synchronisation des collectibles entres clients (1h00)
+- Creation vue des lobbies (1h00)
+- Création d'un nouveau widget de sélection (1h00)
+- Amélioration de l'interface graphique de création de lobby (1h00)
+- Ajout de la possibilité de configurer le nombre de rounds (3h00)
+- Merge du travail de Guillaume concernant le chat in-game (1h00)
 
-
+Total: 8h00
 
 Kaindoh
 -------
@@ -38,5 +44,3 @@ Segrais
 - Modification des maps : 2h
  
 Total : 8h 
- 
-
