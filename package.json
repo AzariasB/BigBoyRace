@@ -33,6 +33,7 @@
     "nodemon": "^1.17.5",
     "npm-check": "5.5.2",
     "phaser-ce": "latest",
+    "pngjs-image": "^0.11.7",
     "shelljs": "0.8.1",
     "socket.io": "^2.1.1",
     "ts-loader": "3.5.0",
