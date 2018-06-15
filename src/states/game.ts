@@ -182,8 +182,13 @@ export default class Game extends Phaser.State {
         if (data.restart) return this.restart();
 
         if (data.id !== undefined && data.id !== this.myId) {
-            let p = data.player;
-            this.players[data.id].deserialize(p);
+            if (data.left) {
+                this.players[data.id].destroy();
+                this.players.splice(data.id, 1);
+            } else {
+                let p = data.player;
+                this.players[data.id].deserialize(p);
+            }
         }
     }
 

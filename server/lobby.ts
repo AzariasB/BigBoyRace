@@ -23,13 +23,13 @@ export class Lobby {
 
     public addSocket(socket: SocketIO.Socket) {
         if (this.isFull) return;
-
+        let nwClientId = this.clients.length;
         // on disconnect => wart the other players
-        socket.on('disconnect', () => this.removeSocket(socket));
-        socket.on('quit', () => this.removeSocket(socket));
+        socket.on('disconnect', () => this.removeSocket(socket, nwClientId));
+        socket.on('quit', () => this.removeSocket(socket, nwClientId));
 
         socket.emit('welcome', {
-            id: this.clients.length,
+            id: nwClientId,
             lobbyId: this.id,
             map: this.mapName,
             playersNumber: this.playersNumber,
@@ -41,8 +41,10 @@ export class Lobby {
         }
     }
 
-    private removeSocket(socket: SocketIO.Socket) {
+    private removeSocket(socket: SocketIO.Socket, id: number) {
         this.clients = this.clients.filter(x => x !== socket);
+        this.broadcast('update', {id, left: true});
+        this.broadcast('chat', `Server : Player ${id} left`);
         if (this.clients.length === 0) {
             if (this.onOver) this.onOver(this);
         }

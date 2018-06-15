@@ -72,9 +72,9 @@ export namespace Spritesheets {
     export class Flags {
         static getName(): string { return 'flags'; }
 
-        static getPNG(): string { return require('assets/spritesheets/flags.[16,16,8,0,0].png'); }
-        static getFrameWidth(): number { return 16; }
-        static getFrameHeight(): number { return 16; }
+        static getPNG(): string { return require('assets/spritesheets/flags.[32,32,8,0,0].png'); }
+        static getFrameWidth(): number { return 32; }
+        static getFrameHeight(): number { return 32; }
         static getFrameMax(): number { return 8; }
         static getMargin(): number { return 0; }
         static getSpacing(): number { return 0; }
