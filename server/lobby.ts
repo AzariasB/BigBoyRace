@@ -7,16 +7,18 @@ export class Lobby {
 
     constructor(
         public id: number,
-        public mapName: string,
-        public playersNumber: number) {
+        public config: any) {
         this.clients = [];
+    }
+
+    get playersNumber () {
+        return this.config.playersNumber;
     }
 
     public serialize() {
         return {
             id: this.id,
-            mapName: this.mapName,
-            playersNumber: this.playersNumber,
+            config: this.config,
             remaining: this.remaining()
         };
     }
@@ -31,8 +33,7 @@ export class Lobby {
         socket.emit('welcome', {
             id: nwClientId,
             lobbyId: this.id,
-            map: this.mapName,
-            playersNumber: this.playersNumber,
+            config: this.config,
             remaining: this.remaining()
         });
         this.clients.push(socket);

@@ -4,13 +4,14 @@ import Box from '../objects/Box';
 import BackgroundScroller from '../widgets/backgroundScroller';
 import { Network } from '../network';
 import ItemHolder from '../objects/ItemHolder';
-import { PLAYER_FIRSTJUMP, PLAYER_JUMPTIME_MS, PLAYER_JUMP, N_ROUNDS, N_SEND_INPUTS } from '../constant';
+import { PLAYER_FIRSTJUMP, PLAYER_JUMPTIME_MS, PLAYER_JUMP, N_SEND_INPUTS } from '../constant';
 import { PlayerDirection, PlayerStates } from '../PlayerAnimation';
 import TextButton from '../widgets/TextButton';
 import Chat from '../widgets/chat';
 import { getTint, getSpriteName } from '../utils/colorUtils';
 
 export default class Game extends Phaser.State {
+    private totalRounds;
     private myId: number;
     private players: Player[];
     private player: Player;
@@ -31,9 +32,10 @@ export default class Game extends Phaser.State {
     private isCountingDown: boolean = true;
     private countdownText: Phaser.Text = null;
 
-    public init(id, mapName, players) {
+    public init(id, mapName, players, maxRounds) {
         this.myId = id;
         this.tilemap = this.game.add.tilemap(mapName);
+        this.totalRounds = maxRounds;
         this.collectedBoxes = [];
         for (let name of BackgroundScroller.BG_NAMES) {
             let bg = this.game.add.tileSprite(0, 0, this.game.world.width, this.game.height, name);
@@ -221,7 +223,7 @@ export default class Game extends Phaser.State {
         rankTt.anchor.set(0.5, 0.5);
         this.endTexts.push(txt, rankTt);
 
-        if (this.currentRound === N_ROUNDS) {
+        if (this.currentRound === this.totalRounds) {
             this.sendUpdate(); // last update to say you arrived
             this.game.time.events.remove(this.networkTimer); // stop sending updates
             Network.when('update').removeAll(); // stop listening for any incoming updates1

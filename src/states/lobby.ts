@@ -8,8 +8,11 @@ export default class Lobby extends Phaser.State {
 
     private text: Phaser.Text;
 
-    public init(selectedCreating: boolean, selectedMapOrLobby: string|number, selectedPlayers?: number): void {
-        let mapName, playerId, playersNumber;
+    public init(selectedCreating: boolean,
+                selectedMapOrLobby: string|number,
+                selectedPlayers?: number,
+                selectedRounds?: number): void {
+        let mapName, playerId, playersNumber, roundNumber;
         new BackgroundScroller(this.game);
 
         this.text = this.game.add.text(this.game.world.centerX, this.game.world.centerY, 'Connecting ...', {
@@ -30,9 +33,11 @@ export default class Lobby extends Phaser.State {
 
 
         Network.when('welcome').addOnce((_, data) => {
+            console.log(data);
             playerId = data.id;
-            mapName = data.map;
-            playersNumber = data.playersNumber;
+            mapName = data.config.map;
+            playersNumber = data.config.playersNumber;
+            roundNumber = data.config.rounds;
             this.text.text = 'Waiting for players...';
 
             this.game.add.text(this.world.centerX, 10, 'Lobby ' + data.lobbyId, {
@@ -42,13 +47,14 @@ export default class Lobby extends Phaser.State {
         });
 
         Network.when('start').addOnce(() => {
-            this.state.start('game', true, false, playerId, mapName, playersNumber);
+            this.state.start('game', true, false, playerId, mapName, playersNumber, roundNumber);
         });
 
         if (selectedCreating) {
             Network.send('create', {
                 map: selectedMapOrLobby,
-                players: selectedPlayers
+                playersNumber: selectedPlayers,
+                rounds: selectedRounds
             });
         } else {
             Network.send('join', selectedMapOrLobby);
