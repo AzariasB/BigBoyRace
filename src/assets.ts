@@ -11,6 +11,11 @@ export namespace Images {
 
         static getPNG(): string { return require('assets/images/background_template.png'); }
     }
+    export class ImagesBoost {
+        static getName(): string { return 'boost'; }
+
+        static getPNG(): string { return require('assets/images/boost.png'); }
+    }
     export class ImagesBox {
         static getName(): string { return 'box'; }
 

@@ -10,6 +10,7 @@ import TextButton from '../widgets/TextButton';
 import Chat from '../widgets/chat';
 import { getTint, getSpriteName } from '../utils/colorUtils';
 import { Powerup } from '../objects/powerups/Powerup';
+import { EffectArea } from '../objects/EffectArea';
 
 export default class Game extends Phaser.State {
     private totalRounds;
@@ -277,8 +278,8 @@ export default class Game extends Phaser.State {
             if (item instanceof Box) {
                 item.collect(p);
                 Network.send('update', {'boxTaken' : item.id});
-            } else if (item instanceof Powerup && p.arcadeBody.onFloor()) {
-                item.effect(p);
+            } else if (item instanceof EffectArea && p.arcadeBody.onFloor()) {
+                item.Effect(p);
             }
         });
 
