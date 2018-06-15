@@ -230,23 +230,18 @@
  "renderorder":"right-down",
  "tiledversion":"1.1.5",
  "tileheight":16,
- "tilesets":[
-        {
+ "tilesets":[{
          "columns":39,
          "firstgid":1,
-         "image":"..\/tilesets\/jungle tileset.png",
+         "image":"..\/tilesets\/Jungle.png",
          "imageheight":504,
          "imagewidth":624,
          "margin":0,
-         "name":"jungle tileset",
+         "name":"Jungle",
          "spacing":0,
          "tilecount":1209,
          "tileheight":16,
          "tilewidth":16
-        }, 
-        {
-         "firstgid":1210,
-         "source":"..\/..\/..\/Desktop\/jungle.tsx"
         }],
  "tilewidth":16,
  "type":"map",

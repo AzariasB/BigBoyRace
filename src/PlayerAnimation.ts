@@ -1,5 +1,11 @@
 import { PLAYER_VMAX_GRAB_WALLSLIDE, PLAYER_SPEED } from './constant';
 
+export enum PlayerDirection {
+    Left = 'left',
+    Right = 'right',
+    None = 'none'
+}
+
 export enum PlayerStates {
     Running = 'Running',
     Idle = 'Idle',

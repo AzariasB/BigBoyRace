@@ -1,15 +1,9 @@
 import * as Assets from '../assets';
 import { FiniteStateMachine } from '../StateMachine';
+import {PlayerAnimation, PlayerStates, Config, PlayerDirection} from '../PlayerAnimation';
 import { PLAYER_ACCELERATION, PLAYER_FIRSTJUMP, PLAYER_DESCELERATION, PLAYER_SPEED, PLAYER_WALLJUMP } from '../constant';
-import {PlayerAnimation, PlayerStates, Config} from '../PlayerAnimation';
 import { Powerup } from './powerups/Powerup';
 import {EmptyPowerup} from './powerups/EmptyPowerup';
-
-export enum PlayerDirection {
-    Left = 'left',
-    Right = 'right',
-    None = 'none'
-}
 
 export class Player extends Phaser.Sprite {
 
@@ -17,12 +11,15 @@ export class Player extends Phaser.Sprite {
     private dustParticles: Phaser.Particles.Arcade.Emitter;
     private isHalfWidth: boolean = false;
     public sm: FiniteStateMachine;
-    public direction: PlayerDirection = PlayerDirection.Right;
-    private wallJumped: boolean = false;
-    private item: Powerup = new EmptyPowerup(this.game, 50, 50);
+    public finished: boolean = false;
+    public direction: PlayerDirection = PlayerDirection.None;
     public onEffect: boolean;
+    private item: Powerup = new EmptyPowerup(this.game, 50, 50);
 
-    constructor (game: Phaser.Game, x: number, y: number,
+    constructor (public readonly isRemote: boolean,
+                    game: Phaser.Game,
+                    x: number,
+                    y: number,
                     group: string,
                     private  map: Phaser.Tilemap,
                     private collisionLayer: Phaser.TilemapLayer) {
@@ -31,6 +28,7 @@ export class Player extends Phaser.Sprite {
         this.height = this.map.tileHeight * 2;
         this.width = this.map.tileWidth * 2;
         this.game.physics.arcade.enable(this);
+
         this.dustParticles = this.game.add.emitter(x, y, 10);
         this.dustParticles.makeParticles(Assets.Images.ImagesDust.getName());
         this.dustParticles.gravity.y = 400;
@@ -43,7 +41,6 @@ export class Player extends Phaser.Sprite {
         this.arcadeBody.width /= 2;
         this.arcadeBody.offset.x += (this.arcadeBody.width / this.scale.y) / 2;
         this.anchor.set(0.5, 0.5);
-        // this.arcadeBody.offset.y = 664;
         this.arcadeBody.maxVelocity.x = 1000;
         this.arcadeBody.maxVelocity.y = 1000;
 
@@ -73,16 +70,28 @@ export class Player extends Phaser.Sprite {
         this.initStatemachine();
     }
 
-    public serialize(): Float32Array {
-        // return new Float32Array([this.x, this.y, this.arcadeBody.velocity.x, this.arcadeBody.velocity.y, this.fsm.currentState]);
-        return new Float32Array([]);
+    public serialize() {
+        return {
+            x: this.x,
+            y: this.y,
+            vx: this.arcadeBody.velocity.x,
+            vy: this.arcadeBody.velocity.y,
+            state: this.sm.currentStateName,
+            direction: this.direction,
+            finished: this.finished
+        };
     }
 
-    public deserialize(data: Float32Array): void {
-        this.x = data[0];
-        this.y = data[1];
-        this.arcadeBody.velocity.x = data[2];
-        this.arcadeBody.velocity.y = data[3];
+    public deserialize(data: any) {
+        this.position.set(data.x, data.y);
+        this.finished = data.finished;
+        this.arcadeBody.velocity.set(data.vx, data.vy);
+        if (data.direction !== PlayerDirection.None) {
+            this.scale.x = Math.abs(this.scale.x) * (data.direction === PlayerDirection.Left ? -1 : 1);
+        }
+
+        this.sm.setCurrentState(data.state);
+        if (this.finished) this.stop();
     }
 
     private initStatemachine(): void {
@@ -120,16 +129,19 @@ export class Player extends Phaser.Sprite {
         if (this.direction !== dir && this.arcadeBody.onFloor() && !this.onEffect) {
             this.arcadeBody.velocity.x = 0;
         }
+
         this.direction = dir;
         this.scale.x = Math.abs(this.scale.x) * mult;
     }
 
     public setJumping(jumping: boolean): void {
-        let mult = this.direction === PlayerDirection.Right ? -1 : 1;
+        let mult = this.arcadeBody.blocked.left ? 1 : -1;
         this.arcadeBody.velocity.set(PLAYER_SPEED.RUNNING * mult * 2, -PLAYER_WALLJUMP);
     }
 
     public setCrouching(crouching: boolean): void {
+        if (this.finished) return;
+
         this.sm.setProperty('isCrouchPressed', crouching);
         if (crouching && this.sm.isOneOf(PlayerStates.Crouched, PlayerStates.CrouchWalking, PlayerStates.SlideCrouched)) {
             this.goHalfWidth();
@@ -154,13 +166,14 @@ export class Player extends Phaser.Sprite {
     }
 
     public stop(): void {
-        if (this.wallJumped)return;
         this.arcadeBody.velocity.x = 0;
         this.arcadeBody.acceleration.x = 0;
         this.direction = PlayerDirection.None;
     }
 
     public update(): void {
+        super.update();
+
         let onFloor = this.arcadeBody.onFloor();
         this.dustParticles.x = this.x;
         this.dustParticles.y = this.y + this.height / 2;
@@ -169,17 +182,19 @@ export class Player extends Phaser.Sprite {
             this.updateVelocity();
         }
 
+        if (!this.isRemote) {
+            this.updateVelocity();
 
-        let ltPos = this.collisionLayer.getTileXY(this.centerX, this.top, new Phaser.Point());
-        let topLeft = this.map.getTile(ltPos.x, ltPos.y, this.collisionLayer);
-
-        this.sm.setProperties({
-            'isOnFloor' : onFloor,
-            'velocityX': this.arcadeBody.velocity.x,
-            'velocityY': this.arcadeBody.velocity.y,
-            'isStuck': topLeft !== null,
-            'isOnWall': this.arcadeBody.onWall()
-        });
+            let ltPos = this.collisionLayer.getTileXY(this.centerX, this.top, new Phaser.Point());
+            let topCenter = this.map.getTile(ltPos.x, ltPos.y, this.collisionLayer);
+            this.sm.setProperties({
+                'isOnFloor' : onFloor,
+                'velocityX': this.arcadeBody.velocity.x,
+                'velocityY': this.arcadeBody.velocity.y,
+                'isStuck': topCenter !== null,
+                'isOnWall': this.arcadeBody.onWall()
+            });
+        }
     }
 
     private updateVelocity() {
