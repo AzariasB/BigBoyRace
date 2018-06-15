@@ -8,6 +8,7 @@ import { PLAYER_FIRSTJUMP, PLAYER_JUMPTIME_MS, PLAYER_JUMP, N_ROUNDS, N_SEND_INP
 import { PlayerDirection, PlayerStates } from '../PlayerAnimation';
 import TextButton from '../widgets/TextButton';
 import Chat from '../widgets/chat';
+import { getTint, getSpriteName } from '../utils/colorUtils';
 
 export default class Game extends Phaser.State {
     private myId: number;
@@ -58,7 +59,7 @@ export default class Game extends Phaser.State {
 
         this.players = [];
         for (let i = 0; i < players; ++i ) {
-            let p = new Player(i !== this.myId, this.game, startPos.x, startPos.y, this.getSpriteName(i), this.tilemap, this.collisionLayer);
+            let p = new Player(i !== this.myId, this.game, startPos.x, startPos.y, getSpriteName(i), this.tilemap, this.collisionLayer);
             this.players.push(p);
             this.game.add.existing(p);
             if (i === this.myId) {
@@ -66,30 +67,6 @@ export default class Game extends Phaser.State {
             }
         }
         this.player.bringToTop();
-    }
-
-    public getSpriteName(id: number) {
-        let colorSprites = [
-            Assets.Spritesheets.HeroBlue,
-            Assets.Spritesheets.HeroGreen,
-            Assets.Spritesheets.HeroRed,
-            Assets.Spritesheets.HeroViolet
-        ];
-
-        if (id > colorSprites.length) return Assets.Spritesheets.Hero.getName();
-        return colorSprites[id].getName();
-    }
-
-    public getTint(id: number) {
-        let tints = [
-            0x303A7F, // blue
-            0x367F33, // green
-            0xFF0007, // red
-            0x3E457F // violet
-        ];
-
-        if (id > tints.length) return 0xffffff;
-        return tints[id];
     }
 
     public create(): void {
@@ -110,7 +87,7 @@ export default class Game extends Phaser.State {
             Assets.Atlases.AtlasesGreySheet.Frames.GreyButton11
         );
         itemholder.anchor.set(0.5, 0.5);
-        itemholder.tint = this.getTint(this.myId);
+        itemholder.tint = getTint(this.myId);
         this.tilemap.createLayer('Foreground');
 
         this.game.add.existing(itemholder);
@@ -196,7 +173,6 @@ export default class Game extends Phaser.State {
         let start = this.createObjects();
         this.players.map((p, i) =>  {
             p.position.copyFrom(start);
-            p.loadTexture(this.getSpriteName(i));
             p.updateTransform();
             p.finished = false;
         });
@@ -225,7 +201,6 @@ export default class Game extends Phaser.State {
         this.finishTrigger.destroy();
         this.finishTrigger = null;
         this.player.finished = true;
-        this.player.loadTexture(Assets.Spritesheets.HeroGold.getName());
 
         let txt = this.game.add.text(this.game.width / 2  , this.game.height / 2 , 'Finished !', {
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),

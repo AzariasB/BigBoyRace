@@ -79,6 +79,16 @@ export namespace Spritesheets {
         static getMargin(): number { return 0; }
         static getSpacing(): number { return 0; }
     }
+    export class HeroBlack {
+        static getName(): string { return 'hero_black'; }
+
+        static getPNG(): string { return require('assets/spritesheets/hero_black.[33,31,28,0,0].png'); }
+        static getFrameWidth(): number { return 33; }
+        static getFrameHeight(): number { return 31; }
+        static getFrameMax(): number { return 28; }
+        static getMargin(): number { return 0; }
+        static getSpacing(): number { return 0; }
+    }
     export class HeroBlue {
         static getName(): string { return 'hero_blue'; }
 
@@ -89,20 +99,20 @@ export namespace Spritesheets {
         static getMargin(): number { return 0; }
         static getSpacing(): number { return 0; }
     }
-    export class HeroGold {
-        static getName(): string { return 'hero_gold'; }
+    export class HeroGreen {
+        static getName(): string { return 'hero_green'; }
 
-        static getPNG(): string { return require('assets/spritesheets/hero_gold.[33,31,28,0,0].png'); }
+        static getPNG(): string { return require('assets/spritesheets/hero_green.[33,31,28,0,0].png'); }
         static getFrameWidth(): number { return 33; }
         static getFrameHeight(): number { return 31; }
         static getFrameMax(): number { return 28; }
         static getMargin(): number { return 0; }
         static getSpacing(): number { return 0; }
     }
-    export class HeroGreen {
-        static getName(): string { return 'hero_green'; }
+    export class HeroOrange {
+        static getName(): string { return 'hero_orange'; }
 
-        static getPNG(): string { return require('assets/spritesheets/hero_green.[33,31,28,0,0].png'); }
+        static getPNG(): string { return require('assets/spritesheets/hero_orange.[33,31,28,0,0].png'); }
         static getFrameWidth(): number { return 33; }
         static getFrameHeight(): number { return 31; }
         static getFrameMax(): number { return 28; }
@@ -123,6 +133,16 @@ export namespace Spritesheets {
         static getName(): string { return 'hero_violet'; }
 
         static getPNG(): string { return require('assets/spritesheets/hero_violet.[33,31,28,0,0].png'); }
+        static getFrameWidth(): number { return 33; }
+        static getFrameHeight(): number { return 31; }
+        static getFrameMax(): number { return 28; }
+        static getMargin(): number { return 0; }
+        static getSpacing(): number { return 0; }
+    }
+    export class HeroYellow {
+        static getName(): string { return 'hero_yellow'; }
+
+        static getPNG(): string { return require('assets/spritesheets/hero_yellow.[33,31,28,0,0].png'); }
         static getFrameWidth(): number { return 33; }
         static getFrameHeight(): number { return 31; }
         static getFrameMax(): number { return 28; }
