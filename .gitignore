@@ -15,7 +15,3 @@ builds
 # Visual Studio
 .vs
 .vscode
-
-*.js
-
-*.map

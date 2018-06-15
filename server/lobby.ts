@@ -1,25 +1,45 @@
-import { N_PLAYERS } from '../src/constant';
-
 
 export class Lobby {
 
     public onFull: Function;
     public onOver: Function;
     private clients: SocketIO.Socket[];
-    private isFull: boolean;
+    public isFull: boolean;
 
-    constructor(private server: SocketIO.Server) {
+    constructor(
+        public id: number,
+        public mapName: string,
+        public playersNumber: number) {
         this.clients = [];
-        this.server.on('connect', (socket) => {
-            if (this.isFull) return;
+    }
 
-            socket.on('disconnect', () => this.removeSocket(socket));
-            socket.emit('id', this.clients.length);
-            this.clients.push(socket);
-            if (this.clients.length === N_PLAYERS) {
-                this.startGame();
-            }
+    public serialize() {
+        return {
+            id: this.id,
+            mapName: this.mapName,
+            playersNumber: this.playersNumber,
+            remaining: this.remaining()
+        };
+    }
+
+    public addSocket(socket: SocketIO.Socket) {
+        if (this.isFull) return;
+
+        // on disconnect => wart the other players
+        socket.on('disconnect', () => this.removeSocket(socket));
+        socket.on('quit', () => this.removeSocket(socket));
+
+        socket.emit('welcome', {
+            id: this.clients.length,
+            lobbyId: this.id,
+            map: this.mapName,
+            playersNumber: this.playersNumber,
+            remaining: this.remaining()
         });
+        this.clients.push(socket);
+        if (this.clients.length === this.playersNumber) {
+            this.startGame();
+        }
     }
 
     private removeSocket(socket: SocketIO.Socket) {
@@ -39,7 +59,11 @@ export class Lobby {
         this.broadcast('start');
     }
 
-    private getColor(c: SocketIO.Socket){
+    private remaining() {
+        return this.isFull ? 0 : this.playersNumber - this.clients.length;
+    }
+
+    private getColor(c: SocketIO.Socket) {
         let index = this.clients.indexOf(c);
         let color = '';
         switch (index) {

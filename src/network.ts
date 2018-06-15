@@ -21,16 +21,17 @@ export namespace Network {
         return receivers[key];
     }
 
-    export function disconnect() {
-        m_socket.disconnect();
-        m_socket = null;
-    }
-
     export function initialize() {
         m_socket = io({path: N_PATH});
     }
 
-    export function send(key: string, data: any) {
-        m_socket.emit(key, data);
+    export function send(key: string, data?: any) {
+        if (m_socket) m_socket.emit(key, data);
+    }
+
+    export function acknowledge(key: string, data?: any, callback?: Function) {
+        if (!m_socket) return;
+
+        m_socket.emit(key, data, callback);
     }
 }
