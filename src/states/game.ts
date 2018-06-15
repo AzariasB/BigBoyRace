@@ -36,6 +36,7 @@ export default class Game extends Phaser.State {
         this.myId = id;
         this.tilemap = this.game.add.tilemap(mapName);
         this.totalRounds = maxRounds;
+        this.currentRound =  1;
         this.collectedBoxes = [];
         for (let name of BackgroundScroller.BG_NAMES) {
             let bg = this.game.add.tileSprite(0, 0, this.game.world.width, this.game.height, name);
@@ -205,7 +206,6 @@ export default class Game extends Phaser.State {
     }
 
     private finished() {
-        this.currentRound++;
         this.finishTrigger.destroy();
         this.finishTrigger = null;
         this.player.finished = true;
@@ -222,7 +222,6 @@ export default class Game extends Phaser.State {
         });
         rankTt.anchor.set(0.5, 0.5);
         this.endTexts.push(txt, rankTt);
-
         if (this.currentRound === this.totalRounds) {
             this.sendUpdate(); // last update to say you arrived
             this.game.time.events.remove(this.networkTimer); // stop sending updates
@@ -238,6 +237,7 @@ export default class Game extends Phaser.State {
                 Network.send('update', {restart: true});
             });
         }
+        this.currentRound++;
     }
 
 
