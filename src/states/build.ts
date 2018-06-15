@@ -1,5 +1,5 @@
 
-import TextButton, { ButtonOptions } from '../widgets/TextButton';
+import TextButton from '../widgets/TextButton';
 import BackgroundScroller, { } from '../widgets/backgroundScroller';
 import * as Assets from '../assets';
 import { Carousel, CarouselType } from '../widgets/carousel';
@@ -74,17 +74,17 @@ export default class Build extends Phaser.State {
 
         yPos += text.height + 100;
 
-        new TextButton(this.game, this.game.width * 3 / 8, yPos, {
+        this.game.add.existing(new TextButton(this.game, this.game.width * 3 / 8, yPos, {
             text : 'Validate',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
-        }, {callback : this.validateClick, callbackContext : this});
+        }, {callback : this.validateClick, callbackContext : this}));
 
-        new TextButton(this.game, this.game.width * 5 / 8, yPos, {
+        this.game.add.existing(new TextButton(this.game, this.game.width * 5 / 8, yPos, {
             text : 'Cancel',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
-        }, {callback : this.returnClick, callbackContext : this});
+        }, {callback : this.returnClick, callbackContext : this}));
     }
 
     private validateClick() {
@@ -104,12 +104,8 @@ export default class Build extends Phaser.State {
     }
 
     private returnClick() {
-        this.game.camera.onFadeComplete.addOnce(this.loadReturn, this);
+        this.game.camera.onFadeComplete.addOnce(() => this.game.state.start('title'), this);
         this.game.camera.fade(0x000000, 500);
-    }
-
-    private loadReturn() {
-        this.game.state.start('title');
     }
 
 }
