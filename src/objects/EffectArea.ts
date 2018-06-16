@@ -28,6 +28,7 @@ export class EffectArea extends Phaser.Sprite {
 
         switch (this.effet) {
             case EffectName.glue:
+                this.scale = new Phaser.Point(1.5, 0.7);
                 break;
             case EffectName.boost:
                 this.height = 4;
@@ -71,7 +72,7 @@ export class EffectArea extends Phaser.Sprite {
             player.arcadeBody.velocity.x /= 1.02;
             break;
         case EffectName.boost:
-            player.arcadeBody.velocity.x *= 1.05;
+            player.arcadeBody.velocity.x *= 1.04;
             break;
         case EffectName.ice:
             player.arcadeBody.velocity.x = player.arcadeBody.velocity.x;
