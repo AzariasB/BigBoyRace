@@ -33,6 +33,7 @@ export default class Game extends Phaser.State {
     private itemsOnMap: Phaser.Group;
     private isCountingDown: boolean = true;
     private countdownText: Phaser.Text = null;
+    private createdEffects =  {};
 
     public init(id, mapName, players, maxRounds) {
         this.myId = id;
@@ -59,6 +60,7 @@ export default class Game extends Phaser.State {
 
         this.collidables = this.game.add.physicsGroup();
         this.players = [];
+        this.createdEffects = {};
         let startPos: Phaser.Point = this.createObjects();
 
         for (let i = 0; i < players; ++i ) {
@@ -133,7 +135,7 @@ export default class Game extends Phaser.State {
         this.isCountingDown = false;
         Network.clearListener('update');
         Network.when('update').add((_, data) => this.updateState(data) );
-        this.networkTimer = this.game.time.events.loop(N_SEND_INPUTS, () => this.sendUpdate());
+        this.networkTimer = this.game.time.events.loop(N_SEND_INPUTS, () => this.sendPlayer());
     }
 
     private createObjects(): Phaser.Point {
@@ -170,12 +172,15 @@ export default class Game extends Phaser.State {
 
     }
 
-    private sendUpdate() {
-        let data = {
+    private sendUpdate(data: any) {
+        Network.send('update', data);
+    }
+
+    private sendPlayer() {
+        this.sendUpdate({
             id: this.myId,
             player: this.player.serialize()
-        };
-        Network.send('update', data);
+        });
     }
 
     private restart() {
@@ -192,7 +197,9 @@ export default class Game extends Phaser.State {
 
     public addItemOnMap(effect: EffectName, position: Phaser.Point, broadcastEvent: boolean = true) {
         this.collidables.add(new EffectArea(this, position.x, position.y, effect));
-        if (broadcastEvent) Network.send('update', {author: this.myId, effect, position});
+        let effectId = Object.keys(this.createdEffects).length;
+        this.createdEffects[effectId] = true;
+        if (broadcastEvent) Network.send('update', {author: this.myId, effect, position, effectId});
     }
 
     private updateState(data) {
@@ -208,9 +215,8 @@ export default class Game extends Phaser.State {
             }
         } else if (data.boxTaken && this.boxes[data.boxTaken]) {
             this.boxes[data.boxTaken].collect();
-        } else if (data.effect && data.author !== this.myId) {
-            console.log('received new effect', data);
-            if (data.author !== this.myId) this.addItemOnMap(data.effect, data.position, false);
+        } else if (data.effect && data.author !== this.myId && !this.createdEffects[data.effectId]) {
+            this.addItemOnMap(data.effect, data.position, false);
         }
     }
 
@@ -253,7 +259,7 @@ export default class Game extends Phaser.State {
         this.endTexts.push(txt, rankTt);
         if (this.currentRound === this.totalRounds) {
 
-            this.sendUpdate(); // last update to say you arrived
+            this.sendPlayer();
             this.game.time.events.remove(this.networkTimer); // stop sending updates
             Network.clearListener('update');
             Network.send('quit');
@@ -264,7 +270,7 @@ export default class Game extends Phaser.State {
             }, { callback: () => this.game.state.start('title')}));
         } else if (rank === this.players.length) {
             this.game.time.events.add(1000, () => {
-                Network.send('update', {restart: true});
+                this.sendUpdate({'restart': true});
             });
         }
         this.currentRound++;
@@ -276,16 +282,14 @@ export default class Game extends Phaser.State {
 
         if (this.player.finished) return;
         super.update(this.game);
-
         this.game.physics.arcade.overlap(this.player, this.collidables, (p: Player, item) => {
             if (item instanceof Box) {
                 item.collect(p);
-                Network.send('update', {'boxTaken' : item.id});
+                this.sendUpdate({'boxTaken' : item.id});
             } else if (item instanceof EffectArea && p.arcadeBody.onFloor()) {
                 item.Effect(p);
             }
         });
-
         if (this.game.physics.arcade.overlap(this.player, this.finishTrigger)) this.finished();
 
         let divisor = 4;
