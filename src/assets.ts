@@ -86,6 +86,11 @@ export namespace Images {
 
         static getPNG(): string { return require('assets/images/snowflake.png'); }
     }
+    export class ImagesTitle {
+        static getName(): string { return 'title'; }
+
+        static getPNG(): string { return require('assets/images/title.png'); }
+    }
     export class ImagesWeb {
         static getName(): string { return 'web'; }
 
