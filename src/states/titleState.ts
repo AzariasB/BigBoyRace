@@ -3,7 +3,7 @@ import TextButton, { ButtonOptions } from '../widgets/TextButton';
 import BackgroundScroller, { } from '../widgets/backgroundScroller';
 import * as Assets from '../assets';
 
-export default class Title extends Phaser.State {
+export default class TitleState extends Phaser.State {
 
 
     public create(): void {
@@ -22,7 +22,7 @@ export default class Title extends Phaser.State {
             text : 'Create',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
-        }, {callback : () => this.fadeTo('build')}));
+        }, {callback : () => this.fadeTo('create')}));
         yPos += optionsB.height + 10;
 
         let helpB = this.game.add.existing(new TextButton(this.game, this.game.world.centerX, yPos , {

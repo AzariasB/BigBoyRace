@@ -4,7 +4,7 @@ import {CustomWebFonts} from '../assets';
 import BackgroundScroller from '../widgets/backgroundScroller';
 import TextButton from '../widgets/TextButton';
 
-export default class Lobby extends Phaser.State {
+export default class LobbyState extends Phaser.State {
 
     private text: Phaser.Text;
 

@@ -1,4 +1,4 @@
-import Game from '../states/game';
+import GameState from '../states/gameState';
 import {Network} from '../network';
 
 export default class Chat {
@@ -8,12 +8,10 @@ export default class Chat {
     public inputBackground: Phaser.Graphics;
     public game: Phaser.Game;
     private focused: boolean = false;
-    private state: Game;
     private maxlength = 75;
 
-    constructor (game: Phaser.Game, state: Game) {
-        this.game = game;
-        this.state = state;
+    constructor (private state: GameState) {
+        this.game = state.game;
 
         this.inputBackground = this.game.add.graphics(0, this.state.camera.height - 15);
         this.inputText = this.game.add.text(0, 0, '',

@@ -1,4 +1,4 @@
-import Game from '../states/game';
+import GameState from '../states/gameState';
 import { Player } from './Player';
 import * as Assets from '../assets';
 
@@ -11,14 +11,14 @@ export enum EffectName {
 export class EffectArea extends Phaser.Sprite {
 
     private static readonly EFFECT_SPRITES = {
-        [EffectName.glue]: Assets.Images.ImagesIcleblock,
+        [EffectName.glue]: Assets.Images.ImagesWeb,
         [EffectName.boost]: Assets.Images.ImagesBoost,
-        [EffectName.ice]: Assets.Images.ImagesGlue
+        [EffectName.ice]: Assets.Images.ImagesIcleblock
     };
 
     private particles: Phaser.Particles.Arcade.Emitter;
 
-    constructor (private gameState: Game, x: number, y: number, private effet: EffectName) {
+    constructor (private gameState: GameState, x: number, y: number, private effet: EffectName) {
         super(gameState.game, x, y, EffectArea.EFFECT_SPRITES[effet].getName());
         this.game.physics.arcade.enableBody(this);
         this.scale = new Phaser.Point(1.5, 1.5);
@@ -28,6 +28,7 @@ export class EffectArea extends Phaser.Sprite {
 
         switch (this.effet) {
             case EffectName.glue:
+                this.scale = new Phaser.Point(1.5, 0.7);
                 break;
             case EffectName.boost:
                 this.height = 4;
@@ -71,7 +72,7 @@ export class EffectArea extends Phaser.Sprite {
             player.arcadeBody.velocity.x /= 1.02;
             break;
         case EffectName.boost:
-            player.arcadeBody.velocity.x *= 1.05;
+            player.arcadeBody.velocity.x *= 1.04;
             break;
         case EffectName.ice:
             player.arcadeBody.velocity.x = player.arcadeBody.velocity.x;

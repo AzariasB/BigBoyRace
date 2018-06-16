@@ -3,7 +3,7 @@ import TextButton from '../widgets/TextButton';
 import BackgroundScroller, { } from '../widgets/backgroundScroller';
 import * as Assets from '../assets';
 
-export default class Credits extends Phaser.State {
+export default class CreditsState extends Phaser.State {
 
     public create(): void {
         new BackgroundScroller(this.game);
