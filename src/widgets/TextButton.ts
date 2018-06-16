@@ -1,6 +1,6 @@
 
 import { PhaserTextStyle } from 'phaser-ce';
-import { Atlases } from '../assets';
+import { Atlases, Audio } from '../assets';
 
 export interface ButtonOptions {
     key?: string;
@@ -48,6 +48,10 @@ export default class TextButton extends Phaser.Group {
             options.down,
             options.up
         ));
+
+        this.button.onInputOver.add(() => this.game.sound.play(Audio.AudioHover.getName()));
+        this.button.onInputDown.add(() => this.game.sound.play(Audio.AudioClick.getName()));
+
         this.button.anchor.set(0.5, 0.5);
 
         this.text = this.add(new Phaser.Text(

@@ -284,6 +284,122 @@ export namespace Atlases {
             GreyTickWhite = 'grey_tickWhite.png',
         }
     }
+    export class AtlasesIcons {
+        static getName(): string { return 'icons'; }
+
+        static getPNG(): string { return require('assets/atlases/icons.png'); }
+
+        static getXML(): string { return require('assets/atlases/icons.xml'); }
+    }
+    export namespace AtlasesIcons {
+        export enum Frames {
+            ArrowDown = 'arrowDown.png',
+            ArrowLeft = 'arrowLeft.png',
+            ArrowRight = 'arrowRight.png',
+            ArrowUp = 'arrowUp.png',
+            AudioOff = 'audioOff.png',
+            AudioOn = 'audioOn.png',
+            BarsHorizontal = 'barsHorizontal.png',
+            BarsVertical = 'barsVertical.png',
+            Button1 = 'button1.png',
+            Button2 = 'button2.png',
+            Button3 = 'button3.png',
+            ButtonA = 'buttonA.png',
+            ButtonB = 'buttonB.png',
+            ButtonL = 'buttonL.png',
+            ButtonL1 = 'buttonL1.png',
+            ButtonL2 = 'buttonL2.png',
+            ButtonR = 'buttonR.png',
+            ButtonR1 = 'buttonR1.png',
+            ButtonR2 = 'buttonR2.png',
+            ButtonSelect = 'buttonSelect.png',
+            ButtonStart = 'buttonStart.png',
+            ButtonX = 'buttonX.png',
+            ButtonY = 'buttonY.png',
+            Checkmark = 'checkmark.png',
+            Contrast = 'contrast.png',
+            Cross = 'cross.png',
+            Down = 'down.png',
+            DownLeft = 'downLeft.png',
+            DownRight = 'downRight.png',
+            Exclamation = 'exclamation.png',
+            Exit = 'exit.png',
+            ExitLeft = 'exitLeft.png',
+            ExitRight = 'exitRight.png',
+            Export = 'export.png',
+            FastForward = 'fastForward.png',
+            Gamepad = 'gamepad.png',
+            Gamepad1 = 'gamepad1.png',
+            Gamepad2 = 'gamepad2.png',
+            Gamepad3 = 'gamepad3.png',
+            Gamepad4 = 'gamepad4.png',
+            Gear = 'gear.png',
+            Home = 'home.png',
+            Import = 'import.png',
+            Information = 'information.png',
+            Joystick = 'joystick.png',
+            JoystickLeft = 'joystickLeft.png',
+            JoystickRight = 'joystickRight.png',
+            JoystickUp = 'joystickUp.png',
+            Larger = 'larger.png',
+            LeaderboardsComplex = 'leaderboardsComplex.png',
+            LeaderboardsSimple = 'leaderboardsSimple.png',
+            Left = 'left.png',
+            Locked = 'locked.png',
+            MassiveMultiplayer = 'massiveMultiplayer.png',
+            Medal1 = 'medal1.png',
+            Medal2 = 'medal2.png',
+            MenuGrid = 'menuGrid.png',
+            MenuList = 'menuList.png',
+            Minus = 'minus.png',
+            Mouse = 'mouse.png',
+            Movie = 'movie.png',
+            Multiplayer = 'multiplayer.png',
+            MusicOff = 'musicOff.png',
+            MusicOn = 'musicOn.png',
+            Next = 'next.png',
+            Open = 'open.png',
+            Pause = 'pause.png',
+            Phone = 'phone.png',
+            Plus = 'plus.png',
+            Power = 'power.png',
+            Previous = 'previous.png',
+            Question = 'question.png',
+            Return = 'return.png',
+            Rewind = 'rewind.png',
+            Right = 'right.png',
+            Save = 'save.png',
+            ScrollHorizontal = 'scrollHorizontal.png',
+            ScrollVertical = 'scrollVertical.png',
+            Share1 = 'share1.png',
+            Share2 = 'share2.png',
+            ShoppingBasket = 'shoppingBasket.png',
+            ShoppingCart = 'shoppingCart.png',
+            Siganl1 = 'siganl1.png',
+            Signal2 = 'signal2.png',
+            Signal3 = 'signal3.png',
+            Singleplayer = 'singleplayer.png',
+            Smaller = 'smaller.png',
+            Star = 'star.png',
+            Stop = 'stop.png',
+            Tablet = 'tablet.png',
+            Target = 'target.png',
+            Trashcan = 'trashcan.png',
+            TrashcanOpen = 'trashcanOpen.png',
+            Trophy = 'trophy.png',
+            Unlocked = 'unlocked.png',
+            Up = 'up.png',
+            UpLeft = 'upLeft.png',
+            UpRight = 'upRight.png',
+            Video = 'video.png',
+            Warning = 'warning.png',
+            Wrench = 'wrench.png',
+            Zoom = 'zoom.png',
+            ZoomDefault = 'zoomDefault.png',
+            ZoomIn = 'zoomIn.png',
+            ZoomOut = 'zoomOut.png',
+        }
+    }
     export class AtlasesPreloadSpritesArray {
         static getName(): string { return 'preload_sprites_array'; }
 
@@ -326,6 +442,16 @@ export namespace Atlases {
 }
 
 export namespace Audio {
+    export class AudioClick {
+        static getName(): string { return 'click'; }
+
+        static getWAV(): string { return require('assets/audio/click.wav'); }
+    }
+    export class AudioHover {
+        static getName(): string { return 'hover'; }
+
+        static getWAV(): string { return require('assets/audio/hover.wav'); }
+    }
     export class AudioMusic {
         static getName(): string { return 'music'; }
 
@@ -333,6 +459,11 @@ export namespace Audio {
         static getM4A(): string { return require('assets/audio/music.m4a'); }
         static getMP3(): string { return require('assets/audio/music.mp3'); }
         static getOGG(): string { return require('assets/audio/music.ogg'); }
+    }
+    export class AudioTitleMusic {
+        static getName(): string { return 'titleMusic'; }
+
+        static getMP3(): string { return require('assets/audio/titleMusic.mp3'); }
     }
 }
 
