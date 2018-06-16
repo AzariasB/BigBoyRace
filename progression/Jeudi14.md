@@ -12,7 +12,10 @@ Boutin
 - Test jeux à plusieurs (30mn)
 - Implémentation des rounds (3h00)
 - Amélioration des animations des joueurs (2h00)
-Total: 7h30
+- Ajout des drapeaux de début/fin (30mn)
+- Ajout des couleurs en fonction des joueurs (30mn)
+- Ajout de la création de lobby (2h00)
+Total: 10h30
 
 
 
