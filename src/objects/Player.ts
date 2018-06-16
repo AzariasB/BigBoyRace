@@ -31,10 +31,13 @@ export class Player extends Phaser.Sprite {
         this.width = this.map.tileWidth * 2;
         this.game.physics.arcade.enable(this);
 
-        this.dustParticles = this.game.add.emitter(x, y, 10);
+        this.dustParticles = this.game.add.emitter(x, y, 100);
         this.dustParticles.makeParticles(Assets.Images.ImagesDust.getName());
-        this.dustParticles.gravity.y = 400;
-        this.dustParticles.minParticleScale = this.dustParticles.maxParticleScale = 0.5;
+        this.dustParticles.gravity.y = -800;
+        this.dustParticles.setAlpha(0.1, 1);
+        this.dustParticles.lifespan = 5000;
+        this.dustParticles.minParticleScale = 0.1;
+        this.dustParticles.maxParticleScale = 0.7;
         this.dustParticles.start(false, 100, 10);
         this.dustParticles.on = false;
 
@@ -155,6 +158,10 @@ export class Player extends Phaser.Sprite {
 
     public setItem(powerup: Powerup) {
         this.holder.setItem(powerup);
+    }
+
+    public hasItem() {
+        return this.holder.hasPowerup();
     }
 
 
