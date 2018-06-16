@@ -49,7 +49,7 @@ module.exports = {
             path.join(__dirname, 'dist')
         ]),
         new HtmlWebpackPlugin({
-            title: 'Grace online!',
+            title: 'BigBoy Race',
             template: path.join(__dirname, 'templates/index.ejs')
         })
     ],

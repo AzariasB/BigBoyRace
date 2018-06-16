@@ -57,7 +57,7 @@ module.exports = {
             }
         }),
         new HtmlWebpackPlugin({
-            title: 'Grace online',
+            title: 'BigBoy Race',
             template: path.join(__dirname, 'templates/index.ejs')
         })
     ],

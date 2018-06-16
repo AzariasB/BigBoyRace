@@ -21,20 +21,10 @@ export namespace Images {
 
         static getPNG(): string { return require('assets/images/box.png'); }
     }
-    export class ImagesClouds {
-        static getName(): string { return 'clouds'; }
-
-        static getPNG(): string { return require('assets/images/clouds.png'); }
-    }
     export class ImagesDust {
         static getName(): string { return 'dust'; }
 
         static getPNG(): string { return require('assets/images/dust.png'); }
-    }
-    export class ImagesFarGrounds {
-        static getName(): string { return 'far-grounds'; }
-
-        static getPNG(): string { return require('assets/images/far-grounds.png'); }
     }
     export class ImagesGlue {
         static getName(): string { return 'glue'; }
@@ -75,11 +65,6 @@ export namespace Images {
         static getName(): string { return 'shield'; }
 
         static getPNG(): string { return require('assets/images/shield.png'); }
-    }
-    export class ImagesSky {
-        static getName(): string { return 'sky'; }
-
-        static getPNG(): string { return require('assets/images/sky.png'); }
     }
     export class ImagesSnowflake {
         static getName(): string { return 'snowflake'; }
@@ -452,14 +437,6 @@ export namespace Audio {
 
         static getWAV(): string { return require('assets/audio/hover.wav'); }
     }
-    export class AudioMusic {
-        static getName(): string { return 'music'; }
-
-        static getAC3(): string { return require('assets/audio/music.ac3'); }
-        static getM4A(): string { return require('assets/audio/music.m4a'); }
-        static getMP3(): string { return require('assets/audio/music.mp3'); }
-        static getOGG(): string { return require('assets/audio/music.ogg'); }
-    }
     export class AudioTitleMusic {
         static getName(): string { return 'titleMusic'; }
 
@@ -499,14 +476,6 @@ export namespace Tilemaps {
         static getName(): string { return 'JungleMap2'; }
         static getJSON(): string { return require('assets/tilemaps/JungleMap2.json'); }
     }
-    export class JungleSonic {
-        static getName(): string { return 'JungleSonic'; }
-        static getJSON(): string { return require('assets/tilemaps/JungleSonic.json'); }
-    }
-    export class LabiMap {
-        static getName(): string { return 'LabiMap'; }
-        static getJSON(): string { return require('assets/tilemaps/LabiMap.json'); }
-    }
 }
 
 export namespace JSON {
@@ -525,21 +494,8 @@ export namespace Scripts {
     class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}
 }
 export namespace Shaders {
-    export class ShadersPixelate {
-        static getName(): string { return 'pixelate'; }
-
-        static getFRAG(): string { return require('assets/shaders/pixelate.frag'); }
-    }
+    class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}
 }
 export namespace Misc {
-    export class TilesetsArbre {
-        static getName(): string { return 'arbre'; }
-
-        static getFile(): string { return require('assets/tilesets/arbre.tsx'); }
-    }
-    export class TilesetsDecors {
-        static getName(): string { return 'decors'; }
-
-        static getFile(): string { return require('assets/tilesets/decors.tsx'); }
-    }
+    class IExistSoTypeScriptWillNotComplainAboutAnEmptyNamespace {}
 }
