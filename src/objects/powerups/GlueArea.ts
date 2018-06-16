@@ -7,11 +7,9 @@ import { EffectArea, EffectName } from '../EffectArea';
 
 
 export class GlueArea extends Powerup {
-    private gamestate;
 
-    constructor (private gameState: Game, x: number, y: number) {
-        super(gameState.game, x, y, Assets.Images.ImagesGlue.getName());
-        this.gamestate = gameState;
+    constructor (private gameState: Game) {
+        super(gameState.game, 0, 0, Assets.Images.ImagesGlue.getName());
         this.scale = new Phaser.Point(1.5, 1.5);
         this.anchor.set(0.5, 0.5);
         this.fixedToCamera = true ;
@@ -19,12 +17,11 @@ export class GlueArea extends Powerup {
     }
     public makeSound(): void {
     }
+
     public  activate(player: Player): void {
-        let item =  new EffectArea(this.gamestate, player.arcadeBody.position.x,
-                player.arcadeBody.position.y,
-                Assets.Images.ImagesBox.getName(), EffectName.glue);
-        this.gamestate.addItemOnMap(item);
+        this.gameState.addItemOnMap(EffectName.glue, player.arcadeBody.position);
     }
+
     public effect(player: Player) {
         player.arcadeBody.velocity.x / 2;
 

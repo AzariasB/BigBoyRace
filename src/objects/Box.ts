@@ -1,5 +1,3 @@
-import * as Assets from '../assets';
-import { Boost } from './powerups/Boost';
 import { GlueArea } from './powerups/GlueArea';
 import { IceArea } from './powerups/IceArea';
 import { Player } from './Player';
@@ -7,6 +5,12 @@ import { BoostArea} from './powerups/BoostArea';
 
 
 export default class Box extends Phaser.Sprite {
+
+    private static readonly POSSIBLE_POWERUPS = [
+        BoostArea,
+        GlueArea,
+        IceArea
+    ];
 
     private isCollected: boolean = false;
 
@@ -40,8 +44,8 @@ export default class Box extends Phaser.Sprite {
         this.isCollected = true;
 
         if (target !== null) {
-            let item = new BoostArea(this.game.state.states['game'], 50, 50);
-            target.setItem(item);
+            let PowerupConstructor = Phaser.ArrayUtils.getRandomItem(Box.POSSIBLE_POWERUPS);
+            target.setItem(new PowerupConstructor(this.game.state.states['game']));
         }
 
         this.body.destroy();

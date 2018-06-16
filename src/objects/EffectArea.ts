@@ -1,7 +1,6 @@
 import Game from '../states/game';
 import { Player } from './Player';
 import * as Assets from '../assets';
-import { PlayerDirection } from '../PlayerAnimation';
 
 export enum EffectName {
     glue = 'glue',
@@ -11,10 +10,16 @@ export enum EffectName {
 
 export class EffectArea extends Phaser.Sprite {
 
-    private dustParticles: Phaser.Particles.Arcade.Emitter;
+    private static readonly EFFECT_SPRITES = {
+        [EffectName.glue]: Assets.Images.ImagesIcleblock,
+        [EffectName.boost]: Assets.Images.ImagesBoost,
+        [EffectName.ice]: Assets.Images.ImagesGlue
+    };
 
-    constructor (private gameState: Game, x: number, y: number, image: string, private effet: EffectName) {
-        super(gameState.game, x, y, image);
+    private particles: Phaser.Particles.Arcade.Emitter;
+
+    constructor (private gameState: Game, x: number, y: number, private effet: EffectName) {
+        super(gameState.game, x, y, EffectArea.EFFECT_SPRITES[effet].getName());
         this.game.physics.arcade.enableBody(this);
         this.scale = new Phaser.Point(1.5, 1.5);
         this.anchor.set(0.5, 0.5);
@@ -26,33 +31,33 @@ export class EffectArea extends Phaser.Sprite {
                 break;
             case EffectName.boost:
                 this.height = 4;
-                this.dustParticles = this.game.add.emitter( this.position.x - this.width / 2, this.top - 20, 2000);
-                this.dustParticles.makeParticles(Assets.Images.ImagesBoost.getName());
-                this.dustParticles.minParticleSpeed.setTo(1, 1);
-                this.dustParticles.maxParticleSpeed.setTo(200, 1);
-                this.dustParticles.gravity.y = -800;
-                this.dustParticles.maxRotation = 0;
-                this.dustParticles.minRotation = 0;
-                this.dustParticles.start(false, 4000, 15);
-                this.dustParticles.frequency = 20;
-                this.dustParticles.minParticleScale = this.dustParticles.maxParticleScale = 0.1;
+                this.particles = this.game.add.emitter( this.position.x - this.width / 2, this.top - 20, 2000);
+                this.particles.makeParticles(Assets.Images.ImagesBoost.getName());
+                this.particles.minParticleSpeed.setTo(1, 1);
+                this.particles.maxParticleSpeed.setTo(200, 1);
+                this.particles.gravity.y = -800;
+                this.particles.maxRotation = 0;
+                this.particles.minRotation = 0;
+                this.particles.start(false, 4000, 15);
+                this.particles.frequency = 20;
+                this.particles.minParticleScale = this.particles.maxParticleScale = 0.1;
 
-                this.dustParticles.lifespan = 700;
-                this.game.add.tween(this.dustParticles).to({y: this.bottom + 30 }, 200, 'Linear', true, 0, -1, true );
+                this.particles.lifespan = 700;
+                this.game.add.tween(this.particles).to({y: this.bottom + 30 }, 200, 'Linear', true, 0, -1, true );
                 break;
             case EffectName.ice:
                 this.height = 4;
-                this.dustParticles = this.game.add.emitter( this.position.x - this.width / 2, this.top, 2000);
-                this.dustParticles.makeParticles(Assets.Images.ImagesSnowflake.getName());
-                this.dustParticles.minParticleSpeed.setTo(-25, 1);
-                this.dustParticles.maxParticleSpeed.setTo(25, 10);
-                this.dustParticles.gravity.y = -750;
-                this.dustParticles.start(false, 4000, 15);
-                this.dustParticles.frequency = 20;
-                this.dustParticles.minParticleScale = this.dustParticles.maxParticleScale = 0.05;
+                this.particles = this.game.add.emitter( this.position.x - this.width / 2, this.top, 2000);
+                this.particles.makeParticles(Assets.Images.ImagesSnowflake.getName());
+                this.particles.minParticleSpeed.setTo(-25, 1);
+                this.particles.maxParticleSpeed.setTo(25, 10);
+                this.particles.gravity.y = -750;
+                this.particles.start(false, 4000, 15);
+                this.particles.frequency = 20;
+                this.particles.minParticleScale = this.particles.maxParticleScale = 0.05;
 
-                this.dustParticles.lifespan = 1500;
-                this.game.add.tween(this.dustParticles).to({ x: this.right }, 200, 'Linear', true, 0, -1, true );
+                this.particles.lifespan = 1500;
+                this.game.add.tween(this.particles).to({ x: this.right }, 200, 'Linear', true, 0, -1, true );
                 break;
 
         }
@@ -70,7 +75,7 @@ export class EffectArea extends Phaser.Sprite {
             break;
         case EffectName.ice:
             player.arcadeBody.velocity.x = player.arcadeBody.velocity.x;
-            this.dustParticles.on = true;
+            this.particles.on = true;
             break;
         }
     }
@@ -82,10 +87,10 @@ export class EffectArea extends Phaser.Sprite {
             case EffectName.glue:
                 break;
             case EffectName.boost:
-                this.dustParticles.y = this.top - 60;
+                this.particles.y = this.top - 60;
                 break;
             case EffectName.ice:
-                this.dustParticles.y = ( this.top - 60 );
+                this.particles.y = ( this.top - 60 );
                 break;
             }
     }

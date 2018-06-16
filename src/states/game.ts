@@ -10,7 +10,7 @@ import TextButton from '../widgets/TextButton';
 import Chat from '../widgets/chat';
 import { getTint, getSpriteName } from '../utils/colorUtils';
 import { Powerup } from '../objects/powerups/Powerup';
-import { EffectArea } from '../objects/EffectArea';
+import { EffectArea, EffectName } from '../objects/EffectArea';
 
 export default class Game extends Phaser.State {
     private totalRounds;
@@ -96,17 +96,7 @@ export default class Game extends Phaser.State {
         this.camera.follow(this.player, Phaser.Camera.FOLLOW_PLATFORMER);
 
         this.cursors = this.game.input.keyboard.createCursorKeys();
-
-        let itemholder = new ItemHolder(this.game, 10, 10,
-            Assets.Atlases.AtlasesGreySheet.getName(),
-            Assets.Atlases.AtlasesGreySheet.Frames.GreyButton11
-        );
-        itemholder.anchor.set(0, 0);
-        itemholder.tint = getTint(this.myId);
         this.tilemap.createLayer('Foreground');
-
-        this.game.add.existing(itemholder);
-
 
         this.countdownText = this.game.add.text(this.centerX, this.centerY, '3', {
             fontSize: 30,
@@ -141,6 +131,7 @@ export default class Game extends Phaser.State {
 
     private beginGame() {
         this.isCountingDown = false;
+        Network.clearListener('update');
         Network.when('update').add((_, data) => this.updateState(data) );
         this.networkTimer = this.game.time.events.loop(N_SEND_INPUTS, () => this.sendUpdate());
     }
@@ -199,6 +190,11 @@ export default class Game extends Phaser.State {
         });
     }
 
+    public addItemOnMap(effect: EffectName, position: Phaser.Point, broadcastEvent: boolean = true) {
+        this.collidables.add(new EffectArea(this, position.x, position.y, effect));
+        if (broadcastEvent) Network.send('update', {author: this.myId, effect, position});
+    }
+
     private updateState(data) {
         if (data.restart) return this.restart();
 
@@ -212,6 +208,9 @@ export default class Game extends Phaser.State {
             }
         } else if (data.boxTaken && this.boxes[data.boxTaken]) {
             this.boxes[data.boxTaken].collect();
+        } else if (data.effect && data.author !== this.myId) {
+            console.log('received new effect', data);
+            if (data.author !== this.myId) this.addItemOnMap(data.effect, data.position, false);
         }
     }
 
@@ -256,7 +255,7 @@ export default class Game extends Phaser.State {
 
             this.sendUpdate(); // last update to say you arrived
             this.game.time.events.remove(this.networkTimer); // stop sending updates
-            Network.when('update').removeAll(); // stop listening for any incoming updates1
+            Network.clearListener('update');
             Network.send('quit');
             this.game.add.existing(new TextButton(this.game, this.centerX, this.centerY + txt.height + rankTt.height + 20, {
                 text: 'Menu',
@@ -269,10 +268,6 @@ export default class Game extends Phaser.State {
             });
         }
         this.currentRound++;
-    }
-
-    public addItemOnMap(item) {
-        this.collidables.add(item);
     }
 
     public update(): void {

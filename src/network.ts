@@ -8,6 +8,13 @@ export namespace Network {
     let receivers: {[key: string]: Signal} = {};
     export const onReceive = new Signal();
 
+    export function clearListener(key: string) {
+        if (!receivers[key]) return;
+
+        m_socket.off(key);
+        receivers[key].removeAll();
+        delete receivers[key];
+    }
 
     export function when(key: string): Signal {
         if (!receivers[key]) {

@@ -4,6 +4,7 @@ import {PlayerAnimation, PlayerStates, Config, PlayerDirection} from '../PlayerA
 import { PLAYER_ACCELERATION, PLAYER_FIRSTJUMP, PLAYER_DESCELERATION, PLAYER_SPEED, PLAYER_WALLJUMP } from '../constant';
 import { Powerup } from './powerups/Powerup';
 import {EmptyPowerup} from './powerups/EmptyPowerup';
+import ItemHolder from './ItemHolder';
 
 export class Player extends Phaser.Sprite {
 
@@ -14,7 +15,7 @@ export class Player extends Phaser.Sprite {
     public finished: boolean = false;
     public direction: PlayerDirection = PlayerDirection.None;
     public onEffect: boolean;
-    private item: Powerup = new EmptyPowerup(this.game, 50, 50);
+    public holder: ItemHolder = null;
 
     constructor (public readonly isRemote: boolean,
                     game: Phaser.Game,
@@ -45,6 +46,7 @@ export class Player extends Phaser.Sprite {
         this.arcadeBody.maxVelocity.x = 1000;
         this.arcadeBody.maxVelocity.y = 1000;
 
+        this.holder = this.game.add.existing(new ItemHolder(this, this.game.width - 50, 50));
 
 
         this.animations.add(PlayerAnimation.Run, [0, 1, 3, 4, 5, 6, 7], 10, true);
@@ -152,18 +154,12 @@ export class Player extends Phaser.Sprite {
     }
 
     public setItem(powerup: Powerup) {
-        this.item = powerup;
-        this.game.add.existing(this.getItem());
+        this.holder.setItem(powerup);
     }
 
-    public getItem() {
-        return this.item;
-    }
 
     public useItem() {
-        this.item.activate(this);
-        this.item.destroy(true);
-        this.item = new EmptyPowerup(this.game, 50, 50);
+        this.holder.activatePowerup();
     }
 
     public stop(): void {
