@@ -7,8 +7,8 @@ import { BoostArea} from './powerups/BoostArea';
 export default class Box extends Phaser.Sprite {
 
     private static readonly POSSIBLE_POWERUPS = [
-        // BoostArea,
-        // GlueArea,
+        BoostArea,
+        GlueArea,
         IceArea
     ];
 

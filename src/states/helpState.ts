@@ -4,7 +4,7 @@ import BackgroundScroller, { } from '../widgets/backgroundScroller';
 import * as Assets from '../assets';
 import {Atlases} from '../assets';
 
-export default class Help extends Phaser.State {
+export default class HelpState extends Phaser.State {
 
     private createButton(x: number, y: number, text: string) {
         new TextButton(this.game, x, y + 10, {

@@ -3,7 +3,7 @@ import * as Assets from '../assets';
 import { WORLD_GRAVITY } from '../constant';
 import { Network } from '../network';
 
-export default class Boot extends Phaser.State {
+export default class BootState extends Phaser.State {
     public preload(): void {
         // Load any assets you need for your preloader state here.
         this.game.load.atlasJSONArray(Assets.Atlases.AtlasesPreloadSpritesArray.getName(), Assets.Atlases.AtlasesPreloadSpritesArray.getPNG(), Assets.Atlases.AtlasesPreloadSpritesArray.getJSONArray());

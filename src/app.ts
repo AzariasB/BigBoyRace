@@ -5,31 +5,32 @@ import 'phaser';
 import * as WebFontLoader from 'webfontloader';
 import * as io from 'socket.io';
 
-import Boot from './states/boot';
-import Preloader from './states/preloader';
-import Title from './states/title';
-import Game from './states/game';
-import Lobby from './states/lobby';
-import Credits from './states/credits';
+import BootState from './states/bootState';
+import PreloaderState from './states/preloaderState';
+import TitleState from './states/titleState';
+import GameState from './states/gameState';
+import LobbyState from './states/lobbyState';
+import CreditsState from './states/creditsState';
+import HelpState from './states/helpState';
+import CreateState from './states/createState';
+import JoiningState from './states/joiningState';
 import * as Utils from './utils/utils';
 import * as Assets from './assets';
-import Help from './states/help';
-import Build from './states/build';
-import Joining from './states/joining';
+import { Game } from 'phaser-ce';
 
 class App extends Phaser.Game {
 
     constructor(config: Phaser.IGameConfig) {
         super (config);
-        this.state.add('boot', Boot);
-        this.state.add('preloader', Preloader);
-        this.state.add('title', Title);
-        this.state.add('game', Game);
-        this.state.add('lobby', Lobby);
-        this.state.add('build', Build);
-        this.state.add('help', Help);
-        this.state.add('credits', Credits);
-        this.state.add('joining', Joining);
+        this.state.add('boot', BootState);
+        this.state.add('preloader', PreloaderState);
+        this.state.add('title', TitleState);
+        this.state.add('game', GameState);
+        this.state.add('lobby', LobbyState);
+        this.state.add('create', CreateState);
+        this.state.add('help', HelpState);
+        this.state.add('credits', CreditsState);
+        this.state.add('joining', JoiningState);
 
         this.state.start('boot');
     }

@@ -4,7 +4,7 @@ import * as Assets from '../assets';
 import TextButton from '../widgets/TextButton';
 
 
-export default class Joining extends Phaser.State {
+export default class JoiningState extends Phaser.State {
 
     private static readonly MAX_ROWS = 5;
 
@@ -40,8 +40,8 @@ export default class Joining extends Phaser.State {
 
     private createLobby(lobyData: any, index: number) {
         let colum = 0;
-        colum += Math.floor(index / Joining.MAX_ROWS);
-        index -= Joining.MAX_ROWS * colum;
+        colum += Math.floor(index / JoiningState.MAX_ROWS);
+        index -= JoiningState.MAX_ROWS * colum;
 
         this.game.add.existing(new TextButton(this.game, (colum + 1) * 250, (index + 3) * 60, {
             text: 'Lobby ' + lobyData.id,

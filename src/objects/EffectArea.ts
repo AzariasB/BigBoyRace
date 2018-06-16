@@ -1,4 +1,4 @@
-import Game from '../states/game';
+import GameState from '../states/gameState';
 import { Player } from './Player';
 import * as Assets from '../assets';
 
@@ -18,7 +18,7 @@ export class EffectArea extends Phaser.Sprite {
 
     private particles: Phaser.Particles.Arcade.Emitter;
 
-    constructor (private gameState: Game, x: number, y: number, private effet: EffectName) {
+    constructor (private gameState: GameState, x: number, y: number, private effet: EffectName) {
         super(gameState.game, x, y, EffectArea.EFFECT_SPRITES[effet].getName());
         this.game.physics.arcade.enableBody(this);
         this.scale = new Phaser.Point(1.5, 1.5);

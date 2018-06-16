@@ -5,7 +5,7 @@ import * as Assets from '../assets';
 import { Carousel, CarouselType } from '../widgets/carousel';
 import { N_MAX_PLAYERS, N_MAX_ROUNDS, N_MIN_PLAYERS, N_MIN_ROUNDS } from '../constant';
 
-export default class Build extends Phaser.State {
+export default class CreateState extends Phaser.State {
 
     private playersCarousel: Carousel;
     private mapCarousel: Carousel;

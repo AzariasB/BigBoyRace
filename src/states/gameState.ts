@@ -12,7 +12,7 @@ import { getTint, getSpriteName } from '../utils/colorUtils';
 import { Powerup } from '../objects/powerups/Powerup';
 import { EffectArea, EffectName } from '../objects/EffectArea';
 
-export default class Game extends Phaser.State {
+export default class GameState extends Phaser.State {
     private totalRounds;
     private myId: number;
     private players: Player[];
@@ -106,7 +106,7 @@ export default class Game extends Phaser.State {
         });
         this.countdownText.anchor.set(0.5, 0.5);
         Network.when('countdown').addOnce((_, value) => this.countdown(value));
-        new Chat(this.game, this);
+        new Chat(this);
     }
 
     private countdown(value: number) {
