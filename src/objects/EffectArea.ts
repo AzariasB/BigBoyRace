@@ -11,9 +11,9 @@ export enum EffectName {
 export class EffectArea extends Phaser.Sprite {
 
     private static readonly EFFECT_SPRITES = {
-        [EffectName.glue]: Assets.Images.ImagesIcleblock,
+        [EffectName.glue]: Assets.Images.ImagesWeb,
         [EffectName.boost]: Assets.Images.ImagesBoost,
-        [EffectName.ice]: Assets.Images.ImagesGlue
+        [EffectName.ice]: Assets.Images.ImagesIcleblock
     };
 
     private particles: Phaser.Particles.Arcade.Emitter;

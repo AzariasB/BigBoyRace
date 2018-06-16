@@ -282,12 +282,15 @@ export default class Game extends Phaser.State {
 
         if (this.player.finished) return;
         super.update(this.game);
+
+        this.player.onEffect = false;
         this.game.physics.arcade.overlap(this.player, this.collidables, (p: Player, item) => {
             if (item instanceof Box) {
                 item.collect(p);
                 this.sendUpdate({'boxTaken' : item.id});
             } else if (item instanceof EffectArea && p.arcadeBody.onFloor()) {
                 item.Effect(p);
+                this.player.onEffect = true;
             }
         });
         if (this.game.physics.arcade.overlap(this.player, this.finishTrigger)) this.finished();

@@ -175,7 +175,7 @@ export class Player extends Phaser.Sprite {
         this.dustParticles.y = this.y + this.height / 2;
         this.dustParticles.on = onFloor && this.arcadeBody.velocity.x !== 0;
 
-        if (!this.isRemote && !this.onEffect && (!this.finished || !this.sm.is(PlayerStates.Idle))) {
+        if (!this.isRemote && (!this.onEffect || !this.sm.is(PlayerStates.Idle)) && (!this.finished || !this.sm.is(PlayerStates.Idle))) {
             if (this.finished) this.arcadeBody.velocity.x = 0;
             else this.updateVelocity();
 
