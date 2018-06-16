@@ -9,7 +9,7 @@
     "client:build:dist": "echo-cli 'Building DIST ...' && npm run client:webpack:dist && echo-cli 'Build Complete ✔'",
     "client:dev": "webpack-dev-server --config webpack.dev.config.js --open",
     "client:dist": "webpack-dev-server --config webpack.dist.config.js --open",
-    "server:dev": "tsc -p server/tsconfig.json --watch & nodemon server/dist/server",
+    "server:dev": "concurrently --kill-others \"tsc -p server/tsconfig.json --watch\" \"nodemon server/dist/server\"",
     "setupGameSize": "node ./scripts/setupGameSize.js",
     "assets:dev": "node ./scripts/generateAssetsClass.js --dev",
     "assets": "node ./scripts/generateAssetsClass.js",
@@ -50,6 +50,7 @@
     "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {
+    "concurrently": "^3.5.1",
     "node-loader": "^0.6.0"
   }
 }
