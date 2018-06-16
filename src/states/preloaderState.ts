@@ -35,6 +35,7 @@ export default class PreloaderState extends Phaser.State {
     }
 
     private loadTitle(): void {
+        this.game.sound.play(Assets.Audio.AudioTitleMusic.getName(), 0.5);
         this.game.state.start('title');
     }
 }

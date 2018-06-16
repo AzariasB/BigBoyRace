@@ -12,6 +12,7 @@ export class Carousel extends Phaser.Group {
     private centerText: Phaser.Text;
     private centerSprite: Phaser.Sprite;
     private rightButton: Phaser.Button;
+    public onChangeSelection = (i, _) => {};
 
     constructor(game: Game,
         xCenter: number,
@@ -83,6 +84,7 @@ export class Carousel extends Phaser.Group {
 
     private updateCurrentValue() {
         this.centerText.text = this.selectedValue;
+        this.onChangeSelection(this.currentIndex, this.selectedValue);
     }
 
     public decrement() {

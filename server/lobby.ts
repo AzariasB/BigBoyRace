@@ -1,4 +1,15 @@
 
+const COLORS = [
+    0xFFAD66, // orange
+    0xFF6761, // red
+    0x6C6BAA, // blue
+    0x8BAA60, // green
+    0x646464, // black,
+    0xE8DB6B, // yellow
+    0xAA8DE8 // violet
+];
+
+
 export class Lobby {
     public onFull: Function;
     public onOver: Function;
@@ -57,7 +68,7 @@ export class Lobby {
         this.broadcast('start');
 
         this.clients.map(c => {
-            c.on('chat', (data) => this.broadcast('chat', this.getColor(c) + ' : ' + data));
+            c.on('chat', (data) => this.broadcast('chat', {tint: this.getColor(c), message: data}));
             this.countdown(3);
         });
     }
@@ -80,29 +91,7 @@ export class Lobby {
     }
 
     private getColor(c: SocketIO.Socket) {
-        let index = this.clients.indexOf(c);
-        let color = '';
-        switch (index) {
-            case 1:
-                color = 'Blue';
-                break;
-            case 2:
-                color = 'Red';
-                break;
-            case 3:
-                color = 'Green';
-                break;
-            case 4:
-                color = 'Yellow';
-                break;
-            case 5:
-                color = 'Purple';
-                break;
-            default:
-                color = 'White';
-                break;
-        }
-        return color;
+        return COLORS[this.clients.indexOf(c)] || 0xffffff;
     }
 
     private broadcast(key: string, data?: any) {

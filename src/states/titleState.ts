@@ -10,7 +10,17 @@ export default class TitleState extends Phaser.State {
         this.world.setBounds(0, 0, this.game.width, this.game.height);
         new BackgroundScroller(this.game);
 
-        let yPos = 150;
+        let ic = Assets.Atlases.AtlasesIcons.Frames.AudioOn;
+        this.input.keyboard.addKey(Phaser.Keyboard.M).onDown.add(() => this.game.sound.mute = !this.game.sound.mute);
+        this.game.add.button(0, 0, Assets.Atlases.AtlasesIcons.getName(), () => this.game.sound.mute = ! this.game.sound.mute, null,
+                        ic, ic, ic, ic, this.stage)
+                        .scale.set(0.3);
+
+        let splashTitle = this.game.add.image(this.world.centerX, 20, Assets.Images.ImagesTitle.getName());
+        splashTitle.anchor.set(0.5, 0);
+        splashTitle.scale.set(0.5);
+
+        let yPos = 250;
         let tb = this.game.add.existing(new TextButton(this.game, this.game.world.centerX, yPos, {
             text : 'Join',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
