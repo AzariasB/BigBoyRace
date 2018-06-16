@@ -1,7 +1,10 @@
 import GameState from '../states/gameState';
 import {Network} from '../network';
+import { Keyboard } from 'phaser-ce';
 
 export default class Chat {
+
+    private static readonly ACCEPTABLE_CHARS = /^[ -~àâäôéèëêïîçùûüÿæœÀÂÄÔÉÈËÊÏÎŸÇÙÛÜÆŒáíñóúÁÍÑÓÚìòÌÒąćęłńśźżĄĆĘŁŃŚŹŻößÖẞ]$/;
 
     public inputText: Phaser.Text;
     public messages: Phaser.Text;
@@ -41,7 +44,7 @@ export default class Chat {
     public processEnter() {
         if (!this.focused) {
             this.focused = true;
-            this.game.input.keyboard.onPressCallback = this.updateInputText;
+            this.game.input.keyboard.onDownCallback = this.updateInputText;
             this.state.pauseCapture = true;
             this.game.input.keyboard.clearCaptures();
             this.inputBackground.beginFill(0x444444);
@@ -69,11 +72,10 @@ export default class Chat {
         }
     }
 
-    public updateInputText(c: string, e: KeyboardEvent) {
-        if (RegExp('[ -~àâäôéèëêïîçùûüÿæœÀÂÄÔÉÈËÊÏÎŸÇÙÛÜÆŒáíñóúÁÍÑÓÚìòÌÒąćęłńśźżĄĆĘŁŃŚŹŻößÖẞ]')
-            .test(c) && this.inputText.text.length < this.maxlength) {
-            this.inputText.setText(this.inputText.text + c);
-        } else if (e.code === 'Backspace') {
+    public updateInputText(c: KeyboardEvent) {
+        if (Chat.ACCEPTABLE_CHARS.test(c.key) && this.inputText.text.length < this.maxlength) {
+            this.inputText.setText(this.inputText.text + c.key);
+        } else if (c.key === 'Backspace') {
             this.inputText.setText(this.inputText.text.substr(0, this.inputText.text.length - 1));
         }
     }
