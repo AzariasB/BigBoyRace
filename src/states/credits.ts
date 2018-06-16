@@ -1,11 +1,7 @@
 
-import Game from './game';
-import TextButton, { ButtonOptions } from '../widgets/TextButton';
+import TextButton from '../widgets/TextButton';
 import BackgroundScroller, { } from '../widgets/backgroundScroller';
 import * as Assets from '../assets';
-import game = PIXI.game;
-import LinkedList = Phaser.LinkedList;
-import {__String} from 'typescript';
 
 export default class Credits extends Phaser.State {
 
@@ -46,11 +42,11 @@ export default class Credits extends Phaser.State {
         }
 
         yPos += text.height + 30;
-        let tb = new TextButton(this.game, xPos, yPos, {
+        this.game.add.existing(new TextButton(this.game, xPos, yPos, {
             text : 'Return',
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
             fontSize : 20
-        }, {callback : this.returnClick, callbackContext : this});
+        }, {callback : this.returnClick, callbackContext : this}));
     }
 
     private returnClick() {

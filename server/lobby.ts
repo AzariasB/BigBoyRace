@@ -1,6 +1,5 @@
 
 export class Lobby {
-
     public onFull: Function;
     public onOver: Function;
     private clients: SocketIO.Socket[];
@@ -8,32 +7,33 @@ export class Lobby {
 
     constructor(
         public id: number,
-        public mapName: string,
-        public playersNumber: number) {
+        public config: any) {
         this.clients = [];
+    }
+
+    get playersNumber () {
+        return this.config.playersNumber;
     }
 
     public serialize() {
         return {
             id: this.id,
-            mapName: this.mapName,
-            playersNumber: this.playersNumber,
+            config: this.config,
             remaining: this.remaining()
         };
     }
 
     public addSocket(socket: SocketIO.Socket) {
         if (this.isFull) return;
-
+        let nwClientId = this.clients.length;
         // on disconnect => wart the other players
-        socket.on('disconnect', () => this.removeSocket(socket));
-        socket.on('quit', () => this.removeSocket(socket));
+        socket.on('disconnect', () => this.removeSocket(socket, nwClientId));
+        socket.on('quit', () => this.removeSocket(socket, nwClientId));
 
         socket.emit('welcome', {
-            id: this.clients.length,
+            id: nwClientId,
             lobbyId: this.id,
-            map: this.mapName,
-            playersNumber: this.playersNumber,
+            config: this.config,
             remaining: this.remaining()
         });
         this.clients.push(socket);
@@ -42,8 +42,10 @@ export class Lobby {
         }
     }
 
-    private removeSocket(socket: SocketIO.Socket) {
+    private removeSocket(socket: SocketIO.Socket, id: number) {
         this.clients = this.clients.filter(x => x !== socket);
+        this.broadcast('update', {id, left: true});
+        this.broadcast('chat', `Server : Player ${id} left`);
         if (this.clients.length === 0) {
             if (this.onOver) this.onOver(this);
         }
@@ -52,11 +54,25 @@ export class Lobby {
     private startGame() {
         this.isFull = true;
         if (this.onFull) this.onFull();
+        this.broadcast('start');
+
         this.clients.map(c => {
             c.on('chat', (data) => this.broadcast('chat', this.getColor(c) + ' : ' + data));
+            this.countdown(3);
+        });
+    }
+
+    private countdown(value: number) {
+        this.broadcast('countdown', value);
+
+        if (value === 0) return this.redirectUpdate();
+        setTimeout(() => this.countdown(value - 1), 1000);
+    }
+
+    private redirectUpdate() {
+        this.clients.map(c => {
             c.on('update', (data) => this.broadcast('update', data));
         });
-        this.broadcast('start');
     }
 
     private remaining() {

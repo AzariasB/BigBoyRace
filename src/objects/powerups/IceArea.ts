@@ -6,20 +6,20 @@ import Game from '../../states/game';
 import { EffectArea, EffectName } from '../EffectArea';
 
 
-export class GlueArea extends Powerup {
+export class IceArea extends Powerup {
 
     constructor (private gameState: Game) {
-        super(gameState.game, 0, 0, Assets.Images.ImagesGlue.getName());
-        this.scale = new Phaser.Point(1.5, 1.5);
+        super(gameState.game, 0, 0, Assets.Images.ImagesIcleblock.getName());
+        this.scale = new Phaser.Point(0.6, 0.6);
         this.anchor.set(0.5, 0.5);
         this.fixedToCamera = true ;
-
     }
+
     public makeSound(): void {
     }
 
     public  activate(player: Player): void {
-        this.gameState.addItemOnMap(EffectName.glue, player.arcadeBody.position);
+        this.gameState.addItemOnMap(EffectName.ice,  player.arcadeBody.position);
     }
 
     public effect(player: Player) {

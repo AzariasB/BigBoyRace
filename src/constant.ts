@@ -1,7 +1,10 @@
 // Network contants
 export const N_PATH = '/grace';
 export const N_SEND_INPUTS = 15; // ms
-export const N_ROUNDS = 2;
+export const N_MIN_PLAYERS = 1;
+export const N_MIN_ROUNDS = 1;
+export const N_MAX_PLAYERS = 8;
+export const N_MAX_ROUNDS = 5;
 
 // Player related constants
 export const PLAYER_SPEED = {

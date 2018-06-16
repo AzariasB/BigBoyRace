@@ -4,6 +4,7 @@ import {PlayerAnimation, PlayerStates, Config, PlayerDirection} from '../PlayerA
 import { PLAYER_ACCELERATION, PLAYER_FIRSTJUMP, PLAYER_DESCELERATION, PLAYER_SPEED, PLAYER_WALLJUMP } from '../constant';
 import { Powerup } from './powerups/Powerup';
 import {EmptyPowerup} from './powerups/EmptyPowerup';
+import ItemHolder from './ItemHolder';
 
 export class Player extends Phaser.Sprite {
 
@@ -11,18 +12,20 @@ export class Player extends Phaser.Sprite {
     private dustParticles: Phaser.Particles.Arcade.Emitter;
     private isHalfWidth: boolean = false;
     public sm: FiniteStateMachine;
-    public direction: PlayerDirection = PlayerDirection.None;
-    private item = new EmptyPowerup(this.game, 50, 50);
     public finished: boolean = false;
+    public direction: PlayerDirection = PlayerDirection.None;
+    public onEffect: boolean;
+    public holder: ItemHolder = null;
 
     constructor (public readonly isRemote: boolean,
                     game: Phaser.Game,
                     x: number,
                     y: number,
-                    group: string,
+                    spriteName: string,
                     private  map: Phaser.Tilemap,
-                    private collisionLayer: Phaser.TilemapLayer) {
-        super(game, x, y, group);
+                    private collisionLayer: Phaser.TilemapLayer
+                ) {
+        super(game, x, y, spriteName);
 
         this.height = this.map.tileHeight * 2;
         this.width = this.map.tileWidth * 2;
@@ -43,6 +46,7 @@ export class Player extends Phaser.Sprite {
         this.arcadeBody.maxVelocity.x = 1000;
         this.arcadeBody.maxVelocity.y = 1000;
 
+        this.holder = this.game.add.existing(new ItemHolder(this, this.game.width - 50, 50));
 
 
         this.animations.add(PlayerAnimation.Run, [0, 1, 3, 4, 5, 6, 7], 10, true);
@@ -63,6 +67,7 @@ export class Player extends Phaser.Sprite {
         });
         this.animations.add(PlayerAnimation.Land, [12], 5, true);
         this.animations.add(PlayerAnimation.WallSliding, [13], 5, true);
+        this.animations.add(PlayerAnimation.WalkCrouch, [28, 29, 30, 31, 32], 10, true);
 
         this.sm = new FiniteStateMachine(this.animations);
         this.initStatemachine();
@@ -124,7 +129,7 @@ export class Player extends Phaser.Sprite {
 
     public goDirection(dir: PlayerDirection): void {
         let mult = dir === PlayerDirection.Left ? -1 : 1;
-        if (this.direction !== dir && this.arcadeBody.onFloor()) {
+        if (this.direction !== dir && this.arcadeBody.onFloor() && !this.onEffect) {
             this.arcadeBody.velocity.x = 0;
         }
 
@@ -149,16 +154,12 @@ export class Player extends Phaser.Sprite {
     }
 
     public setItem(powerup: Powerup) {
-        this.item = powerup;
+        this.holder.setItem(powerup);
     }
 
-    public getItem() {
-        return this.item;
-    }
 
     public useItem() {
-        this.item.activate();
-        this.item = new EmptyPowerup(this.game, 50, 50);
+        this.holder.activatePowerup();
     }
 
     public stop(): void {
@@ -169,14 +170,14 @@ export class Player extends Phaser.Sprite {
 
     public update(): void {
         super.update();
-
         let onFloor = this.arcadeBody.onFloor();
         this.dustParticles.x = this.x;
         this.dustParticles.y = this.y + this.height / 2;
         this.dustParticles.on = onFloor && this.arcadeBody.velocity.x !== 0;
 
-        if (!this.isRemote) {
-            this.updateVelocity();
+        if (!this.isRemote && !this.onEffect && (!this.finished || !this.sm.is(PlayerStates.Idle))) {
+            if (this.finished) this.arcadeBody.velocity.x = 0;
+            else this.updateVelocity();
 
             let ltPos = this.collisionLayer.getTileXY(this.centerX, this.top, new Phaser.Point());
             let topCenter = this.map.getTile(ltPos.x, ltPos.y, this.collisionLayer);

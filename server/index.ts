@@ -43,7 +43,7 @@ class Server {
         socket.on('join', (id, ack = _ => {}) => {
           ack(this.joinLobby(id, socket));
         });
-        socket.on('create', (data) => this.createLobby(data.map, data.players, socket));
+        socket.on('create', (data) => this.createLobby(data, socket));
 
       });
 
@@ -73,9 +73,9 @@ class Server {
       return Object.keys(this.lobbies).filter(l => !this.lobbies[l].isFull).map(k => this.lobbies[k].serialize());
     }
 
-    private createLobby(map: string, playersNumber: number, creator: SocketIO.Socket) {
+    private createLobby(config: any, creator: SocketIO.Socket) {
       let id = this.nextLobbyId();
-      let nwL = new Lobby(id, map, playersNumber);
+      let nwL = new Lobby(id, config);
       nwL.addSocket(creator);
       nwL.onOver = (lobby) => delete this.lobbies[lobby.id];
       this.lobbies[id] = nwL;

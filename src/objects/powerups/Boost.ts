@@ -1,5 +1,6 @@
 import { Powerup } from './Powerup';
 import * as Assets from '../../assets';
+import { Player } from '../Player';
 
 
 export class Boost extends Powerup {
@@ -11,8 +12,10 @@ export class Boost extends Powerup {
     }
     public makeSound(): void {
     }
-    public  activate(): void {
+    public  activate(player: Player): void {
         console.log('activate box');
+    }
+    public effect(): void {
     }
 
 }

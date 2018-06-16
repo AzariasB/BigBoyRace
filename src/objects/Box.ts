@@ -1,16 +1,27 @@
-import * as Assets from '../assets';
-import { Boost } from './powerups/Boost';
 import { GlueArea } from './powerups/GlueArea';
+import { IceArea } from './powerups/IceArea';
 import { Player } from './Player';
+import { BoostArea} from './powerups/BoostArea';
 
 
 export default class Box extends Phaser.Sprite {
 
-    private isCollected: boolean;
-    private target: Player;
+    private static readonly POSSIBLE_POWERUPS = [
+        BoostArea,
+        GlueArea,
+        IceArea
+    ];
 
-    constructor (game: Phaser.Game, x: number, y: number, group: string) {
-        super(game, x, y, group);
+    private isCollected: boolean = false;
+
+    constructor (public readonly id: number,
+        game: Phaser.Game,
+        x: number,
+        y: number,
+        spriteName: string,
+        private onFinishCallback = (_: Box) => {}
+    ) {
+        super(game, x, y, spriteName);
         this.game.physics.arcade.enableBody(this);
         this.anchor.set(0.5, 0.5);
     }
@@ -18,19 +29,25 @@ export default class Box extends Phaser.Sprite {
     update() {
         super.update();
         if (this.isCollected) {
-            this.game.add.existing(this.target.getItem());
             this.rotation += Math.PI / 20;
             this.alpha -= 1 * this.game.time.elapsed / 1000;
             this.scale.divide(1.01, 1.01);
-            if (this.alpha <= 0)this.destroy();
+            if (this.alpha <= 0) {
+                this.destroy();
+                this.onFinishCallback(this);
+            }
         }
     }
 
-    public collect(target: Player): void {
-        this.target = target;
+    public collect(target: Player = null): void {
+        if (this.isCollected) return;
         this.isCollected = true;
-        this.target.setItem(new GlueArea(this.game, 50, 50));
-        let body: Phaser.Physics.Arcade.Body = this.body;
-        body.destroy();
+
+        if (target !== null) {
+            let PowerupConstructor = Phaser.ArrayUtils.getRandomItem(Box.POSSIBLE_POWERUPS);
+            target.setItem(new PowerupConstructor(this.game.state.states['game']));
+        }
+
+        this.body.destroy();
     }
 }

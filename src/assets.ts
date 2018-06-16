@@ -1,6 +1,21 @@
 /* AUTO GENERATED FILE. DO NOT MODIFY. YOU WILL LOSE YOUR CHANGES ON BUILD. */
 
 export namespace Images {
+    export class ImagesArrow {
+        static getName(): string { return 'arrow'; }
+
+        static getPNG(): string { return require('assets/images/arrow.png'); }
+    }
+    export class ImagesBackgroundTemplate {
+        static getName(): string { return 'background_template'; }
+
+        static getPNG(): string { return require('assets/images/background_template.png'); }
+    }
+    export class ImagesBoost {
+        static getName(): string { return 'boost'; }
+
+        static getPNG(): string { return require('assets/images/boost.png'); }
+    }
     export class ImagesBox {
         static getName(): string { return 'box'; }
 
@@ -25,6 +40,11 @@ export namespace Images {
         static getName(): string { return 'glue'; }
 
         static getPNG(): string { return require('assets/images/glue.png'); }
+    }
+    export class ImagesIcleblock {
+        static getName(): string { return 'icleblock'; }
+
+        static getPNG(): string { return require('assets/images/icleblock.png'); }
     }
     export class ImagesPlx1 {
         static getName(): string { return 'plx-1'; }
@@ -61,6 +81,11 @@ export namespace Images {
 
         static getPNG(): string { return require('assets/images/sky.png'); }
     }
+    export class ImagesSnowflake {
+        static getName(): string { return 'snowflake'; }
+
+        static getPNG(): string { return require('assets/images/snowflake.png'); }
+    }
     export class TilesetsJungle {
         static getName(): string { return 'Jungle'; }
 
@@ -72,50 +97,60 @@ export namespace Spritesheets {
     export class Flags {
         static getName(): string { return 'flags'; }
 
-        static getPNG(): string { return require('assets/spritesheets/flags.[16,16,8,0,0].png'); }
-        static getFrameWidth(): number { return 16; }
-        static getFrameHeight(): number { return 16; }
+        static getPNG(): string { return require('assets/spritesheets/flags.[32,32,8,0,0].png'); }
+        static getFrameWidth(): number { return 32; }
+        static getFrameHeight(): number { return 32; }
         static getFrameMax(): number { return 8; }
+        static getMargin(): number { return 0; }
+        static getSpacing(): number { return 0; }
+    }
+    export class HeroBlack {
+        static getName(): string { return 'hero_black'; }
+
+        static getPNG(): string { return require('assets/spritesheets/hero_black.[33,31,35,0,0].png'); }
+        static getFrameWidth(): number { return 33; }
+        static getFrameHeight(): number { return 31; }
+        static getFrameMax(): number { return 35; }
         static getMargin(): number { return 0; }
         static getSpacing(): number { return 0; }
     }
     export class HeroBlue {
         static getName(): string { return 'hero_blue'; }
 
-        static getPNG(): string { return require('assets/spritesheets/hero_blue.[33,31,28,0,0].png'); }
+        static getPNG(): string { return require('assets/spritesheets/hero_blue.[33,31,35,0,0].png'); }
         static getFrameWidth(): number { return 33; }
         static getFrameHeight(): number { return 31; }
-        static getFrameMax(): number { return 28; }
-        static getMargin(): number { return 0; }
-        static getSpacing(): number { return 0; }
-    }
-    export class HeroGold {
-        static getName(): string { return 'hero_gold'; }
-
-        static getPNG(): string { return require('assets/spritesheets/hero_gold.[33,31,28,0,0].png'); }
-        static getFrameWidth(): number { return 33; }
-        static getFrameHeight(): number { return 31; }
-        static getFrameMax(): number { return 28; }
+        static getFrameMax(): number { return 35; }
         static getMargin(): number { return 0; }
         static getSpacing(): number { return 0; }
     }
     export class HeroGreen {
         static getName(): string { return 'hero_green'; }
 
-        static getPNG(): string { return require('assets/spritesheets/hero_green.[33,31,28,0,0].png'); }
+        static getPNG(): string { return require('assets/spritesheets/hero_green.[33,31,35,0,0].png'); }
         static getFrameWidth(): number { return 33; }
         static getFrameHeight(): number { return 31; }
-        static getFrameMax(): number { return 28; }
+        static getFrameMax(): number { return 35; }
+        static getMargin(): number { return 0; }
+        static getSpacing(): number { return 0; }
+    }
+    export class HeroOrange {
+        static getName(): string { return 'hero_orange'; }
+
+        static getPNG(): string { return require('assets/spritesheets/hero_orange.[33,31,35,0,0].png'); }
+        static getFrameWidth(): number { return 33; }
+        static getFrameHeight(): number { return 31; }
+        static getFrameMax(): number { return 35; }
         static getMargin(): number { return 0; }
         static getSpacing(): number { return 0; }
     }
     export class HeroRed {
         static getName(): string { return 'hero_red'; }
 
-        static getPNG(): string { return require('assets/spritesheets/hero_red.[33,31,28,0,0] .png'); }
+        static getPNG(): string { return require('assets/spritesheets/hero_red.[33,31,35,0,0].png'); }
         static getFrameWidth(): number { return 33; }
         static getFrameHeight(): number { return 31; }
-        static getFrameMax(): number { return 28; }
+        static getFrameMax(): number { return 35; }
         static getMargin(): number { return 0; }
         static getSpacing(): number { return 0; }
     }
@@ -126,6 +161,16 @@ export namespace Spritesheets {
         static getFrameWidth(): number { return 33; }
         static getFrameHeight(): number { return 31; }
         static getFrameMax(): number { return 28; }
+        static getMargin(): number { return 0; }
+        static getSpacing(): number { return 0; }
+    }
+    export class HeroYellow {
+        static getName(): string { return 'hero_yellow'; }
+
+        static getPNG(): string { return require('assets/spritesheets/hero_yellow.[33,31,35,0,0].png'); }
+        static getFrameWidth(): number { return 33; }
+        static getFrameHeight(): number { return 31; }
+        static getFrameMax(): number { return 35; }
         static getMargin(): number { return 0; }
         static getSpacing(): number { return 0; }
     }
@@ -305,14 +350,6 @@ export namespace BitmapFonts {
 }
 
 export namespace Tilemaps {
-    export class Decors1 {
-        static getName(): string { return 'decors1'; }
-        static getJSON(): string { return require('assets/tilemaps/decors1.json'); }
-    }
-    export class DefaultMap {
-        static getName(): string { return 'defaultMap'; }
-        static getJSON(): string { return require('assets/tilemaps/defaultMap.json'); }
-    }
     export class JungleMap {
         static getName(): string { return 'JungleMap'; }
         static getJSON(): string { return require('assets/tilemaps/JungleMap.json'); }
@@ -320,14 +357,6 @@ export namespace Tilemaps {
     export class JungleMap2 {
         static getName(): string { return 'JungleMap2'; }
         static getJSON(): string { return require('assets/tilemaps/JungleMap2.json'); }
-    }
-    export class JungleMapTest {
-        static getName(): string { return 'JungleMapTest'; }
-        static getJSON(): string { return require('assets/tilemaps/JungleMapTest.json'); }
-    }
-    export class JungleMapTest1 {
-        static getName(): string { return 'JungleMapTest1'; }
-        static getJSON(): string { return require('assets/tilemaps/JungleMapTest1.json'); }
     }
     export class JungleSonic {
         static getName(): string { return 'JungleSonic'; }
