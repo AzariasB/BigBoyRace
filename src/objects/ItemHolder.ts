@@ -17,8 +17,8 @@ export default class ItemHolder extends Phaser.Group {
         this.add(background = new Phaser.Sprite(
             this.game,
             xOffset, yOffset,
-            Assets.Atlases.AtlasesBlueSheet.getName(),
-            Assets.Atlases.AtlasesBlueSheet.Frames.BlueButton11
+            Assets.Atlases.AtlasesGreySheet.getName(),
+            Assets.Atlases.AtlasesGreySheet.Frames.GreyButton11
         ));
         background.anchor.set(0.5, 0.5);
         background.tint = getTint(this.game.state.states['game'].myId);
