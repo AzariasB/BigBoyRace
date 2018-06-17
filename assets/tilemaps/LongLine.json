@@ -140,24 +140,24 @@
  "nextobjectid":81,
  "orientation":"orthogonal",
  "renderorder":"right-down",
- "tiledversion":"1.1.5",
+ "tiledversion":"1.1.3",
  "tileheight":16,
  "tilesets":[
         {
          "columns":39,
          "firstgid":1,
-         "image":"..\/Grace\/assets\/tilesets\/Jungle.png",
-         "imageheight":504,
+         "image":"..\/tilesets\/Jungle.png",
+         "imageheight":496,
          "imagewidth":624,
          "margin":0,
          "name":"Jungle",
          "spacing":0,
-         "tilecount":0,
+         "tilecount":1209,
          "tileheight":16,
          "tilewidth":16
         }],
  "tilewidth":16,
  "type":"map",
- "version":1,
+ "version":1.2,
  "width":203
 }
