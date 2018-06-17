@@ -85,6 +85,7 @@ export namespace Images {
         static getName(): string { return 'Jungle'; }
 
         static getPNG(): string { return require('assets/tilesets/Jungle.png'); }
+        static getTSX(): string { return require('assets/tilesets/Jungle.tsx'); }
     }
 }
 
@@ -483,6 +484,10 @@ export namespace Tilemaps {
     export class LongLine {
         static getName(): string { return 'LongLine'; }
         static getJSON(): string { return require('assets/tilemaps/LongLine.json'); }
+    }
+    export class Tenebrae {
+        static getName(): string { return 'Tenebrae'; }
+        static getJSON(): string { return require('assets/tilemaps/Tenebrae.json'); }
     }
 }
 
