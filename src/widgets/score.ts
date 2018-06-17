@@ -39,6 +39,23 @@ export default class Score {
         if (this.conf.label !== false) {
             this._drawLabel();
         }
+        // sort score
+        let swapped;
+        do {
+            swapped = false;
+            for (let i = 0; i < this.dataArr.length - 2; i += 2) {
+                if (this.dataArr[i + 1] < this.dataArr[i + 3]) {
+                    let temp = this.dataArr[i];
+                    let temp2 = this.dataArr[i + 1];
+                    this.dataArr[i] = this.dataArr[i + 2];
+                    this.dataArr[i + 1] = this.dataArr[i + 3];
+                    this.dataArr[i + 2] = temp;
+                    this.dataArr[i + 3] = temp2;
+                    swapped = true;
+                }
+            }
+        } while (swapped);
+
         let offsety = this.conf.y + 30;
         for (let i = 0; i < this.dataArr.length; i += 2) {
             this._drawBox(this.dataArr[i] + ' : ' + this.dataArr[i + 1], offsety);
