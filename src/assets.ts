@@ -468,6 +468,10 @@ export namespace BitmapFonts {
 }
 
 export namespace Tilemaps {
+    export class Challenge {
+        static getName(): string { return 'Challenge'; }
+        static getJSON(): string { return require('assets/tilemaps/Challenge.json'); }
+    }
     export class JungleMap {
         static getName(): string { return 'JungleMap'; }
         static getJSON(): string { return require('assets/tilemaps/JungleMap.json'); }
@@ -475,6 +479,10 @@ export namespace Tilemaps {
     export class JungleMap2 {
         static getName(): string { return 'JungleMap2'; }
         static getJSON(): string { return require('assets/tilemaps/JungleMap2.json'); }
+    }
+    export class LongLine {
+        static getName(): string { return 'LongLine'; }
+        static getJSON(): string { return require('assets/tilemaps/LongLine.json'); }
     }
 }
 
