@@ -273,7 +273,6 @@ export default class GameState extends Phaser.State {
                 this.sendUpdate({'restart': true});
             });
         }
-        this.currentRound++;
     }
 
     public update(): void {
