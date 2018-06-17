@@ -11,6 +11,7 @@ import Chat from '../widgets/chat';
 import { getTint, getSpriteName } from '../utils/colorUtils';
 import { Powerup } from '../objects/powerups/Powerup';
 import { EffectArea, EffectName } from '../objects/EffectArea';
+import Score from '../widgets/score';
 
 export default class GameState extends Phaser.State {
     private totalRounds;
@@ -26,7 +27,7 @@ export default class GameState extends Phaser.State {
     private particlesGenerator: Phaser.Particles.Arcade.Emitter = null;
     private jumptimer = 0;
     private finishTrigger: Phaser.Sprite;
-    private currentRound: number = 1;
+    private currentRound: number = 0;
     private endTexts: Phaser.Text[] = [];
     private networkTimer: Phaser.TimerEvent = null;
     public pauseCapture: boolean = false;
@@ -34,12 +35,13 @@ export default class GameState extends Phaser.State {
     private isCountingDown: boolean = true;
     private countdownText: Phaser.Text = null;
     private createdEffects =  {};
+    private score: Score;
 
     public init(id, mapName, players, maxRounds) {
         this.myId = id;
         this.tilemap = this.game.add.tilemap(mapName);
         this.totalRounds = maxRounds;
-        this.currentRound =  1;
+        this.currentRound =  0;
         for (let name of BackgroundScroller.BG_NAMES) {
             let bg = this.game.add.tileSprite(0, 0, this.game.world.width, this.game.height, name);
             bg.scale.set(2, 2);
@@ -52,6 +54,7 @@ export default class GameState extends Phaser.State {
         this.tilemap.createLayer('Background');
         this.collisionLayer = this.tilemap.createLayer('Collision');
         this.collisionLayer.resizeWorld();
+        this.score = new Score(this.game, this);
 
         for (let bg of this.backgrounds) {
             bg.width = this.world.width;
@@ -140,7 +143,7 @@ export default class GameState extends Phaser.State {
 
     private createObjects(): Phaser.Point {
         Object.keys(this.boxes).map(k => this.boxes[k].destroy());
-        let firstTime = this.currentRound === 1;
+        let firstTime = this.currentRound === 0;
 
         let pos = new Phaser.Point();
         let id = 0;
@@ -184,9 +187,9 @@ export default class GameState extends Phaser.State {
     }
 
     private restart() {
-        this.currentRound++;
         this.endTexts.map(t => t.destroy());
         this.endTexts = [];
+        this.score.newRound();
         let start = this.createObjects();
         this.players.map((p, i) =>  {
             p.position.copyFrom(start);
@@ -212,12 +215,43 @@ export default class GameState extends Phaser.State {
             } else {
                 let p = data.player;
                 this.players[data.id].deserialize(p);
+
+                if (data.player.finished) {
+                    this.endScore(data.id);
+                }
             }
         } else if (data.boxTaken && this.boxes[data.boxTaken]) {
             this.boxes[data.boxTaken].collect();
         } else if (data.effect && data.author !== this.myId && !this.createdEffects[data.effectId]) {
             this.addItemOnMap(data.effect, data.position, false);
         }
+    }
+
+    private endScore(id): void {
+        let player = 'White';
+        let colors = ['Orange', 'Red', 'Blue', 'Green', 'Black', 'Yellow', 'Purple'];
+        if (id < colors.length)
+            player = colors[id];
+        let rank = this.players.filter(p => p.finished).length;
+        this.score.addScore(player, Math.round(this.players.length * (Math.exp(-1 * rank) + 1) - rank) + 1);
+        if (this.players.filter(p => p.finished).length === this.players.length && this.currentRound === this.totalRounds)
+            setTimeout(() => {
+                this.endTexts.map(t => t.destroy());
+                this.endTexts = [];
+                this.score.draw();
+                this.game.add.existing(new TextButton(this.game, this.centerX, this.centerY, {
+                        text: 'Menu',
+                        fontSize: 20,
+                        font: Assets.CustomWebFonts.FontsKenvectorFuture.getName()
+                    }, {
+                        callback: () => {
+                            this.game.state.start('title');
+                            Network.clearListener('update');
+                            Network.send('quit');
+                        }
+                    })
+                );
+            }, 3000);
     }
 
     private toRank(num: number): string {
@@ -244,6 +278,7 @@ export default class GameState extends Phaser.State {
         this.player.stop();
         this.player.update();
         this.player.finished = true;
+        this.currentRound++;
 
         let txt = this.game.add.text(this.centerX, this.centerY , 'Finished !', {
             font : Assets.CustomWebFonts.FontsKenvectorFuture.getName(),
@@ -258,21 +293,14 @@ export default class GameState extends Phaser.State {
         rankTt.anchor.set(0.5, 0.5);
         this.endTexts.push(txt, rankTt);
         if (this.currentRound === this.totalRounds) {
-
             this.sendPlayer();
             this.game.time.events.remove(this.networkTimer); // stop sending updates
-            Network.clearListener('update');
-            Network.send('quit');
-            this.game.add.existing(new TextButton(this.game, this.centerX, this.centerY + txt.height + rankTt.height + 20, {
-                text: 'Menu',
-                fontSize: 20,
-                font: Assets.CustomWebFonts.FontsKenvectorFuture.getName()
-            }, { callback: () => this.game.state.start('title')}));
         } else if (rank === this.players.length) {
             this.game.time.events.add(1000, () => {
                 this.sendUpdate({'restart': true});
             });
         }
+        this.endScore(this.myId);
     }
 
     public update(): void {
