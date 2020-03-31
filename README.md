@@ -4,6 +4,8 @@
 
 Jeux en ligne multijoueur, écrit en typescript et en javascript, en utilisant phaser.
 
+Documentation : [https://github.com/AzariasB/BigBoyRace/blob/master/DOC.md](https://github.com/AzariasB/BigBoyRace/blob/master/DOC.md)
+
 Installation
 ============
 Pour installer :
